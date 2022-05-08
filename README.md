@@ -1,1 +1,1 @@
-college-of-good-restaurants
+college-of-good-restaurants project
