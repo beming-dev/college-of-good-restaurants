@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
 
+declare global {
+  interface Window {
+    kakao: any;
+  }
+}
+
 const Map = () => {
   const [mapLoaded, setMapLoaded] = useState(false);
 
@@ -11,7 +17,6 @@ const Map = () => {
   }, []);
 
   useEffect(() => {
-    console.log(window.kakao);
     if (!mapLoaded) return;
 
     window.kakao.maps.load(() => {
