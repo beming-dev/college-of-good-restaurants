@@ -2,6 +2,7 @@ import react, { useState } from "react";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
+import Link from "next/link";
 
 import Map from "../components/Map";
 import CollegeRankItem from "../components/CollegeRankItem";
@@ -59,7 +60,9 @@ const Home: NextPage = () => {
           <span className="sign-in" onClick={onSigninClick}>
             로그인
           </span>
-          <span className="sign-up">회원가입</span>
+          <Link href="/signup">
+            <a className="sign-up">회원가입</a>
+          </Link>
         </div>
       </div>
       <style jsx>
