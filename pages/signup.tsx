@@ -1,28 +1,50 @@
-import React from "react";
+import React, { useState } from "react";
 import type { NextPage } from "next";
 
+type change = {
+  (e: React.ChangeEvent<HTMLInputElement>): void;
+};
+
 const Signup: NextPage = () => {
+  const [mailAddress, setMailAddress] = useState("");
+  const [authCode, setAuthCode] = useState("");
+  const [id, setId] = useState("");
+  const [pw, setPw] = useState("");
+
+  const onMailAddressChange: change = (e) => {
+    setMailAddress(e.target.value);
+  };
+  const onAuthCodeChange: change = (e) => {
+    setAuthCode(e.target.value);
+  };
+  const onIdChange: change = (e) => {
+    setId(e.target.value);
+  };
+  const onPwChange: change = (e) => {
+    setPw(e.target.value);
+  };
+
   return (
     <div className="signup">
       <span className="title">맛집대학 회원가입</span>
       <div className="mail-box box">
         <span>학교메일주소</span>
-        <input type="text" />
+        <input type="text" onChange={onMailAddressChange} />
         <button>인증코드발송</button>
       </div>
       <div className="certificate-box box">
         <span>인증코드</span>
-        <input type="text" />
+        <input type="text" onChange={onAuthCodeChange} />
         <button>인증코드확인</button>
       </div>
       <div className="id-box box">
         <span>아이디</span>
-        <input type="text" />
+        <input type="text" onChange={onIdChange} />
         <button>중복확인</button>
       </div>
       <div className="pw-box box">
         <span>비밀번호</span>
-        <input type="text" />
+        <input type="text" onChange={onPwChange} />
       </div>
       <button className="btn-signup">회원가입</button>
       <style jsx>{`

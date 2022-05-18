@@ -1,4 +1,4 @@
-const CollegeRankItem = (props) => {
+const CollegeRankItem = (props: any) => {
   return (
     <div className="college-rank-item">
       <span className="college-name">{props.collegeName}</span>
@@ -19,6 +19,12 @@ const CollegeRankItem = (props) => {
             span {
               padding: 0 50px;
               color: #e8630a;
+            }
+          }
+
+          @media (max-width: 780px) {
+            .college-rank-item {
+              height: 45px;
             }
           }
         `}

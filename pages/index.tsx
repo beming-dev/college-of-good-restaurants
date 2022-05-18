@@ -1,4 +1,4 @@
-import react, { useState } from "react";
+import React, { useState } from "react";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
@@ -19,7 +19,7 @@ const Home: NextPage = () => {
     setSigninDisplay("flex");
   };
 
-  let schoolInfo: schoolInfoType[] = [
+  const schoolInfo: schoolInfoType[] = [
     { collegeName: "서울시립대", studentNum: 563 },
     { collegeName: "경희대", studentNum: 321 },
     { collegeName: "중앙대", studentNum: 123 },
@@ -83,9 +83,10 @@ const Home: NextPage = () => {
               display: flex;
               flex-direction: column;
               align-items: center;
+
               .logo {
                 font-family: "Nanum Pen Script";
-                font-size: 4rem;
+                font-size: 6rem;
                 padding-left: 4rem;
                 letter-spacing: 4rem;
               }
@@ -130,6 +131,44 @@ const Home: NextPage = () => {
             span {
               font-size: 17px;
               margin: 5px;
+            }
+          }
+
+          @media (max-width: 780px) {
+            .cover {
+              .content {
+                .logo {
+                  font-size: 4rem;
+                  padding-left: 3rem;
+                  letter-spacing: 3rem;
+                }
+
+                .input-box {
+                  margin: 63px 0;
+                  input {
+                    width: 485px;
+                    height: 45px;
+                    padding: 0 45px;
+                    font-size: 18px;
+                  }
+                  input::placeholder {
+                    font-size: 15px;
+                    text-align: center;
+                  }
+                  .image-wrapper {
+                    position: absolute;
+                    top: 9px;
+                    left: 8px;
+                  }
+                }
+
+                .school-rank {
+                  width: 360px;
+                  height: fit-content;
+                  max-height: 360px;
+                  overflow-y: hidden;
+                }
+              }
             }
           }
         `}
