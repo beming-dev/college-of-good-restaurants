@@ -2,10 +2,8 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import axios from "axios";
+import {useForm} from "react-hook-form";
 
-type change = {
-  (e: React.ChangeEvent<HTMLInputElement>): void;
-};
 type props = {
   signinDisplay: string;
   setSigninDisplay: React.Dispatch<React.SetStateAction<string>>;
@@ -17,7 +15,10 @@ const SignIn = ({ signinDisplay, setSigninDisplay }: props) => {
   const [id, setId] = useState("");
   const [pw, setPw] = useState("");
 
-  const onSubmit = (): void => {
+  const {register, handleSubmit, watch, formState:{errors}} = useForm();
+
+  const onSubmit = (data:any): void => {
+    console.log(data);
     if (id === "") {
       alert("아이디를 입력해주세요");
       return;
@@ -35,36 +36,25 @@ const SignIn = ({ signinDisplay, setSigninDisplay }: props) => {
     });
   };
 
-  const onIdChange: change = (e) => {
-    setId(e.target.value);
-    console.log(e.target.value);
-  };
-
-  const onPwChange: change = (e) => {
-    setPw(e.target.value);
-  };
-
   return (
     <div className="signin">
-      <div className="signin-box">
+      <form className="signin-box" onSubmit={handleSubmit(onSubmit)}>
         <div className="id-field">
           <span>아이디</span>
-          <input type="text" onChange={onIdChange} />
+          <input type="text" {...register("id")}/>
         </div>
         <div className="pw-field">
           <span>비밀번호</span>
-          <input type="text" onChange={onPwChange} />
+          <input type="text" {...register("pw")} />
         </div>
         <Link href="/">
           <a className="id-pw-find">아이디/비밀번호 찾기</a>
         </Link>
-        <button className="btn-sign-in" onClick={onSubmit}>
-          로그인
-        </button>
+        <input type="submit" className="btn-sign-in" value="로그인"/>
         <div className="image-wrapper" onClick={onExitClick}>
           <Image src="/exit.png" alt="exit" width="30px" height="30px" />
         </div>
-      </div>
+      </form>
 
       <style jsx>
         {`

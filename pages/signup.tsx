@@ -1,52 +1,59 @@
 import React, { useState } from "react";
 import type { NextPage } from "next";
+import {useForm, Control} from "react-hook-form";
+import axios from 'axios';
 
-type change = {
-  (e: React.ChangeEvent<HTMLInputElement>): void;
-};
+interface signupForm{
+  mail:string
+  authCode: string
+  id:string
+  pw:string
+}
 
 const Signup: NextPage = () => {
-  const [mailAddress, setMailAddress] = useState("");
-  const [authCode, setAuthCode] = useState("");
-  const [id, setId] = useState("");
-  const [pw, setPw] = useState("");
+  const {register, handleSubmit, watch, formState:{errors}} = useForm<signupForm>();
 
-  const onMailAddressChange: change = (e) => {
-    setMailAddress(e.target.value);
-  };
-  const onAuthCodeChange: change = (e) => {
-    setAuthCode(e.target.value);
-  };
-  const onIdChange: change = (e) => {
-    setId(e.target.value);
-  };
-  const onPwChange: change = (e) => {
-    setPw(e.target.value);
-  };
+  const onSendAuthCode = (data:signupForm) =>{
+    axios({
+      url: `${process.env.SERVER_IP} + user-management/signup/send-auth-code`,
+    })
+  }
+
+  const onCheckAuthCode = (data:signupForm) =>{
+    axios({
+      url: `${process.env.SERVER_IP} + user-management/signup/check-auth-code`,
+    })
+  }
+
+  const onSignupSubmit = (data:signupForm) => {
+  }
 
   return (
     <div className="signup">
       <span className="title">맛집대학 회원가입</span>
-      <div className="mail-box box">
+
+      <form className="mail-box box" onSubmit={handleSubmit(onSendAuthCode)}>
         <span>학교메일주소</span>
-        <input type="text" onChange={onMailAddressChange} />
-        <button>인증코드발송</button>
-      </div>
-      <div className="certificate-box box">
+        <input type="text" {...register("mail")}/>
+        <input type="submit" className='button'value="인증코드전송"/>
+      </form>
+      <form onSubmit={handleSubmit(onCheckAuthCode)} className="certificate-box box">
         <span>인증코드</span>
-        <input type="text" onChange={onAuthCodeChange} />
-        <button>인증코드확인</button>
-      </div>
-      <div className="id-box box">
-        <span>아이디</span>
-        <input type="text" onChange={onIdChange} />
-        <button>중복확인</button>
-      </div>
-      <div className="pw-box box">
-        <span>비밀번호</span>
-        <input type="text" onChange={onPwChange} />
-      </div>
-      <button className="btn-signup">회원가입</button>
+        <input type="text" {...register("authCode")}/>
+        <input type="submit" className='button'value="인증코드확인"/>
+      </form>
+      <form onSubmit={handleSubmit(onSignupSubmit)} className='signup-form'>
+        <div className="id-box box">
+          <span>아이디</span>
+          <input type="text" {...register("id")}/>
+          <input type="submit" className='button'value="중복확인"/>
+        </div>
+        <div className="pw-box box">
+          <span>비밀번호</span>
+          <input type="text" {...register("pw")}/>
+        </div>
+        <button className="btn-signup">회원가입</button>
+      </form>
       <style jsx>{`
         .signup {
           min-height: 100vh;
@@ -74,7 +81,7 @@ const Signup: NextPage = () => {
               border-radius: 3px;
             }
 
-            button {
+            .button {
               width: 100px;
               margin-left: 20px;
               border-radius: 3px;
@@ -83,13 +90,20 @@ const Signup: NextPage = () => {
             }
           }
 
-          .btn-signup {
-            width: 150px;
-            height: 50px;
-            background: white;
-            border: 1px solid #e8630a;
-            border-radius: 10px;
-            margin-top: 50px;
+          .signup-form{
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+
+            .btn-signup {
+              width: 150px;
+              height: 50px;
+              background: white;
+              border: 1px solid #e8630a;
+              border-radius: 10px;
+              margin-top: 50px;
+            }
           }
         }
       `}</style>
