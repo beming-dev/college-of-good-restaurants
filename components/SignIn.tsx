@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import axios from "axios";
 import {useForm} from "react-hook-form";
+
+import {userService} from "../services/user.service";
 
 type props = {
   signinDisplay: string;
@@ -12,28 +13,20 @@ const SignIn = ({ signinDisplay, setSigninDisplay }: props) => {
   const onExitClick = () => {
     setSigninDisplay("none");
   };
-  const [id, setId] = useState("");
-  const [pw, setPw] = useState("");
 
   const {register, handleSubmit, watch, formState:{errors}} = useForm();
 
   const onSubmit = (data:any): void => {
-    console.log(data);
-    if (id === "") {
+    console.log(process.env.NEXT_PUBLIC_SERVER_IP);
+    if (data.id === "") {
       alert("아이디를 입력해주세요");
       return;
     }
-    if (pw === "") {
+    if (data.pw  === "") {
       alert(" 비밀번호를 입력해주세요");
       return;
     }
-    axios({
-      url: process.env.NEXT_PUBLIC_SERVER_IP + "/user-management/login",
-      auth: {
-        username: id,
-        password: pw,
-      },
-    });
+    userService.login(data.id, data.pw);
   };
 
   return (
