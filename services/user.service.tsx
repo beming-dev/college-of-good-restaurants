@@ -17,14 +17,15 @@ interface userService{
 const {publicRuntimeConfig} = getConfig();
 const baseUrl = `${publicRuntimeConfig.apiUrl}/users`;
 
-const userSubject:BehaviorSubject<boolean|null> = new BehaviorSubject(process.browser && JSON.parse(localStorage.getItem('user') || 'false'));
+//타입 문제 있음 string||null
+const userSubject:BehaviorSubject<boolean|null> = new BehaviorSubject(process.browser && JSON.parse(localStorage.getItem('user') || "null"));
 
 const login:loginF = (username, password) => {
     return fetchWrapper.post(`${baseUrl}/authenticate`, {username, password})
     .then(user => {
         userSubject.next(user);
         localStorage.setItem('user', JSON.stringify(user));
-
+        Router.push("/");
         return user;
     })
 }

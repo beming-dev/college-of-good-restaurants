@@ -1,17 +1,28 @@
-import React, { useState } from "react";
+import React from "react";
 import type { NextPage } from "next";
-import {useForm, Control} from "react-hook-form";
+import {useForm} from "react-hook-form";
 import axios from 'axios';
+import {yupResolver} from "@hookform/resolvers/yup";
+import * as yup from "yup"
 
 interface signupForm{
   mail:string
   authCode: string
   id:string
   pw:string
+  nickname:string
 }
 
 const Signup: NextPage = () => {
-  const {register, handleSubmit, watch, formState:{errors}} = useForm<signupForm>();
+  const schema = yup.object().shape({
+    nickname: yup.string().required("nickname is required"),
+    id:yup.string().required("id is required").matches(/^[A-za-z0-9]{5,15}/g, "5~15자 영문, 숫자"),
+    pw:yup.string().required("pw is required").matches(/(?=.*[a-zA-ZS])(?=.*?[#?!@$%^&*-]).{6,24}/, "6~24자 문자와 특수문자"),
+  });
+
+  const {register, handleSubmit, watch, formState:{errors}} = useForm<signupForm>({
+    resolver: yupResolver(schema)
+  });
 
   const onSendAuthCode = (data:signupForm) =>{
     axios({
@@ -26,6 +37,7 @@ const Signup: NextPage = () => {
   }
 
   const onSignupSubmit = (data:signupForm) => {
+    console.log(data);
   }
 
   return (
@@ -37,21 +49,31 @@ const Signup: NextPage = () => {
         <input type="text" {...register("mail")}/>
         <input type="submit" className='button'value="인증코드전송"/>
       </form>
+      <p className='err-message'></p>
       <form onSubmit={handleSubmit(onCheckAuthCode)} className="certificate-box box">
         <span>인증코드</span>
         <input type="text" {...register("authCode")}/>
         <input type="submit" className='button'value="인증코드확인"/>
       </form>
+      <p className='err-message'></p>
       <form onSubmit={handleSubmit(onSignupSubmit)} className='signup-form'>
+        <div className="nickname-box box">
+          <span>닉네임</span>
+          <input type="text" {...register("nickname")}/>
+          <input type="submit" className='button'value="중복확인"/>
+        </div>
+        <p className='err-message'>{errors.nickname?.message}</p>
         <div className="id-box box">
           <span>아이디</span>
           <input type="text" {...register("id")}/>
           <input type="submit" className='button'value="중복확인"/>
         </div>
+        <p className='err-message'>{errors.id?.message}</p>
         <div className="pw-box box">
           <span>비밀번호</span>
           <input type="text" {...register("pw")}/>
         </div>
+        <p className='err-message'>{errors.pw?.message}</p>
         <button className="btn-signup">회원가입</button>
       </form>
       <style jsx>{`
@@ -70,7 +92,6 @@ const Signup: NextPage = () => {
           .box {
             width: 450px;
             display: flex;
-            margin: 20px 0;
             span {
               width: 120px;
             }
@@ -88,6 +109,12 @@ const Signup: NextPage = () => {
               border: none;
               background: #c4c4c4;
             }
+          }
+
+          .err-message{
+            color:red;
+            font-size:13px;
+            margin-bottom:40px;
           }
 
           .signup-form{
