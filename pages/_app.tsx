@@ -24,7 +24,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, []);
 
   const authCheck = (url:string) => {
-    const publicPaths = ['/login', '/', '/signup'];
+    const publicPaths = ['/login', '/', '/signup', '/nearby-restaurant'];
     const path = url.split('?')[0];
     if(!userService.userValue && !publicPaths.includes(path)){
       alert("로그인 후 이용해주세요");

@@ -10,7 +10,7 @@ type getType = (url:string) => Promise<any>
 type postType = (url:string, body:{[id:string]:string}) => Promise<any>
 type putType = (url:string, body:{[id:string]:string}) => Promise<any>
 type deleteType = (url:string) => Promise<any>
-type authHeader = (url:string) => HeadersInit | undefined | {}
+type authHeader = (url:string, data:{[id:string]:string}) => HeadersInit | undefined | {}
 
 interface fetchWrapper{
     get : getType,
@@ -23,7 +23,7 @@ const get:getType = (url) => {
     const requestOptions:RequestInit = {
         method: 'GET',
         credentials: 'include',
-        headers: authHeader(url)
+        headers: authHeader(url, {})
     };
     return fetch(url, requestOptions).then(handleResponse);
 }
@@ -31,9 +31,11 @@ const get:getType = (url) => {
 const post:postType = (url, body) => {
     const requestOptions:RequestInit = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...authHeader(url) },
-        credentials: 'include',
-        body: JSON.stringify(body)
+        headers: { 
+            'Access-Control-Allow-Headers' : "*",
+            'Content-Type': 'application/json', ...authHeader(url, body) 
+        },
+        body: body.username && body.password ? "": JSON.stringify(body)
     };
     return fetch(url, requestOptions).then(handleResponse);
 }
@@ -41,7 +43,7 @@ const post:postType = (url, body) => {
 const put:putType = (url, body) => {
     const requestOptions:RequestInit = {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json', ...authHeader(url) },
+        headers: { 'Content-Type': 'application/json', ...authHeader(url, body) },
         body: JSON.stringify(body)
     };
     return fetch(url, requestOptions).then(handleResponse);    
@@ -51,21 +53,24 @@ const put:putType = (url, body) => {
 const _delete:deleteType = (url) => {
     const requestOptions:RequestInit = {
         method: 'DELETE',
-        headers: authHeader(url)
+        headers: authHeader(url, {})
     };
     return fetch(url, requestOptions).then(handleResponse);
 }
 
 // helper functions
 
-const authHeader:authHeader = (url) => {
+const authHeader:authHeader = (url, data) => {
     // return auth header with jwt if user is logged in and request is to the api url
     const user = userService.userValue;
     const isLoggedIn = user && user.token;
     const isApiUrl = url.startsWith(publicRuntimeConfig.apiUrl);
     if (isLoggedIn && isApiUrl) {
         return { Authorization: `Bearer ${user.token}` };
-    } else {
+    } else if(url.includes("login") && data.username && data.password) {
+        return { Authorization: "Basic "+ window.btoa(data.username+":"+data.password) };
+    }
+    else{
         return {};
     }
 }

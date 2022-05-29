@@ -1,23 +1,26 @@
-import React from "react";
+import React, {useState} from "react";
 import type { NextPage } from "next";
 import {useForm} from "react-hook-form";
-import axios from 'axios';
 import {yupResolver} from "@hookform/resolvers/yup";
-import * as yup from "yup"
+import {fetchWrapper} from "../helpers/fetch-wrapper";
+import * as yup from "yup";
 
 interface signupForm{
   mail:string
   authCode: string
   id:string
   pw:string
-  nickname:string
+  nickname:string,
+  authCodeCheck:boolean
 }
 
 const Signup: NextPage = () => {
+  const [codeChecked, setCodeChecked] = useState(false);
+
   const schema = yup.object().shape({
     nickname: yup.string().required("nickname is required"),
     id:yup.string().required("id is required").matches(/^[A-za-z0-9]{5,15}/g, "5~15자 영문, 숫자"),
-    pw:yup.string().required("pw is required").matches(/(?=.*[a-zA-ZS])(?=.*?[#?!@$%^&*-]).{6,24}/, "6~24자 문자와 특수문자"),
+    pw:yup.string().required("pw is required").matches(/(?=.*[a-zA-ZS])(?=.*?[#?!@$%^&*-]).{6,24}/),
   });
 
   const {register, handleSubmit, watch, formState:{errors}} = useForm<signupForm>({
@@ -25,19 +28,23 @@ const Signup: NextPage = () => {
   });
 
   const onSendAuthCode = (data:signupForm) =>{
-    axios({
-      url: `${process.env.SERVER_IP} + user-management/signup/send-auth-code`,
-    })
+    fetchWrapper.post(`${process.env.SERVER_IP} + user-management/signup/send-auth-code`, {})
   }
 
   const onCheckAuthCode = (data:signupForm) =>{
-    axios({
-      url: `${process.env.SERVER_IP} + user-management/signup/check-auth-code`,
-    })
+    fetchWrapper.post(`${process.env.SERVER_IP} + user-management/signup/check-auth-code`, {}).then(
+      data => {
+        console.log(data);
+        if(data) setCodeChecked(true);
+      }
+    )
   }
 
   const onSignupSubmit = (data:signupForm) => {
-    console.log(data);
+    if(!codeChecked){
+      alert("학교 메일을 인증해주세요.")
+      return;
+    }
   }
 
   return (

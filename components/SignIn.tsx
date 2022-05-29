@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import {useForm} from "react-hook-form";
-
 import {userService} from "../services/user.service";
+import {useForm} from "react-hook-form";
 
 type props = {
   signinDisplay: string;
   setSigninDisplay: React.Dispatch<React.SetStateAction<string>>;
 };
 const SignIn = ({ signinDisplay, setSigninDisplay }: props) => {
+
   const onExitClick = () => {
     setSigninDisplay("none");
   };
@@ -26,6 +26,15 @@ const SignIn = ({ signinDisplay, setSigninDisplay }: props) => {
       alert(" 비밀번호를 입력해주세요");
       return;
     }
+
+    // fetch("http://localhost:8080/user-management/login", {
+    //   method: "POST",
+    //   headers: {
+    //     'Access-Control-Allow-Headers' : "*",
+    //     'Authorization': "Basic "+ window.btoa(data.id+":"+data.pw)
+    //   }
+    // }).then(data => console.log(data));
+
     userService.login(data.id, data.pw);
   };
 
