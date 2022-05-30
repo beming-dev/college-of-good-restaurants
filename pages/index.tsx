@@ -2,10 +2,15 @@ import React from "react";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import { FieldValue, FieldValues, SubmitHandler, useForm } from 'react-hook-form';
-import Router from 'next/router';
+import {
+  FieldValue,
+  FieldValues,
+  SubmitHandler,
+  useForm,
+} from "react-hook-form";
+import Router from "next/router";
 
-import Nav from '../components/Nav';
+import Nav from "../components/Nav";
 import Map from "../components/Map";
 import CollegeRankItem from "../components/CollegeRankItem";
 
@@ -15,7 +20,12 @@ interface schoolInfoType {
 }
 
 const Home: NextPage = () => {
-  const {register, handleSubmit, watch, formState:{errors}} = useForm();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
 
   const schoolInfo: schoolInfoType[] = [
     { collegeName: "서울시립대", studentNum: 563 },
@@ -23,18 +33,17 @@ const Home: NextPage = () => {
     { collegeName: "중앙대", studentNum: 123 },
   ];
 
-
   //대학교 이름인지 유효성 검사 필요
-  const onSearch:SubmitHandler<FieldValues> = (data) => {
-    if(!data.collegeName){
+  const onSearch: SubmitHandler<FieldValues> = (data) => {
+    if (!data.collegeName) {
       alert("검색어를 입력해주세요.");
-    }else{
+    } else {
       Router.push({
-        pathname: '/nearby-restaurant',
-        query: {target: data.collegeName}
-      })
+        pathname: "/nearby-restaurant",
+        query: { target: data.collegeName },
+      });
     }
-  }
+  };
 
   return (
     <div>
@@ -48,7 +57,11 @@ const Home: NextPage = () => {
         <div className="content">
           <span className="logo">맛집대학</span>
           <form className="input-box" onSubmit={handleSubmit(onSearch)}>
-            <input type="text" placeholder="학교이름으로 검색해보세요" {...register("collegeName")}/>
+            <input
+              type="text"
+              placeholder="학교이름으로 검색해보세요"
+              {...register("collegeName")}
+            />
             <div className="image-wrapper">
               <Image src="/search.png" width={30} height={30} alt="search" />
             </div>
@@ -63,7 +76,7 @@ const Home: NextPage = () => {
             ))}
           </div>
         </div>
-        <Nav/>
+        <Nav />
       </div>
       <style jsx>
         {`

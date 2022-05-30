@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import {userService} from "../services/user.service";
-import {useForm} from "react-hook-form";
+import { userService } from "../services/user.service";
+import { useForm } from "react-hook-form";
 
 type props = {
   signinDisplay: string;
@@ -10,20 +10,24 @@ type props = {
 };
 
 const SignIn = ({ signinDisplay, setSigninDisplay }: props) => {
-
   const onExitClick = () => {
     setSigninDisplay("none");
   };
 
-  const {register, handleSubmit, watch, formState:{errors}} = useForm();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
 
-  const onSubmit = (data:any): void => {
+  const onSubmit = (data: any): void => {
     console.log(process.env.NEXT_PUBLIC_SERVER_IP);
     if (data.id === "") {
       alert("아이디를 입력해주세요");
       return;
     }
-    if (data.pw  === "") {
+    if (data.pw === "") {
       alert(" 비밀번호를 입력해주세요");
       return;
     }
@@ -36,7 +40,7 @@ const SignIn = ({ signinDisplay, setSigninDisplay }: props) => {
       <form className="signin-box" onSubmit={handleSubmit(onSubmit)}>
         <div className="id-field">
           <span>아이디</span>
-          <input type="text" {...register("id")}/>
+          <input type="text" {...register("id")} />
         </div>
         <div className="pw-field">
           <span>비밀번호</span>
@@ -45,7 +49,7 @@ const SignIn = ({ signinDisplay, setSigninDisplay }: props) => {
         <Link href="/">
           <a className="id-pw-find">아이디/비밀번호 찾기</a>
         </Link>
-        <input type="submit" className="btn-sign-in" value="로그인"/>
+        <input type="submit" className="btn-sign-in" value="로그인" />
         <div className="image-wrapper" onClick={onExitClick}>
           <Image src="/exit.png" alt="exit" width="30px" height="30px" />
         </div>
