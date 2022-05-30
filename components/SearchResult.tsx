@@ -2,7 +2,11 @@ import React, {useState} from "react";
 import Image from 'next/image';
 import SearchItem from './SearchItem';
 
-const SearchResult = ({resultClose, setResultClose}:any) => {
+type props = {
+    resultClose: boolean;
+    setResultClose: React.Dispatch<React.SetStateAction<boolean>>;
+  };
+const SearchResult = ({resultClose, setResultClose}:props) => {
     const [shopList, setShopList] = useState([]);
     
     const onExitClick = () => {

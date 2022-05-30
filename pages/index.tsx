@@ -2,7 +2,7 @@ import React from "react";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import { useForm } from 'react-hook-form';
+import { FieldValue, FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import Router from 'next/router';
 
 import Nav from '../components/Nav';
@@ -25,7 +25,7 @@ const Home: NextPage = () => {
 
 
   //대학교 이름인지 유효성 검사 필요
-  const onSearch = (data: any):void => {
+  const onSearch:SubmitHandler<FieldValues> = (data) => {
     if(!data.collegeName){
       alert("검색어를 입력해주세요.");
     }else{

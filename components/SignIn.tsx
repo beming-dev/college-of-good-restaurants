@@ -8,6 +8,7 @@ type props = {
   signinDisplay: string;
   setSigninDisplay: React.Dispatch<React.SetStateAction<string>>;
 };
+
 const SignIn = ({ signinDisplay, setSigninDisplay }: props) => {
 
   const onExitClick = () => {
@@ -27,14 +28,6 @@ const SignIn = ({ signinDisplay, setSigninDisplay }: props) => {
       return;
     }
 
-    // fetch("http://localhost:8080/user-management/login", {
-    //   method: "POST",
-    //   headers: {
-    //     'Access-Control-Allow-Headers' : "*",
-    //     'Authorization': "Basic "+ window.btoa(data.id+":"+data.pw)
-    //   }
-    // }).then(data => console.log(data));
-
     userService.login(data.id, data.pw);
   };
 
@@ -47,7 +40,7 @@ const SignIn = ({ signinDisplay, setSigninDisplay }: props) => {
         </div>
         <div className="pw-field">
           <span>비밀번호</span>
-          <input type="text" {...register("pw")} />
+          <input type="password" {...register("pw")} />
         </div>
         <Link href="/">
           <a className="id-pw-find">아이디/비밀번호 찾기</a>

@@ -25,7 +25,6 @@ const nearbyRestaurant = () => {
     //url수정 필요
     const onSubmit = (data:any) => {
         setResultClose(false);
-        console.log(1);
         const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/searchRequest`;
         //fetchWrapper.post(url, data)
     }
@@ -43,6 +42,10 @@ const nearbyRestaurant = () => {
                     <Image src="/hamburger.png" width={30} height={30} alt="hamburger"/>
                 </div>
             </form>
+        </div>
+
+        <div className="plus-img-wrapper">
+            <Image src="/plus.png" width={50} height={50} alt="plus"/>
         </div>
 
         <style jsx>
@@ -83,6 +86,13 @@ const nearbyRestaurant = () => {
                         left:10px;
                     }
                 }
+            }
+
+            .plus-img-wrapper{
+                z-index:3;
+                position:absolute;
+                bottom:10px;
+                right:10px;
             }
         `}
         </style>

@@ -1,4 +1,9 @@
-const CollegeRankItem = (props: any) => {
+type props = {
+  collegeName: string;
+  studentNum: number;
+};
+
+const CollegeRankItem = (props: props) => {
   return (
     <div className="college-rank-item">
       <span className="college-name">{props.collegeName}</span>
