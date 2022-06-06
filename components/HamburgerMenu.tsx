@@ -1,17 +1,25 @@
 import Image from "next/image";
+import { useState } from "react";
 import { userService } from "../services/user.service";
-
+import SignIn from "./SignIn";
+import { useRouter } from "next/router";
 type props = {
   menuClose: boolean;
   setMenuClose: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const HamburgerMenu = ({ menuClose, setMenuClose }: props) => {
+  const [signinDisplay, setSigninDisplay] = useState(false);
+  const router = useRouter();
   const onExitClick = () => {
     setMenuClose(true);
   };
   return (
     <div className="hamburger-menu">
+      <SignIn
+        signinDisplay={signinDisplay}
+        setSigninDisplay={setSigninDisplay}
+      />
       <div className="img-exit-wrapper" onClick={onExitClick}>
         <Image src="/exit-grey.png" width={30} height={30} />
       </div>
@@ -26,11 +34,17 @@ const HamburgerMenu = ({ menuClose, setMenuClose }: props) => {
           </div>
         ) : (
           <div>
-            <span>로그인하세요 {">"}</span>
+            <span className="do-login" onClick={() => setSigninDisplay(true)}>
+              로그인하세요 {">"}
+            </span>
           </div>
         )}
       </div>
       <div className="option">
+        <div className="option-box" onClick={() => router.push("/")}>
+          <Image src="/good.png" width={40} height={40} />
+          <span>메인으로</span>
+        </div>
         <div className="option-box">
           <Image src="/good.png" width={40} height={40} />
           <span>좋아요 목록</span>
@@ -77,6 +91,13 @@ const HamburgerMenu = ({ menuClose, setMenuClose }: props) => {
                 flex-direction: column;
                 justify-content: space-between;
               }
+
+              .do-login {
+                margin-left: 20px;
+              }
+              .do-login:hover {
+                cursor: pointer;
+              }
             }
 
             .option {
@@ -93,6 +114,9 @@ const HamburgerMenu = ({ menuClose, setMenuClose }: props) => {
                 span {
                   margin-left: 20px;
                 }
+              }
+              .option-box:hover {
+                cursor: pointer;
               }
             }
           }

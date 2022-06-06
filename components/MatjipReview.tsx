@@ -21,6 +21,17 @@ const MatjipReview = ({
     watch,
     formState: { errors },
   } = useForm();
+
+  const createReviewData = () => {
+    return {
+      "place-id": searchResult[selected].place_id,
+      "user-id": "",
+      "post-date": "",
+      "post-text": "",
+      rating: "",
+    };
+  };
+
   const onEnrollReview = async (data: any) => {
     if (!userService.user) {
       alert("로그인 후 이용해주세요");
@@ -33,13 +44,7 @@ const MatjipReview = ({
 
         await fetchWrapper.post(
           `${process.env.NEXT_PUBLIC_SERVER_IP}/add-review`,
-          {
-            "place-id": "",
-            "user-id": "",
-            "post-date": "",
-            "post-text": "",
-            rating: "",
-          }
+          createReviewData()
         );
       } catch (err) {
         console.log(err);

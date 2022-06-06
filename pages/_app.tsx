@@ -36,6 +36,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, []);
 
   const authCheck = (url: string) => {
+    console.log(userService.getExp());
     const publicPaths = ["/login", "/", "/signup", "/nearby-restaurant"];
     const path = url.split("?")[0];
     if (!userService.userValue && !publicPaths.includes(path)) {
@@ -45,14 +46,12 @@ function MyApp({ Component, pageProps }: AppProps) {
         pathname: "/",
       });
     } else {
-      if (userService.userValue) {
-        const jwt = userService.userValue.jwt.split(".");
-        const payload: any = JSON.parse(window.atob(jwt[1]));
-        if (payload.exp < Date.now() / 1000) userService.logout();
-      }
+      const exp = userService.getExp();
+      if (exp && exp < Date.now() / 1000) userService.logout();
       setAuthorized(true);
     }
   };
+
   return <Layout>{authorized && <Component {...pageProps} />}</Layout>;
 }
 

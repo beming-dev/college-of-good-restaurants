@@ -5,13 +5,13 @@ import { userService } from "../services/user.service";
 import { useForm } from "react-hook-form";
 
 type props = {
-  signinDisplay: string;
-  setSigninDisplay: React.Dispatch<React.SetStateAction<string>>;
+  signinDisplay: boolean;
+  setSigninDisplay: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const SignIn = ({ signinDisplay, setSigninDisplay }: props) => {
   const onExitClick = () => {
-    setSigninDisplay("none");
+    setSigninDisplay(false);
   };
 
   const {
@@ -65,7 +65,7 @@ const SignIn = ({ signinDisplay, setSigninDisplay }: props) => {
             left: 0;
             z-index: 5;
             background-color: rgba(0, 0, 0, 0.7);
-            display: ${signinDisplay};
+            display: ${signinDisplay ? "flex" : "none"};
             justify-content: center;
             align-items: center;
 

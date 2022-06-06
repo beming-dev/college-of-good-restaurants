@@ -5,10 +5,10 @@ import SignIn from "./SignIn";
 import { userService } from "../services/user.service";
 
 const Nav = () => {
-  const [signinDisplay, setSigninDisplay] = useState("none");
+  const [signinDisplay, setSigninDisplay] = useState(false);
 
   const onSigninClick = () => {
-    setSigninDisplay("flex");
+    setSigninDisplay(true);
   };
   const onLogoutClick = () => {
     userService.logout();
