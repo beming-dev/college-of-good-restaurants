@@ -10,6 +10,7 @@ import * as yup from "yup";
 import HamburgerMenu from "../components/HamburgerMenu";
 import SearchResult from "../components/SearchResult";
 import MatjipRegister from "../components/MatjipRegister";
+import { userService } from "../services/user.service";
 
 const nearbyRestaurant = () => {
   const [resultClose, setResultClose] = useState(true);
@@ -37,6 +38,13 @@ const nearbyRestaurant = () => {
     setResultClose(false);
     const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/searchRequest`;
     //fetchWrapper.post(url, data)
+  };
+  const onClickPlus = () => {
+    if (!userService.userValue) {
+      alert("로그인 후 이용해주세요");
+    } else {
+      setRegisterClose(false);
+    }
   };
 
   return (
@@ -73,7 +81,7 @@ const nearbyRestaurant = () => {
         </form>
       </div>
 
-      <div className="plus-img-wrapper" onClick={() => setRegisterClose(false)}>
+      <div className="plus-img-wrapper" onClick={onClickPlus}>
         <Image src="/plus.png" width={50} height={50} alt="plus" />
       </div>
 
@@ -123,6 +131,9 @@ const nearbyRestaurant = () => {
             position: absolute;
             bottom: 10px;
             right: 10px;
+          }
+          .plus-img-wrapper:hover {
+            cursor: pointer;
           }
         `}
       </style>

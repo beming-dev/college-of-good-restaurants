@@ -2,6 +2,7 @@ import { fetchWrapper } from "../helpers/fetch-wrapper";
 import { SubmitHandler, useForm } from "react-hook-form";
 import _ from "lodash";
 import Image from "next/image";
+import { userService } from "../services/user.service";
 
 const MatjipReview = ({
   searchResult,
@@ -21,30 +22,34 @@ const MatjipReview = ({
     formState: { errors },
   } = useForm();
   const onEnrollReview = async (data: any) => {
-    try {
-      await fetchWrapper.post(
-        `${process.env.NEXT_PUBLIC_SERVER_IP}/add-place`,
-        searchResult[selected]
-      );
+    if (!userService.user) {
+      alert("로그인 후 이용해주세요");
+    } else {
+      try {
+        await fetchWrapper.post(
+          `${process.env.NEXT_PUBLIC_SERVER_IP}/add-place`,
+          searchResult[selected]
+        );
 
-      await fetchWrapper.post(
-        `${process.env.NEXT_PUBLIC_SERVER_IP}/add-review`,
-        {
-          "place-id": "",
-          "user-id": "",
-          "post-date": "",
-          "post-text": "",
-          rating: "",
-        }
-      );
-    } catch (err) {
-      console.log(err);
+        await fetchWrapper.post(
+          `${process.env.NEXT_PUBLIC_SERVER_IP}/add-review`,
+          {
+            "place-id": "",
+            "user-id": "",
+            "post-date": "",
+            "post-text": "",
+            rating: "",
+          }
+        );
+      } catch (err) {
+        console.log(err);
+      }
+      window.alert("등록이 완료되었습니다.");
+      setSearchResult([]);
+      setSelected(0);
+      setPageConvert(false);
+      setRegisterClose(true);
     }
-    window.alert("등록이 완료되었습니다.");
-    setSearchResult([]);
-    setSelected(0);
-    setPageConvert(false);
-    setRegisterClose(true);
   };
 
   const onConvert = (dir: number) => {
@@ -73,12 +78,20 @@ const MatjipReview = ({
       </div>
       <div className="rate">
         {_.range(star).map((v) => (
-          <div className="star-img-wrapper" onClick={() => setStar(v + 1)}>
+          <div
+            className="star-img-wrapper"
+            onClick={() => setStar(v + 1)}
+            key={v}
+          >
             <Image src="/star-yellow.png" width="30px" height="30px" />
           </div>
         ))}
         {_.range(star, 5).map((v) => (
-          <div className="star-img-wrapper" onClick={() => setStar(v + 1)}>
+          <div
+            className="star-img-wrapper"
+            onClick={() => setStar(v + 1)}
+            key={v}
+          >
             <Image src="/star.png" width="30px" height="30px" />
           </div>
         ))}

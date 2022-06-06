@@ -6,6 +6,12 @@ import { useState, useEffect } from "react";
 
 import { userService } from "../services/user.service";
 
+interface payload {
+  username: string;
+  exp: number;
+  college_id: number;
+  iat: number;
+}
 function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
     const s = localStorage.getItem("user");
@@ -39,6 +45,11 @@ function MyApp({ Component, pageProps }: AppProps) {
         pathname: "/",
       });
     } else {
+      if (userService.userValue) {
+        const jwt = userService.userValue.jwt.split(".");
+        const payload: any = JSON.parse(window.atob(jwt[1]));
+        if (payload.exp < Date.now() / 1000) userService.logout();
+      }
       setAuthorized(true);
     }
   };
