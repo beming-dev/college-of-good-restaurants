@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Map from "../components/Map";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -6,11 +7,15 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { fetchWrapper } from "../helpers/fetch-wrapper";
 import * as yup from "yup";
 
+import HamburgerMenu from "../components/HamburgerMenu";
 import SearchResult from "../components/SearchResult";
-import { useState } from "react";
+import MatjipRegister from "../components/MatjipRegister";
 
 const nearbyRestaurant = () => {
-  const [resultClose, setResultClose] = useState(false);
+  const [resultClose, setResultClose] = useState(true);
+  const [menuClose, setMenuClose] = useState(true);
+  const [registerClose, setRegisterClose] = useState(true);
+
   const router = useRouter();
   const { target } = router.query;
 
@@ -37,8 +42,16 @@ const nearbyRestaurant = () => {
   return (
     <div>
       <Map />
-      <SearchResult resultClose={resultClose} setResultClose={setResultClose} />
+      <MatjipRegister
+        registerClose={registerClose}
+        setRegisterClose={setRegisterClose}
+      />
+      <HamburgerMenu menuClose={menuClose} setMenuClose={setMenuClose} />
       <div className="content">
+        <SearchResult
+          resultClose={resultClose}
+          setResultClose={setResultClose}
+        />
         <form className="input-box" onSubmit={handleSubmit(onSubmit)}>
           <input
             type="text"
@@ -49,7 +62,7 @@ const nearbyRestaurant = () => {
           <button className="ico-search">
             <Image src="/search.png" width={30} height={30} alt="search" />
           </button>
-          <div className="ico-hamburger">
+          <div className="ico-hamburger" onClick={() => setMenuClose(false)}>
             <Image
               src="/hamburger.png"
               width={30}
@@ -60,7 +73,7 @@ const nearbyRestaurant = () => {
         </form>
       </div>
 
-      <div className="plus-img-wrapper">
+      <div className="plus-img-wrapper" onClick={() => setRegisterClose(false)}>
         <Image src="/plus.png" width={50} height={50} alt="plus" />
       </div>
 
@@ -73,6 +86,7 @@ const nearbyRestaurant = () => {
             left: 0;
 
             .input-box {
+              z-index: 10;
               margin: 10px 20px;
               position: relative;
 

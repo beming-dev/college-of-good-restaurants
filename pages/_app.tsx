@@ -7,6 +7,12 @@ import { useState, useEffect } from "react";
 import { userService } from "../services/user.service";
 
 function MyApp({ Component, pageProps }: AppProps) {
+  useEffect(() => {
+    const s = localStorage.getItem("user");
+    if (s) {
+      const a = JSON.parse(s).jwt.split(".", 3);
+    }
+  }, []);
   const router = useRouter();
   const [authorized, setAuthorized] = useState(false);
 
