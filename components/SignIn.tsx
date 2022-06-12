@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { userService } from "../services/user.service";
 import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchWrapper } from "../helpers/fetch-wrapper";
+import getConfig from "next/config";
+import { useRouter } from "next/router";
+import { login } from "../store/modules/user";
 
 type props = {
   signinDisplay: boolean;
@@ -10,6 +14,10 @@ type props = {
 };
 
 const SignIn = ({ signinDisplay, setSigninDisplay }: props) => {
+  const logUser = useSelector((state: any) => state.user);
+  const router = useRouter();
+  const { publicRuntimeConfig } = getConfig();
+  const dispatch = useDispatch();
   const onExitClick = () => {
     setSigninDisplay(false);
   };
@@ -22,7 +30,6 @@ const SignIn = ({ signinDisplay, setSigninDisplay }: props) => {
   } = useForm();
 
   const onSubmit = (data: any): void => {
-    console.log(process.env.NEXT_PUBLIC_SERVER_IP);
     if (data.id === "") {
       alert("아이디를 입력해주세요");
       return;
@@ -32,7 +39,19 @@ const SignIn = ({ signinDisplay, setSigninDisplay }: props) => {
       return;
     }
 
-    userService.login(data.id, data.pw);
+    const baseUrl = `${publicRuntimeConfig.apiUrl}`;
+    fetchWrapper
+      .post(`${baseUrl}/user-management/login`, {
+        username: data.id,
+        password: data.pw,
+        user: logUser.user,
+      })
+      .then((user) => {
+        dispatch(login(user));
+        localStorage.setItem("user", JSON.stringify(user));
+        router.push("/");
+        return user;
+      });
   };
 
   return (

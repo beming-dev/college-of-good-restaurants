@@ -1,17 +1,23 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import SignIn from "./SignIn";
-
-import { userService } from "../services/user.service";
+import { useSelector, useDispatch } from "react-redux";
+import { useRouter } from "next/router";
+import { logout } from "../store/modules/user";
 
 const Nav = () => {
   const [signinDisplay, setSigninDisplay] = useState(false);
+  const user = useSelector((state: any) => state.user);
+  const dispatch = useDispatch();
+  const router = useRouter();
 
   const onSigninClick = () => {
     setSigninDisplay(true);
   };
   const onLogoutClick = () => {
-    userService.logout();
+    dispatch(logout());
+    localStorage.removeItem("user");
+    router.push("/");
   };
   return (
     <div>
@@ -19,7 +25,7 @@ const Nav = () => {
         signinDisplay={signinDisplay}
         setSigninDisplay={setSigninDisplay}
       />
-      {userService.userValue ? (
+      {user.user ? (
         <div className="sign">
           <span className="logout" onClick={onLogoutClick}>
             로그아웃

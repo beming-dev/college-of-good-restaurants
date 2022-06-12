@@ -1,8 +1,6 @@
 import axios from "axios";
 import getConfig from "next/config";
 
-import { userService } from "../services/user.service";
-
 const { publicRuntimeConfig } = getConfig();
 
 //타입 수정 필요
@@ -34,6 +32,7 @@ const get: getType = (url) => {
 const post: postType = (url, body) => {
   const requestOptions: RequestInit = {
     method: "POST",
+    credentials: "include",
     headers: {
       "Access-Control-Allow-Headers": "*",
       "Content-Type": "application/json",
@@ -66,7 +65,7 @@ const _delete: deleteType = (url) => {
 
 const authHeader: authHeader = (url, data) => {
   // return auth header with jwt if user is logged in and request is to the api url
-  const user = userService.userValue;
+  const user: any = data.user;
   const isLoggedIn = user && user.token;
   const isApiUrl = url.startsWith(publicRuntimeConfig.apiUrl);
   if (isLoggedIn && isApiUrl) {
@@ -92,10 +91,10 @@ const handleResponse: handleResponseType = (response) => {
     const data = text && JSON.parse(text);
 
     if (!response.ok) {
-      if ([401, 403].includes(response.status) && userService.userValue) {
-        // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
-        userService.logout();
-      }
+      // if ([401, 403].includes(response.status) && userService.userValue) {
+      //   // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
+      //   userService.logout();
+      // }
 
       const error = (data && data.message) || response.statusText;
       return Promise.reject(error);

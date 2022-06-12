@@ -2,19 +2,25 @@ import { fetchWrapper } from "../helpers/fetch-wrapper";
 import { SubmitHandler, useForm } from "react-hook-form";
 import _ from "lodash";
 import Image from "next/image";
-import { userService } from "../services/user.service";
+import { useSelector } from "react-redux";
+import { Cheerio } from "cheerio";
+import axios from "axios";
 
-const MatjipReview = ({
-  searchResult,
-  setSearchResult,
-  selected,
-  setSelected,
-  pageConvert,
-  setPageConvert,
-  setRegisterClose,
-  star,
-  setStar,
-}: any) => {
+const MatjipReview = (props: any) => {
+  const {
+    html,
+    searchResult,
+    setSearchResult,
+    selected,
+    setSelected,
+    pageConvert,
+    setPageConvert,
+    setRegisterClose,
+    star,
+    setStar,
+  } = props;
+  let user = useSelector((state: any) => state.user);
+  user = user.user;
   const {
     register,
     handleSubmit,
@@ -32,8 +38,18 @@ const MatjipReview = ({
     };
   };
 
+  const getImageFromKakao = () => {
+    if (searchResult[selected]) {
+      const url = `http://place.map.kakao.com/8152575`;
+      console.log(url);
+      fetchWrapper.post(url, {}).then((html) => console.log(html));
+    }
+  };
+
+  getImageFromKakao();
+
   const onEnrollReview = async (data: any) => {
-    if (!userService.user) {
+    if (!user) {
       alert("로그인 후 이용해주세요");
     } else {
       try {

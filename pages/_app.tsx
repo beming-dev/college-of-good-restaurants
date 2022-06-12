@@ -3,8 +3,8 @@ import Layout from "../components/Layout";
 import "../styles/global.scss";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-
-import { userService } from "../services/user.service";
+import { wrapper } from "../store";
+import { useSelector } from "react-redux";
 
 interface payload {
   username: string;
@@ -13,6 +13,7 @@ interface payload {
   iat: number;
 }
 function MyApp({ Component, pageProps }: AppProps) {
+  const user = useSelector((state: any) => state.user);
   useEffect(() => {
     const s = localStorage.getItem("user");
     if (s) {
@@ -36,18 +37,17 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, []);
 
   const authCheck = (url: string) => {
-    console.log(userService.getExp());
     const publicPaths = ["/login", "/", "/signup", "/nearby-restaurant"];
     const path = url.split("?")[0];
-    if (!userService.userValue && !publicPaths.includes(path)) {
+    if (!user.user && !publicPaths.includes(path)) {
       alert("로그인 후 이용해주세요");
       setAuthorized(false);
       router.push({
         pathname: "/",
       });
     } else {
-      const exp = userService.getExp();
-      if (exp && exp < Date.now() / 1000) userService.logout();
+      // const exp = userService.getExp();
+      // if (exp && exp < Date.now() / 1000) userService.logout();
       setAuthorized(true);
     }
   };
@@ -55,4 +55,4 @@ function MyApp({ Component, pageProps }: AppProps) {
   return <Layout>{authorized && <Component {...pageProps} />}</Layout>;
 }
 
-export default MyApp;
+export default wrapper.withRedux(MyApp);

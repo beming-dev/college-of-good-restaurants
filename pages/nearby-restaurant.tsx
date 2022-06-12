@@ -4,15 +4,16 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { fetchWrapper } from "../helpers/fetch-wrapper";
 import * as yup from "yup";
+import { useSelector } from "react-redux";
 
 import HamburgerMenu from "../components/HamburgerMenu";
 import SearchResult from "../components/SearchResult";
 import MatjipRegister from "../components/MatjipRegister";
-import { userService } from "../services/user.service";
 
 const nearbyRestaurant = () => {
+  let user = useSelector((state: any) => state.user);
+  user = user.user;
   const [resultClose, setResultClose] = useState(true);
   const [menuClose, setMenuClose] = useState(true);
   const [registerClose, setRegisterClose] = useState(true);
@@ -40,7 +41,7 @@ const nearbyRestaurant = () => {
     //fetchWrapper.post(url, data)
   };
   const onClickPlus = () => {
-    if (!userService.userValue) {
+    if (!user) {
       alert("로그인 후 이용해주세요");
     } else {
       setRegisterClose(false);

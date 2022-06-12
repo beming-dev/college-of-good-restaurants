@@ -21,7 +21,6 @@ const MatjipSearch = ({
   } = useForm();
 
   const onSearchComplete = (data: any) => {
-    console.log(data);
     setSearchResult(data);
   };
 

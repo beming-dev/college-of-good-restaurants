@@ -8,7 +8,7 @@ import {
   SubmitHandler,
   useForm,
 } from "react-hook-form";
-import Router from "next/router";
+import { useRouter } from "next/router";
 
 import Nav from "../components/Nav";
 import Map from "../components/Map";
@@ -20,6 +20,7 @@ interface schoolInfoType {
 }
 
 const Home: NextPage = () => {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -38,7 +39,7 @@ const Home: NextPage = () => {
     if (!data.collegeName) {
       alert("검색어를 입력해주세요.");
     } else {
-      Router.push({
+      router.push({
         pathname: "/nearby-restaurant",
         query: { target: data.collegeName },
       });

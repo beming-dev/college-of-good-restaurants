@@ -52,7 +52,6 @@ const Signup: NextPage = () => {
         {}
       )
       .then((data) => {
-        console.log(data);
         if (data) setCodeChecked(true);
       });
   };
