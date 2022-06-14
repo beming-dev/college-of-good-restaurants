@@ -18,6 +18,7 @@ const SignIn = ({ signinDisplay, setSigninDisplay }: props) => {
   const router = useRouter();
   const { publicRuntimeConfig } = getConfig();
   const dispatch = useDispatch();
+
   const onExitClick = () => {
     setSigninDisplay(false);
   };
@@ -48,7 +49,7 @@ const SignIn = ({ signinDisplay, setSigninDisplay }: props) => {
       })
       .then((user) => {
         dispatch(login(user));
-        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("user", JSON.stringify(user.jwt));
         router.push("/");
         return user;
       });

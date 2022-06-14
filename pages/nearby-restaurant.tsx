@@ -13,13 +13,10 @@ import MatjipRegister from "../components/MatjipRegister";
 
 const nearbyRestaurant = () => {
   let user = useSelector((state: any) => state.user);
-  user = user.user;
+
   const [resultClose, setResultClose] = useState(true);
   const [menuClose, setMenuClose] = useState(true);
   const [registerClose, setRegisterClose] = useState(true);
-
-  const router = useRouter();
-  const { target } = router.query;
 
   const schema = yup.object().shape({
     searchTarget: yup.string().required(),
@@ -41,7 +38,7 @@ const nearbyRestaurant = () => {
     //fetchWrapper.post(url, data)
   };
   const onClickPlus = () => {
-    if (!user) {
+    if (!user.user) {
       alert("로그인 후 이용해주세요");
     } else {
       setRegisterClose(false);

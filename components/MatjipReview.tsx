@@ -3,12 +3,9 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import _ from "lodash";
 import Image from "next/image";
 import { useSelector } from "react-redux";
-import { Cheerio } from "cheerio";
-import axios from "axios";
 
 const MatjipReview = (props: any) => {
   const {
-    html,
     searchResult,
     setSearchResult,
     selected,

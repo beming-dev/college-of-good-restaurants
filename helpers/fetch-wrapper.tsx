@@ -32,7 +32,6 @@ const get: getType = (url) => {
 const post: postType = (url, body) => {
   const requestOptions: RequestInit = {
     method: "POST",
-    credentials: "include",
     headers: {
       "Access-Control-Allow-Headers": "*",
       "Content-Type": "application/json",

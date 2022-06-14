@@ -1,6 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+interface userState {
+  user: string | null;
+}
+
+const initialState: userState = {
   user: process.browser && JSON.parse(localStorage.getItem("user") || "null"),
 };
 
@@ -9,7 +13,7 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     login: (state, action) => {
-      state.user = action.payload;
+      state.user = action.payload.jwt;
     },
     logout: (state) => {
       state.user = null;

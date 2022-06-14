@@ -4,22 +4,13 @@ import "../styles/global.scss";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { wrapper } from "../store";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../store/modules/user";
+import { getJwtExp } from "../lib/util";
 
-interface payload {
-  username: string;
-  exp: number;
-  college_id: number;
-  iat: number;
-}
 function MyApp({ Component, pageProps }: AppProps) {
   const user = useSelector((state: any) => state.user);
-  useEffect(() => {
-    const s = localStorage.getItem("user");
-    if (s) {
-      const a = JSON.parse(s).jwt.split(".", 3);
-    }
-  }, []);
+  const dispatch = useDispatch();
   const router = useRouter();
   const [authorized, setAuthorized] = useState(false);
 
@@ -46,8 +37,10 @@ function MyApp({ Component, pageProps }: AppProps) {
         pathname: "/",
       });
     } else {
-      // const exp = userService.getExp();
-      // if (exp && exp < Date.now() / 1000) userService.logout();
+      if (user.user) {
+        const exp = getJwtExp(user.user);
+        if (exp && exp < Date.now() / 1000) dispatch(logout());
+      }
       setAuthorized(true);
     }
   };
