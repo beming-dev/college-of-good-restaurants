@@ -3,6 +3,9 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import _ from "lodash";
 import Image from "next/image";
 import { useSelector } from "react-redux";
+import { useState } from "react";
+import { getJwtUsername, toStringByFormatting } from "../lib/util";
+import axios from "axios";
 
 const MatjipReview = (props: any) => {
   const {
@@ -16,8 +19,13 @@ const MatjipReview = (props: any) => {
     star,
     setStar,
   } = props;
+
+  const [loadedImg, setLoadedImg] = useState<any>({
+    imagePreviewUrl: "",
+    imageBlob: null,
+  });
+
   let user = useSelector((state: any) => state.user);
-  user = user.user;
   const {
     register,
     handleSubmit,
@@ -25,39 +33,49 @@ const MatjipReview = (props: any) => {
     formState: { errors },
   } = useForm();
 
-  const createReviewData = () => {
+  const createReviewData = (data: any) => {
     return {
       "place-id": searchResult[selected].place_id,
-      "user-id": "",
-      "post-date": "",
-      "post-text": "",
-      rating: "",
+      "user-id": getJwtUsername(user.user),
+      "post-date": toStringByFormatting(Date.now()),
+      "post-text": data.reviewDes,
+      rating: star,
     };
   };
 
-  const getImageFromKakao = () => {
-    if (searchResult[selected]) {
-      const url = `http://place.map.kakao.com/8152575`;
-      console.log(url);
-      fetchWrapper.post(url, {}).then((html) => console.log(html));
-    }
-  };
+  // const getImageFromKakao = async () => {
+  //   if (searchResult[selected]) {
+  //     const url = `/api/kakaomap/?id=${searchResult[selected].id}`;
+  //     const resp = await axios({
+  //       method: "POST",
+  //       url: url,
+  //       withCredentials: true,
+  //     });
+  //     const $ = cheerio.load(resp.data);
+  //     const elements = $("#kakaoIndex");
+  //     elements.each((idx: any, el: any) => {
+  //       // ❺ text() 메서드를 사용하기 위해 Node 객체인 el을 $로 감싸서 cheerio 객체로 변환
+  //     });
+  //   }
+  // };
 
-  getImageFromKakao();
+  // getImageFromKakao();
 
   const onEnrollReview = async (data: any) => {
-    if (!user) {
+    const resp = axios({
+      method: "POST",
+      url: "/api/uploadImg",
+      withCredentials: true,
+      data: { img: loadedImg.imagePreviewUrl },
+    });
+
+    if (!user.user) {
       alert("로그인 후 이용해주세요");
     } else {
       try {
         await fetchWrapper.post(
-          `${process.env.NEXT_PUBLIC_SERVER_IP}/add-place`,
-          searchResult[selected]
-        );
-
-        await fetchWrapper.post(
           `${process.env.NEXT_PUBLIC_SERVER_IP}/add-review`,
-          createReviewData()
+          createReviewData(data)
         );
       } catch (err) {
         console.log(err);
@@ -78,6 +96,17 @@ const MatjipReview = (props: any) => {
     }
   };
 
+  let reader = new FileReader();
+  const onImgChange = (e: any) => {
+    const file = e.target.files[0];
+    if (file) {
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        setLoadedImg({ imagePreviewUrl: reader.result, imageBlob: file });
+      };
+    }
+  };
+
   return (
     <form className="matjip-review" onSubmit={handleSubmit(onEnrollReview)}>
       <div className="storeInfo">
@@ -93,6 +122,19 @@ const MatjipReview = (props: any) => {
               : "no"}
           </span>
         </div>
+      </div>
+      <div className="img-upload">
+        <input
+          type="file"
+          name="chooseFile"
+          accept="image/*"
+          onChange={onImgChange}
+        />
+        {loadedImg.imagePreviewUrl ? (
+          <Image src={loadedImg.imagePreviewUrl} width="40px" height="40px" />
+        ) : (
+          <></>
+        )}
       </div>
       <div className="rate">
         {_.range(star).map((v) => (
@@ -116,6 +158,7 @@ const MatjipReview = (props: any) => {
       </div>
       <input
         type="text"
+        autoComplete="off"
         className="des-review"
         {...register("reviewDes")}
       ></input>
@@ -145,6 +188,12 @@ const MatjipReview = (props: any) => {
                 display: flex;
                 flex-direction: column;
               }
+            }
+
+            .img-upload {
+              display: flex;
+              justify-content: center;
+              align-items: center;
             }
 
             .rate {

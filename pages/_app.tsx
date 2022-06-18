@@ -39,7 +39,11 @@ function MyApp({ Component, pageProps }: AppProps) {
     } else {
       if (user.user) {
         const exp = getJwtExp(user.user);
-        if (exp && exp < Date.now() / 1000) dispatch(logout());
+        if (exp && exp < Date.now() / 1000) {
+          dispatch(logout());
+          localStorage.removeItem("user");
+          router.push("/");
+        }
       }
       setAuthorized(true);
     }

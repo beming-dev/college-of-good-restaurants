@@ -47,8 +47,8 @@ const SignIn = ({ signinDisplay, setSigninDisplay }: props) => {
         password: data.pw,
         user: logUser.user,
       })
-      .then((user) => {
-        dispatch(login(user));
+      .then(async (user) => {
+        await dispatch(login(user));
         localStorage.setItem("user", JSON.stringify(user.jwt));
         router.push("/");
         return user;

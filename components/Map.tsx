@@ -6,7 +6,7 @@ declare global {
   }
 }
 
-const Map = () => {
+const Map = ({ marker }: any) => {
   const [mapLoaded, setMapLoaded] = useState(false);
 
   useEffect(() => {

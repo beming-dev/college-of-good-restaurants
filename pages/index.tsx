@@ -18,7 +18,7 @@ import { createFuzzyMatcher } from "../lib/util";
 
 interface collegeInfoType {
   collegeName: string;
-  studentNum: number;
+  numberOfStudents: number;
 }
 interface props {
   college: collegeInfoType[];
@@ -74,6 +74,7 @@ const Home: NextPage<props> = ({ college }) => {
               placeholder="학교이름으로 검색해보세요"
               {...register("collegeName")}
               onChange={onSearchChange}
+              autoComplete="off"
             />
             <div className="image-wrapper">
               <Image src="/search.png" width={30} height={30} alt="search" />
@@ -85,7 +86,7 @@ const Home: NextPage<props> = ({ college }) => {
                 i < 8 && (
                   <CollegeRankItem
                     collegeName={info.collegeName}
-                    studentNum={info.studentNum}
+                    studentNum={info.numberOfStudents}
                     key={i}
                   />
                 )
@@ -199,9 +200,8 @@ const Home: NextPage<props> = ({ college }) => {
 
 export async function getServerSideProps(ctx: any) {
   const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/common/college-student-count`;
-  let data;
-  await fetchWrapper.post(url, {}).then((d) => (data = d));
+  let resp: any = await fetchWrapper.post(url, {});
 
-  return { props: { college: [] } };
+  return { props: { college: resp } };
 }
 export default Home;

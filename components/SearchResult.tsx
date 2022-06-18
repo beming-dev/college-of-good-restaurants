@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import SearchItem from "./SearchItem";
 
@@ -7,8 +7,25 @@ type props = {
   setResultClose: React.Dispatch<React.SetStateAction<boolean>>;
 };
 const SearchResult = ({ resultClose, setResultClose }: props) => {
-  const [storeList, setStoreList] = useState([]);
+  const [storeList, setStoreList] = useState([
+    {
+      category_name: "테마파크",
+      kakao_id: "22225498",
+      phone: "0507-1352-1401",
+      place_name: "산토끼노래동산",
+      place_url: "http://place.map.kakao.com/22225498",
+      road_address_name: "경남 창녕군 이방면 이방로 623",
+      x: "128.383585226179",
+      y: "35.5777087822771",
+    },
+  ]);
 
+  useEffect(() => {
+    storeList.map((store) => {
+      const markerPos = new window.kakao.maps.LatLng(store.x, store.y);
+      const marker = new window.kakao.maps.Marker({ position: markerPos });
+    });
+  }, [storeList]);
   const onExitClick = () => {
     setResultClose(true);
   };
@@ -25,7 +42,7 @@ const SearchResult = ({ resultClose, setResultClose }: props) => {
         {storeList.length == 0 ? (
           <span>no result</span>
         ) : (
-          storeList.map((item) => <SearchItem />)
+          storeList.map((item) => <SearchItem item={item} />)
         )}
       </div>
       <style jsx>
