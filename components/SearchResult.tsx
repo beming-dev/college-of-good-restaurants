@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import SearchItem from "./SearchItem";
+import { useSelector } from "react-redux";
 
 type props = {
   resultClose: boolean;
   setResultClose: React.Dispatch<React.SetStateAction<boolean>>;
 };
 const SearchResult = ({ resultClose, setResultClose }: props) => {
-  const [storeList, setStoreList] = useState([
+  const map = useSelector((state): any => state.map);
+  const [storeList, setStoreList] = useState<any>([
     {
       category_name: "테마파크",
       kakao_id: "22225498",
@@ -21,11 +23,18 @@ const SearchResult = ({ resultClose, setResultClose }: props) => {
   ]);
 
   useEffect(() => {
-    storeList.map((store) => {
-      const markerPos = new window.kakao.maps.LatLng(store.x, store.y);
-      const marker = new window.kakao.maps.Marker({ position: markerPos });
-    });
+    if (map.map) {
+      storeList.map((store: any) => {
+        console.log(store.x);
+        console.log(store.y);
+        const marker = new window.kakao.maps.Marker({
+          position: new window.kakao.maps.LatLng(store.y, store.x),
+        });
+        marker.setMap(map.map);
+      });
+    }
   }, [storeList]);
+
   const onExitClick = () => {
     setResultClose(true);
   };
@@ -42,7 +51,7 @@ const SearchResult = ({ resultClose, setResultClose }: props) => {
         {storeList.length == 0 ? (
           <span>no result</span>
         ) : (
-          storeList.map((item) => <SearchItem item={item} />)
+          storeList.map((item, i) => <SearchItem item={item} key={i} />)
         )}
       </div>
       <style jsx>

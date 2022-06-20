@@ -5,7 +5,10 @@ import reducer from "./modules";
 const makeStore = (context: any) =>
   configureStore({
     reducer,
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: false,
+      }),
     devTools: true,
   });
 

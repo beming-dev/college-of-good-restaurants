@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { setMap } from "../store/modules/map";
 
 declare global {
   interface Window {
@@ -6,8 +8,9 @@ declare global {
   }
 }
 
-const Map = ({ marker }: any) => {
+const Map = () => {
   const [mapLoaded, setMapLoaded] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -26,7 +29,7 @@ const Map = ({ marker }: any) => {
         level: 3,
       };
 
-      new window.kakao.maps.Map(container, options);
+      dispatch(setMap(new window.kakao.maps.Map(container, options)));
     });
   }, [mapLoaded]);
 

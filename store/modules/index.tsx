@@ -2,6 +2,7 @@ import { combineReducers } from "@reduxjs/toolkit";
 import { HYDRATE } from "next-redux-wrapper";
 
 import user from "./user";
+import map from "./map";
 
 const reducer = (state: any, action: any) => {
   if (action.type === HYDRATE) {
@@ -12,6 +13,7 @@ const reducer = (state: any, action: any) => {
   }
   return combineReducers({
     user,
+    map,
   })(state, action);
 };
 

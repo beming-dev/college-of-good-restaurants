@@ -62,12 +62,12 @@ const MatjipReview = (props: any) => {
   // getImageFromKakao();
 
   const onEnrollReview = async (data: any) => {
-    const resp = axios({
+    const resp = await axios({
       method: "POST",
       url: "/api/uploadImg",
       withCredentials: true,
       data: { img: loadedImg.imagePreviewUrl },
-    });
+    }).then((data) => console.log(data));
 
     if (!user.user) {
       alert("로그인 후 이용해주세요");
