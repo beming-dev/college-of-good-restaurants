@@ -133,6 +133,44 @@ const nearbyRestaurant = () => {
           .plus-img-wrapper:hover {
             cursor: pointer;
           }
+
+          @media (max-width: 780px) {
+            .content {
+              .input-box {
+                margin: 10px 20px;
+                position: relative;
+
+                input {
+                  padding: 0 50px;
+                }
+
+                .search {
+                  width: 200px;
+                  height: 40px;
+                  border-radius: 10px;
+                }
+              }
+            }
+          }
+
+          @media (max-width: 480px) {
+            .content {
+              .input-box {
+                margin: 10px 20px;
+                position: relative;
+
+                input {
+                  padding: 0 45px;
+                }
+
+                .search {
+                  width: 120px;
+                  height: 40px;
+                  border-radius: 10px;
+                }
+              }
+            }
+          }
         `}
       </style>
     </div>

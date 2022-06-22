@@ -123,6 +123,59 @@ const HamburgerMenu = ({ menuClose, setMenuClose }: props) => {
               }
             }
           }
+
+          @media (max-width: 780px) {
+            .hamburger-menu {
+              position: absolute;
+              top: 0;
+              left: ${menuClose ? -350 : 0}px;
+              width: 300px;
+              padding: 0 25px;
+
+              .user {
+                width: 100%;
+                height: 70px;
+                padding: 0 10px;
+                .user-info {
+                  height: 60%;
+                  margin-left: 20px;
+                }
+              }
+            }
+          }
+
+          @media (max-width: 480px) {
+            .hamburger-menu {
+              position: absolute;
+              top: 0;
+              left: ${menuClose ? -100 : 0}vw;
+              width: 100vw;
+              padding: 0 0;
+
+              .user {
+                width: calc(100% - 20px);
+                height: 70px;
+                padding: 0 10px;
+                .user-info {
+                  height: 60%;
+                  margin-left: 20px;
+                }
+              }
+
+              .option {
+                border-top: 1px solid #f98600;
+                border-bottom: 1px solid #f98600;
+                width: 100%;
+                .option-box {
+                  width: calc(100% - 20px);
+                  height: 70px;
+                  display: flex;
+                  align-items: center;
+                  padding: 0 10px;
+                }
+              }
+            }
+          }
         `}
       </style>
     </div>

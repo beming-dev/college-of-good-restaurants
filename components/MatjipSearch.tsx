@@ -79,14 +79,15 @@ const MatjipSearch = ({
             align-items: center;
             position: relative;
             top: 0;
-            left: ${pageConvert ? -800 : 0}px;
+            left: ${pageConvert ? -100 : 0}%;
             transition-duration: 1s;
 
             form {
+              width: 70%;
               margin-bottom: 50px;
               position: relative;
               .search {
-                width: 500px;
+                width: calc(100% - 40px);
                 height: 40px;
                 padding: 0px 20px;
                 border-radius: 10px;
@@ -122,11 +123,40 @@ const MatjipSearch = ({
             }
 
             .btn-register {
+              transition-duration: 0.5s;
               width: 100px;
               height: 50px;
               border: 1px solid #f98600;
               background-color: white;
               margin-top: 10px;
+              border-radius: 5px;
+            }
+            .btn-register:hover {
+              background-color: #f98600;
+              color: white;
+            }
+          }
+
+          @media (max-width: 930px) {
+            .matjip-search {
+              height: 100%;
+              form {
+                margin-bottom: 30px;
+              }
+              .result-box {
+                height: 300px;
+              }
+            }
+          }
+
+          @media (max-width: 780px) {
+            .matjip-search {
+              form {
+                margin-bottom: 30px;
+              }
+              .result-box {
+                height: 250px;
+              }
             }
           }
         `}

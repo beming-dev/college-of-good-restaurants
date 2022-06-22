@@ -174,14 +174,14 @@ const MatjipReview = (props: any) => {
             position: relative;
             top: 0;
             transition-duration: 1s;
-            left: ${pageConvert ? -800 : 0}px;
+            left: ${pageConvert ? -100 : 0}%;
             min-width: 100%;
             height: 100%;
             background: white;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-evenly;
+            justify-content: space-between;
 
             .storeInfo {
               .introduce {
@@ -227,6 +227,42 @@ const MatjipReview = (props: any) => {
               input {
                 width: 80px;
                 height: 40px;
+              }
+            }
+          }
+
+          @media (max-width: 930px) {
+            .matjip-review {
+              min-width: 100%;
+              height: 100%;
+              background: white;
+
+              .storeInfo {
+                .introduce {
+                  display: flex;
+                  flex-direction: column;
+                }
+              }
+
+              .img-upload {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+              }
+            }
+          }
+
+          @media (max-width: 780px) {
+            .matjip-review {
+              min-width: 100%;
+              height: 100%;
+              background: white;
+
+              .des-review {
+                width: 400px;
+                height: 150px;
+                background-color: #cccccc;
+                border: 1px solid grey;
               }
             }
           }

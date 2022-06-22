@@ -27,7 +27,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     };
   }, []);
 
-  const authCheck = (url: string) => {
+  const authCheck = async (url: string) => {
     const publicPaths = ["/login", "/", "/signup", "/nearby-restaurant"];
     const path = url.split("?")[0];
     if (!user.user && !publicPaths.includes(path)) {
@@ -40,7 +40,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       if (user.user) {
         const exp = getJwtExp(user.user);
         if (exp && exp < Date.now() / 1000) {
-          dispatch(logout());
+          await dispatch(logout());
           localStorage.removeItem("user");
           router.push("/");
         }

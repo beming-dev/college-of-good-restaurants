@@ -51,7 +51,9 @@ const SearchResult = ({ resultClose, setResultClose }: props) => {
         {storeList.length == 0 ? (
           <span>no result</span>
         ) : (
-          storeList.map((item, i) => <SearchItem item={item} key={i} />)
+          storeList.map((item: any, i: any) => (
+            <SearchItem item={item} key={i} />
+          ))
         )}
       </div>
       <style jsx>
@@ -82,6 +84,56 @@ const SearchResult = ({ resultClose, setResultClose }: props) => {
               padding: 5px;
               border: none;
               outline: none;
+            }
+          }
+
+          @media (max-width: 780px) {
+            .search-result {
+              left: ${resultClose ? -500 : 0}px;
+              width: 400px;
+              height: calc(100vh - 70px);
+              z-index: 3;
+              display: flex;
+              flex-direction: column;
+              padding-top: 70px;
+              padding-left: 10px;
+
+              .exit-img-box {
+                position: absolute;
+                top: 20px;
+                right: 30px;
+              }
+
+              #select-sort {
+                width: 70px;
+                height: 30px;
+                padding: 5px;
+                border: none;
+                outline: none;
+              }
+            }
+          }
+
+          @media (max-width: 480px) {
+            .search-result {
+              left: ${resultClose ? "calc(-100vw - 10px)" : "0vw"};
+              width: calc(100vw - 10px);
+              padding-top: 70px;
+              padding-left: 10px;
+
+              .exit-img-box {
+                position: absolute;
+                top: 20px;
+                right: 30px;
+              }
+
+              #select-sort {
+                width: 70px;
+                height: 30px;
+                padding: 5px;
+                border: none;
+                outline: none;
+              }
             }
           }
         `}

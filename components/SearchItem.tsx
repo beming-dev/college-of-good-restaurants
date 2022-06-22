@@ -33,6 +33,14 @@ const SearchItem = ({ item }: any) => {
               }
             }
           }
+
+          @media (max-width: 780px) {
+            .search-item {
+              width: 90%;
+            }
+          }
+          @media (max-width: 480px) {
+          }
         `}
       </style>
     </div>

@@ -76,6 +76,7 @@ const MatjipRegister = ({ registerClose, setRegisterClose }: props) => {
               border-radius: 15px;
 
               .exit-image-wrapper {
+                z-index: 5;
                 position: absolute;
                 top: 20px;
                 right: 20px;
@@ -85,8 +86,60 @@ const MatjipRegister = ({ registerClose, setRegisterClose }: props) => {
                 display: flex;
                 overflow: hidden;
                 position: relative;
-                width: 800px;
+                width: 100%;
                 height: 510px;
+              }
+            }
+          }
+
+          @media (max-width: 930px) {
+            .MatjipRegister {
+              .content {
+                width: 650px;
+                height: 460px;
+                padding: 50px 40px 20px 40px;
+                background: white;
+                border-radius: 15px;
+
+                .exit-image-wrapper {
+                  position: absolute;
+                  top: 20px;
+                  right: 20px;
+                }
+
+                .page-box {
+                  display: flex;
+                  overflow: hidden;
+                  position: relative;
+                  width: 800px;
+                  height: 460px;
+                }
+              }
+            }
+          }
+
+          @media (max-width: 780px) {
+            .MatjipRegister {
+              .content {
+                width: 450px;
+                height: 400px;
+                padding: 40px 40px 20px 40px;
+                background: white;
+                border-radius: 15px;
+
+                .exit-image-wrapper {
+                  position: absolute;
+                  top: 20px;
+                  right: 20px;
+                }
+
+                .page-box {
+                  display: flex;
+                  overflow: hidden;
+                  position: relative;
+                  width: 800px;
+                  height: 400px;
+                }
               }
             }
           }
