@@ -278,6 +278,21 @@ const MatjipReview: NextPage<any> = (props) => {
               }
             }
           }
+
+          @media (max-width: 550px) {
+            .matjip-review {
+              min-width: 100%;
+              height: 100%;
+              background: white;
+
+              .des-review {
+                width: 90%;
+                height: 150px;
+                background-color: #cccccc;
+                border: 1px solid grey;
+              }
+            }
+          }
         `}
       </style>
     </form>

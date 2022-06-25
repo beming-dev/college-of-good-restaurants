@@ -76,6 +76,8 @@ const MatjipRegister = ({ registerClose, setRegisterClose }: props) => {
               border-radius: 15px;
 
               .exit-image-wrapper {
+                width: 40px;
+                height: 40px;
                 z-index: 5;
                 position: absolute;
                 top: 20px;
@@ -139,6 +141,33 @@ const MatjipRegister = ({ registerClose, setRegisterClose }: props) => {
                   position: relative;
                   width: 800px;
                   height: 400px;
+                }
+              }
+            }
+          }
+
+          @media (max-width: 550px) {
+            .MatjipRegister {
+              .content {
+                width: 300px;
+                height: 400px;
+                padding: 20px 20px 10px 20px;
+                background: white;
+                border-radius: 15px;
+
+                .exit-image-wrapper {
+                  width: 30px;
+                  height: 30px;
+                  top: 10px;
+                  right: 10px;
+                }
+
+                .page-box {
+                  display: flex;
+                  overflow: hidden;
+                  position: relative;
+                  width: 100%;
+                  height: 100%;
                 }
               }
             }

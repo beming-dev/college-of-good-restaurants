@@ -160,6 +160,30 @@ const MatjipSearch = ({
               }
             }
           }
+
+          @media (max-width: 550px) {
+            .matjip-search {
+              justify-content: space-between;
+              form {
+                margin-bottom: 20px;
+                .search {
+                  width: calc(100% - 40px);
+                  height: 40px;
+                  padding: 0px 20px;
+                  border-radius: 10px;
+                }
+              }
+              .result-box {
+                height: 250px;
+              }
+
+              .btn-register {
+                transition-duration: 0.5s;
+                width: 80px;
+                height: 40px;
+              }
+            }
+          }
         `}
       </style>
     </div>

@@ -30,12 +30,26 @@ const RegisterItem: NextPage<any> = ({
             transition-duration: 0.5s;
             background-color: ${selected === order ? "#f98600" : "white"};
             .introduce {
+              height: 100%;
               display: flex;
               flex-direction: column;
+              justify-content: space-evenly;
             }
           }
           .search-item:hover {
             background-color: #f98600;
+          }
+
+          @media (max-width: 550px) {
+            .search-item {
+              width: 100%;
+              padding: 0px 30px;
+              font-size: 14px;
+              .introduce {
+                display: flex;
+                flex-direction: column;
+              }
+            }
           }
         `}
       </style>
