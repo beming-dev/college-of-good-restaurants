@@ -1,6 +1,6 @@
 import { escapeRegExp } from "lodash";
 
-function ch2pattern(ch: any) {
+function ch2pattern(ch: string) {
   const offset = 44032; /* '가'의 코드 */
   // 한국어 음절
   if (/[가-힣]/.test(ch)) {
@@ -44,25 +44,30 @@ export function createFuzzyMatcher(input: any) {
 }
 
 export function getJwtExp(jwt: string) {
-  let s: any = jwt.split(".", 3);
-  s = JSON.parse(window.atob(s[1]));
+  const s: string[] = jwt.split(".", 3);
+  const a = JSON.parse(window.atob(s[1]));
 
-  return s.exp;
+  return a.exp;
 }
 
 export function getJwtUsername(jwt: string) {
-  let s: any = jwt.split(".", 3);
-  s = JSON.parse(window.atob(s[1]));
-
-  return s.username;
+  const s: string[] = jwt.split(".", 3);
+  const a = JSON.parse(window.atob(s[1]));
+  return a.username;
 }
 
-export function toStringByFormatting(date: any) {
-  let month = date.getMonth() + 1;
-  let day = date.getDate();
+export function getJwtCollegeId(jwt: string) {
+  const s: string[] = jwt.split(".", 3);
+  const a = JSON.parse(window.atob(s[1]));
+  return a["college_id"];
+}
 
-  month = month >= 10 ? month : "0" + month;
-  day = day >= 10 ? day : "0" + day;
+export function toStringByFormatting(date: Date) {
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
 
-  return date.getFullYear() + "-" + month + "-" + day + " ";
+  const m = month >= 10 ? month : "0" + month;
+  const d = day >= 10 ? day : "0" + day;
+
+  return date.getFullYear() + "-" + m + "-" + d + " ";
 }

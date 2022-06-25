@@ -3,11 +3,23 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import _ from "lodash";
 import Image from "next/image";
 import { useSelector } from "react-redux";
-import { useState } from "react";
+import React, { useState } from "react";
 import { getJwtUsername, toStringByFormatting } from "../lib/util";
 import axios from "axios";
+import { NextPage } from "next";
+import { rootState } from "../store/modules";
 
-const MatjipReview = (props: any) => {
+interface reviewType {
+  reviewDes: string;
+  star: number;
+  imgUrl: string;
+}
+interface imgType {
+  imagePreviewUrl: string | ArrayBuffer | null;
+  imageBlob: any;
+}
+
+const MatjipReview: NextPage<any> = (props) => {
   const {
     searchResult,
     setSearchResult,
@@ -20,12 +32,12 @@ const MatjipReview = (props: any) => {
     setStar,
   } = props;
 
-  const [loadedImg, setLoadedImg] = useState<any>({
+  const [loadedImg, setLoadedImg] = useState<imgType>({
     imagePreviewUrl: "",
     imageBlob: null,
   });
 
-  let user = useSelector((state: any) => state.user);
+  let user = useSelector((state: rootState) => state.user);
   const {
     register,
     handleSubmit,
@@ -33,7 +45,7 @@ const MatjipReview = (props: any) => {
     formState: { errors },
   } = useForm();
 
-  const createReviewData = (data: any) => {
+  const createReviewData = (data: reviewType) => {
     return {
       "place-id": searchResult[selected].place_id,
       "user-id": getJwtUsername(user.user),
@@ -61,11 +73,11 @@ const MatjipReview = (props: any) => {
 
   // getImageFromKakao();
 
-  const onEnrollReview = async (data: any) => {
+  const onEnrollReview = async (data: reviewType) => {
+    console.log(data);
     const resp = await axios({
       method: "POST",
       url: "/api/uploadImg",
-      withCredentials: true,
       data: { img: loadedImg.imagePreviewUrl },
     }).then((data) => console.log(data));
 

@@ -21,7 +21,7 @@ const Home: NextPage<props> = ({ college }) => {
 
   const [collegeList, setCollegeList] = useState<collegeInfoType[]>(cl);
 
-  const onSearchChange = (e: any) => {
+  const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCollegeList(
       cl.filter((college: collegeInfoType) =>
         createFuzzyMatcher(e.target.value).test(college["college-name"])
@@ -236,9 +236,9 @@ const Home: NextPage<props> = ({ college }) => {
   );
 };
 
-export async function getServerSideProps(ctx: any) {
+export async function getServerSideProps() {
   const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/common/college-student-count`;
-  let resp: any = await fetchWrapper.post(url, {});
+  let resp: Response = await fetchWrapper.post(url, {});
 
   return { props: { college: resp } };
 }

@@ -7,14 +7,16 @@ import { fetchWrapper } from "../helpers/fetch-wrapper";
 import getConfig from "next/config";
 import { useRouter } from "next/router";
 import { login } from "../store/modules/user";
+import { rootState } from "../store/modules";
+import { NextPage } from "next";
 
 type props = {
   signinDisplay: boolean;
   setSigninDisplay: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const SignIn = ({ signinDisplay, setSigninDisplay }: props) => {
-  const logUser = useSelector((state: any) => state.user);
+const SignIn: NextPage<props> = ({ signinDisplay, setSigninDisplay }) => {
+  const logUser = useSelector((state: rootState) => state.user);
   const router = useRouter();
   const { publicRuntimeConfig } = getConfig();
   const dispatch = useDispatch();
@@ -30,7 +32,7 @@ const SignIn = ({ signinDisplay, setSigninDisplay }: props) => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data: any): void => {
+  const onSubmit = (data: { id: string; pw: string }): void => {
     if (data.id === "") {
       alert("아이디를 입력해주세요");
       return;

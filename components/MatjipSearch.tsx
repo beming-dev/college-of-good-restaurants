@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { storeType } from "./Map";
 import RegisterItem from "./RegisterItem";
 type search = {
   [x: string]: string;
@@ -20,7 +21,7 @@ const MatjipSearch = ({
     formState: { errors },
   } = useForm();
 
-  const onSearchComplete = (data: any) => {
+  const onSearchComplete = (data: storeType[]) => {
     setSearchResult(data);
   };
 

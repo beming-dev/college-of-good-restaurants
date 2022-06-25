@@ -3,6 +3,8 @@ import { useState } from "react";
 import SignIn from "./SignIn";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
+import { userType } from "../store/modules/user";
+import { rootState } from "../store/modules";
 
 type props = {
   menuClose: boolean;
@@ -10,9 +12,9 @@ type props = {
 };
 
 const HamburgerMenu = ({ menuClose, setMenuClose }: props) => {
-  let user = useSelector((state: any) => state.user);
-  user = user.user;
+  let user: userType = useSelector((state: rootState) => state.user);
   const [signinDisplay, setSigninDisplay] = useState(false);
+
   const router = useRouter();
   const onExitClick = () => {
     setMenuClose(true);
@@ -30,7 +32,7 @@ const HamburgerMenu = ({ menuClose, setMenuClose }: props) => {
         <div className="user-img-wrapper">
           <Image src="/user.png" width="30px" height="30px" />
         </div>
-        {user ? (
+        {user.user ? (
           <div className="user-info">
             <span className="nickname">Beming</span>
             <span className="college">서울시립대학교</span>

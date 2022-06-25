@@ -2,38 +2,33 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import SearchItem from "./SearchItem";
 import { useSelector } from "react-redux";
+import { rootState } from "../store/modules";
+import { NextPage } from "next";
+import { storeFromServer, storeType } from "./Map";
 
-type props = {
+type propsType = {
+  searchResult: storeFromServer[];
   resultClose: boolean;
   setResultClose: React.Dispatch<React.SetStateAction<boolean>>;
 };
-const SearchResult = ({ resultClose, setResultClose }: props) => {
-  const map = useSelector((state): any => state.map);
-  const [storeList, setStoreList] = useState<any>([
-    {
-      category_name: "테마파크",
-      kakao_id: "22225498",
-      phone: "0507-1352-1401",
-      place_name: "산토끼노래동산",
-      place_url: "http://place.map.kakao.com/22225498",
-      road_address_name: "경남 창녕군 이방면 이방로 623",
-      x: "128.383585226179",
-      y: "35.5777087822771",
-    },
-  ]);
+
+const SearchResult: NextPage<propsType> = ({
+  searchResult,
+  resultClose,
+  setResultClose,
+}) => {
+  const map = useSelector((state: rootState) => state.map);
 
   useEffect(() => {
     if (map.map) {
-      storeList.map((store: any) => {
-        console.log(store.x);
-        console.log(store.y);
+      searchResult.map((store: storeFromServer) => {
         const marker = new window.kakao.maps.Marker({
           position: new window.kakao.maps.LatLng(store.y, store.x),
         });
         marker.setMap(map.map);
       });
     }
-  }, [storeList]);
+  }, [searchResult]);
 
   const onExitClick = () => {
     setResultClose(true);
@@ -48,11 +43,11 @@ const SearchResult = ({ resultClose, setResultClose }: props) => {
         <option value="review">리뷰순</option>
       </select>
       <div className="result">
-        {storeList.length == 0 ? (
+        {searchResult.length == 0 ? (
           <span>no result</span>
         ) : (
-          storeList.map((item: any, i: any) => (
-            <SearchItem item={item} key={i} />
+          searchResult.map((item: storeFromServer) => (
+            <SearchItem item={item} key={item["place-id"]} />
           ))
         )}
       </div>

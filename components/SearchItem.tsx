@@ -1,16 +1,26 @@
+import { NextPage } from "next";
 import Image from "next/image";
+import { useRouter } from "next/router";
+import { storeFromServer } from "./Map";
 
-const SearchItem = ({ item }: any) => {
+interface propsType {
+  item: storeFromServer;
+}
+const SearchItem: NextPage<propsType> = ({ item }) => {
+  const router = useRouter();
+  const onItemClick = () => {
+    router.push(`/store-detail?id=${item["place-id"]}`);
+  };
   return (
-    <div className="search-item">
+    <div className="search-item" onClick={onItemClick}>
       <div className="txt-area">
-        <span className="title">{item.place_name}</span>
+        <span className="title">{item.name}</span>
         <div className="review-area">
           <span className="txt-rate">4.1</span>
           <div className="img-rate"></div>
           <span className="review-num">(11)</span>
         </div>
-        <span className="address">{item.road_address_name}</span>
+        <span className="address">{item.address}</span>
       </div>
       <Image src="/test.jpg" width="50px" height="50px" />
 

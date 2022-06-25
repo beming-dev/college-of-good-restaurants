@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Map from "../components/Map";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -10,13 +9,17 @@ import { useSelector } from "react-redux";
 import HamburgerMenu from "../components/HamburgerMenu";
 import SearchResult from "../components/SearchResult";
 import MatjipRegister from "../components/MatjipRegister";
+import { rootState } from "../store/modules";
+import { NextPage } from "next";
+import { fetchWrapper } from "../helpers/fetch-wrapper";
+import { getJwtCollegeId } from "../lib/util";
 
-const nearbyRestaurant = () => {
-  let user = useSelector((state: any) => state.user);
-
+const nearbyRestaurant: NextPage<null> = () => {
+  let user = useSelector((state: rootState) => state.user);
   const [resultClose, setResultClose] = useState(true);
   const [menuClose, setMenuClose] = useState(true);
   const [registerClose, setRegisterClose] = useState(true);
+  const [searchResult, setSearchResult] = useState([]);
 
   const schema = yup.object().shape({
     searchTarget: yup.string().required(),
@@ -32,10 +35,16 @@ const nearbyRestaurant = () => {
   });
 
   //url수정 필요
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: { searchTarget: string }) => {
     setResultClose(false);
-    const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/searchRequest`;
-    //fetchWrapper.post(url, data)
+    const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/place/search-place`;
+    fetchWrapper
+      .post(url, {
+        // keyword: data.searchTarget,
+        keyword: "기꾸",
+        "college-id": user.user && getJwtCollegeId(user.user),
+      })
+      .then((data) => setSearchResult(data));
   };
   const onClickPlus = () => {
     if (!user.user) {
@@ -57,6 +66,7 @@ const nearbyRestaurant = () => {
         <SearchResult
           resultClose={resultClose}
           setResultClose={setResultClose}
+          searchResult={searchResult}
         />
         <form className="input-box" onSubmit={handleSubmit(onSubmit)}>
           <input

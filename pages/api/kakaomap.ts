@@ -7,7 +7,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const { id } = req.query;
-  let response: any;
+  let response;
   try {
     response = await axios.post(`http://localhost:3000/example/${id}`);
   } catch (err) {

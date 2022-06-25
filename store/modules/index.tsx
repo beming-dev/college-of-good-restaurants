@@ -18,3 +18,4 @@ const reducer = (state: any, action: any) => {
 };
 
 export default reducer;
+export type rootState = ReturnType<typeof reducer>;

@@ -4,10 +4,11 @@ import SignIn from "./SignIn";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import { logout } from "../store/modules/user";
+import { rootState } from "../store/modules";
 
 const Nav = () => {
   const [signinDisplay, setSigninDisplay] = useState(false);
-  const user = useSelector((state: any) => state.user);
+  const user = useSelector((state: rootState) => state.user);
   const dispatch = useDispatch();
   const router = useRouter();
 

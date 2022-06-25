@@ -1,3 +1,4 @@
+import { NextPage } from "next";
 import Image from "next/image";
 
 interface storeInfo {
@@ -5,7 +6,12 @@ interface storeInfo {
 }
 
 //type 수정 필요
-const RegisterItem = ({ storeInfo, order, selected, setSelected }: any) => {
+const RegisterItem: NextPage<any> = ({
+  storeInfo,
+  order,
+  selected,
+  setSelected,
+}) => {
   return (
     <div className="search-item" onClick={() => setSelected(order)}>
       <div className="store-image-wrapper"></div>

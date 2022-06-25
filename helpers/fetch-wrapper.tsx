@@ -4,10 +4,16 @@ import getConfig from "next/config";
 const { publicRuntimeConfig } = getConfig();
 
 //타입 수정 필요
-type getType = (url: string) => Promise<any>;
-type postType = (url: string, body: { [id: string]: string }) => Promise<any>;
-type putType = (url: string, body: { [id: string]: string }) => Promise<any>;
-type deleteType = (url: string) => Promise<any>;
+type getType = (url: string) => Promise<Response>;
+type postType = (
+  url: string,
+  body: { [id: string]: string }
+) => Promise<Response>;
+type putType = (
+  url: string,
+  body: { [id: string]: string }
+) => Promise<Response>;
+type deleteType = (url: string) => Promise<Response>;
 type authHeader = (
   url: string,
   data: { [id: string]: string }
