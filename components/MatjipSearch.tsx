@@ -1,5 +1,8 @@
 import Image from "next/image";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
+import { rootState } from "../store/modules";
+import { collegeInfoType } from "../store/modules/selected";
 import { storeType } from "./Map";
 import RegisterItem from "./RegisterItem";
 type search = {
@@ -14,6 +17,9 @@ const MatjipSearch = ({
   pageConvert,
   setPageConvert,
 }: any) => {
+  let state = useSelector((state: rootState) => state.selected);
+  let { selectedCollege }: { selectedCollege: collegeInfoType } = state;
+
   const {
     register,
     handleSubmit,
@@ -22,12 +28,18 @@ const MatjipSearch = ({
   } = useForm();
 
   const onSearchComplete = (data: storeType[]) => {
+    console.log(data);
     setSearchResult(data);
   };
 
   const onSearch: SubmitHandler<search> = (data) => {
     const ps = new window.kakao.maps.services.Places();
-    ps.keywordSearch(data.target, onSearchComplete);
+    const searchOption = {
+      x: selectedCollege.longitude,
+      y: selectedCollege.latitude,
+      radius: parseInt(`${selectedCollege.distance_limit_km}`) * 1000,
+    };
+    ps.keywordSearch(data.target, onSearchComplete, searchOption);
   };
 
   const onConvert = (dir: number) => {

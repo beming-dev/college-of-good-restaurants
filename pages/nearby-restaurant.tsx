@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Map from "../components/Map";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import HamburgerMenu from "../components/HamburgerMenu";
 import SearchResult from "../components/SearchResult";
@@ -13,21 +13,18 @@ import { rootState } from "../store/modules";
 import { NextPage } from "next";
 import { fetchWrapper } from "../helpers/fetch-wrapper";
 import { getJwtCollegeId } from "../lib/util";
+import { collegeInfoType, setSelectedCollege } from "../store/modules/selected";
 
-interface collegeInfoType {
-  college_id: Number;
-  college_mail_domain: String;
-  college_name: String;
-  distance_limit_km: Number;
-  latitude: Number;
-  longitude: Number;
-}
 interface propsType {
   collegeInfo: collegeInfoType;
 }
 
 const nearbyRestaurant: NextPage<propsType> = ({ collegeInfo }) => {
-  console.log(collegeInfo);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setSelectedCollege(collegeInfo));
+  }, []);
+
   let user = useSelector((state: rootState) => state.user);
   const [resultClose, setResultClose] = useState(true);
   const [menuClose, setMenuClose] = useState(true);
