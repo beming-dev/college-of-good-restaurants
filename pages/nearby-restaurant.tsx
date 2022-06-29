@@ -14,7 +14,20 @@ import { NextPage } from "next";
 import { fetchWrapper } from "../helpers/fetch-wrapper";
 import { getJwtCollegeId } from "../lib/util";
 
-const nearbyRestaurant: NextPage<null> = () => {
+interface collegeInfoType {
+  college_id: Number;
+  college_mail_domain: String;
+  college_name: String;
+  distance_limit_km: Number;
+  latitude: Number;
+  longitude: Number;
+}
+interface propsType {
+  collegeInfo: collegeInfoType;
+}
+
+const nearbyRestaurant: NextPage<propsType> = ({ collegeInfo }) => {
+  console.log(collegeInfo);
   let user = useSelector((state: rootState) => state.user);
   const [resultClose, setResultClose] = useState(true);
   const [menuClose, setMenuClose] = useState(true);
@@ -44,7 +57,7 @@ const nearbyRestaurant: NextPage<null> = () => {
         keyword: "기꾸",
         "college-id": user.user && getJwtCollegeId(user.user),
       })
-      .then((data) => setSearchResult(data));
+      .then((data: any) => setSearchResult(data));
   };
   const onClickPlus = () => {
     if (!user.user) {
@@ -56,7 +69,7 @@ const nearbyRestaurant: NextPage<null> = () => {
 
   return (
     <div>
-      <Map />
+      <Map y={collegeInfo.latitude} x={collegeInfo.longitude} />
       <MatjipRegister
         registerClose={registerClose}
         setRegisterClose={setRegisterClose}
@@ -186,5 +199,15 @@ const nearbyRestaurant: NextPage<null> = () => {
     </div>
   );
 };
+
+export async function getServerSideProps(ctx: any) {
+  const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/college/get-college`;
+  let data: any;
+  await fetchWrapper.post(url, { college_id: ctx.query.id }).then((d) => {
+    data = d;
+  });
+
+  return { props: { collegeInfo: data } };
+}
 
 export default nearbyRestaurant;

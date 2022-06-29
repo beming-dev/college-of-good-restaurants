@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import { login } from "../store/modules/user";
 import { rootState } from "../store/modules";
 import { NextPage } from "next";
+import { sleep } from "../lib/util";
 
 type props = {
   signinDisplay: boolean;
@@ -20,6 +21,7 @@ const SignIn: NextPage<props> = ({ signinDisplay, setSigninDisplay }) => {
   const router = useRouter();
   const { publicRuntimeConfig } = getConfig();
   const dispatch = useDispatch();
+  const [logining, setLogining] = useState(false);
 
   const onExitClick = () => {
     setSigninDisplay(false);
@@ -42,6 +44,7 @@ const SignIn: NextPage<props> = ({ signinDisplay, setSigninDisplay }) => {
       return;
     }
 
+    setLogining(true);
     const baseUrl = `${publicRuntimeConfig.apiUrl}`;
     fetchWrapper
       .post(`${baseUrl}/user-management/login`, {
@@ -49,16 +52,17 @@ const SignIn: NextPage<props> = ({ signinDisplay, setSigninDisplay }) => {
         password: data.pw,
         user: logUser.user,
       })
-      .then(async (user) => {
-        await dispatch(login(user));
+      .then((user: any) => {
+        dispatch(login(user));
         localStorage.setItem("user", JSON.stringify(user.jwt));
+        setLogining(false);
         router.push("/");
-        return user;
       });
   };
 
   return (
     <div className="signin">
+      <div className="logining"></div>
       <form className="signin-box" onSubmit={handleSubmit(onSubmit)}>
         <div className="id-field">
           <span>아이디</span>
@@ -90,6 +94,15 @@ const SignIn: NextPage<props> = ({ signinDisplay, setSigninDisplay }) => {
             display: ${signinDisplay ? "flex" : "none"};
             justify-content: center;
             align-items: center;
+
+            .logining {
+              display: ${logining ? "flex" : "none"};
+              position: absolute;
+              width: 100vw;
+              height: 100vh;
+              z-index: 10;
+              background-color: rgba(0, 0, 0, 0.5);
+            }
 
             .signin-box {
               width: 450px;

@@ -10,7 +10,7 @@ import { getJwtExp } from "../lib/util";
 import { rootState } from "../store/modules";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const user = useSelector((state: rootState) => state.user);
+  const user: any = useSelector((state: rootState) => state.user);
   const dispatch = useDispatch();
   const router = useRouter();
   const [authorized, setAuthorized] = useState(false);
@@ -40,10 +40,9 @@ function MyApp({ Component, pageProps }: AppProps) {
     } else {
       if (user.user) {
         const exp = getJwtExp(user.user);
-        console.log(Date.now() / 1000);
         if (exp && exp < Date.now() / 1000) {
-          console.log(1);
           await dispatch(logout());
+          setAuthorized(false);
           localStorage.removeItem("user");
           router.push("/");
         }

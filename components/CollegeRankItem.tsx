@@ -3,12 +3,13 @@ import { useRouter } from "next/router";
 type props = {
   collegeName: string;
   studentNum: number;
+  collegeId: number;
 };
 
 const CollegeRankItem = (props: props) => {
   const router = useRouter();
   const onClick = () => {
-    router.push(`/nearby-restaurant?target=${props.collegeName}`);
+    router.push(`/nearby-restaurant?id=${props.collegeId}`);
   };
   return (
     <div className="college-rank-item" onClick={onClick}>

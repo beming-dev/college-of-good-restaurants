@@ -71,3 +71,10 @@ export function toStringByFormatting(date: Date) {
 
   return date.getFullYear() + "-" + m + "-" + d + " ";
 }
+
+export function sleep(ms: number) {
+  const wakeUpTime = Date.now() + ms;
+  while (Date.now() < wakeUpTime) {
+    console.log(1);
+  }
+}

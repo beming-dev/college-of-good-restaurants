@@ -9,8 +9,9 @@ import { fetchWrapper } from "../helpers/fetch-wrapper";
 import { createFuzzyMatcher } from "../lib/util";
 
 interface collegeInfoType {
-  "college-name": string;
-  "number-of-students": number;
+  college_name: string;
+  number_of_students: number;
+  college_id: number;
 }
 interface props {
   college: collegeInfoType[];
@@ -24,7 +25,7 @@ const Home: NextPage<props> = ({ college }) => {
   const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCollegeList(
       cl.filter((college: collegeInfoType) =>
-        createFuzzyMatcher(e.target.value).test(college["college-name"])
+        createFuzzyMatcher(e.target.value).test(college["college_name"])
       )
     );
   };
@@ -58,8 +59,9 @@ const Home: NextPage<props> = ({ college }) => {
               (info, i) =>
                 i < 8 && (
                   <CollegeRankItem
-                    collegeName={info["college-name"]}
-                    studentNum={info["number-of-students"]}
+                    collegeName={info["college_name"]}
+                    studentNum={info["number_of_students"]}
+                    collegeId={info["college_id"]}
                     key={i}
                   />
                 )

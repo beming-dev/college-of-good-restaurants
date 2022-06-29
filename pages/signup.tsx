@@ -6,12 +6,11 @@ import { fetchWrapper } from "../helpers/fetch-wrapper";
 import * as yup from "yup";
 
 interface signupForm {
-  mail: string;
-  authCode: string;
-  id: string;
-  pw: string;
+  email: string;
+  "auth-code": string;
+  "user-id": string;
+  password: string;
   nickname: string;
-  authCodeCheck: boolean;
 }
 
 const Signup: NextPage = () => {
@@ -19,11 +18,11 @@ const Signup: NextPage = () => {
 
   const schema = yup.object().shape({
     nickname: yup.string().required("nickname is required"),
-    id: yup
+    "user-id": yup
       .string()
       .required("id is required")
       .matches(/^[A-za-z0-9]{5,15}/g, "5~15자 영문, 숫자"),
-    pw: yup
+    password: yup
       .string()
       .required("pw is required")
       .matches(/(?=.*[a-zA-ZS])(?=.*?[#?!@$%^&*-]).{6,24}/),
@@ -39,20 +38,25 @@ const Signup: NextPage = () => {
   });
 
   const onSendAuthCode = (data: signupForm) => {
-    fetchWrapper.post(
-      `${process.env.SERVER_IP} + user-management/signup/send-auth-code`,
-      {}
-    );
+    const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/user-management/signup/send-auth-code`;
+    fetchWrapper
+      .post(url, { email: data.email })
+      .then((data) => alert("인증번호를 전송했습니다."))
+      .catch((err) => {
+        console.log(err);
+        alert("전송에 실패했습니다.");
+      });
   };
 
   const onCheckAuthCode = (data: signupForm) => {
+    const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/user-management/signup/check-auth-code`;
     fetchWrapper
-      .post(
-        `${process.env.SERVER_IP} + user-management/signup/check-auth-code`,
-        {}
-      )
+      .post(url, {
+        email: data.email,
+        "auth-code": data["auth-code"],
+      })
       .then((data) => {
-        if (data) setCodeChecked(true);
+        console.log(data);
       });
   };
 
@@ -61,6 +65,8 @@ const Signup: NextPage = () => {
       alert("학교 메일을 인증해주세요.");
       return;
     }
+    const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/user-management/signup`;
+    fetchWrapper.post(url, { ...data });
   };
 
   return (
@@ -69,7 +75,7 @@ const Signup: NextPage = () => {
 
       <form className="mail-box box" onSubmit={handleSubmit(onSendAuthCode)}>
         <span>학교메일주소</span>
-        <input type="text" {...register("mail")} />
+        <input type="text" {...register("email")} />
         <input type="submit" className="button" value="인증코드전송" />
       </form>
       <p className="err-message"></p>
@@ -78,7 +84,7 @@ const Signup: NextPage = () => {
         className="certificate-box box"
       >
         <span>인증코드</span>
-        <input type="text" {...register("authCode")} />
+        <input type="text" {...register("auth-code")} />
         <input type="submit" className="button" value="인증코드확인" />
       </form>
       <p className="err-message"></p>
@@ -91,15 +97,15 @@ const Signup: NextPage = () => {
         <p className="err-message">{errors.nickname?.message}</p>
         <div className="id-box box">
           <span>아이디</span>
-          <input type="text" {...register("id")} />
+          <input type="text" {...register("user-id")} />
           <input type="submit" className="button" value="중복확인" />
         </div>
-        <p className="err-message">{errors.id?.message}</p>
+        <p className="err-message">{errors["user-id"]?.message}</p>
         <div className="pw-box box">
           <span>비밀번호</span>
-          <input type="text" {...register("pw")} />
+          <input type="text" {...register("password")} />
         </div>
-        <p className="err-message">{errors.pw?.message}</p>
+        <p className="err-message">{errors.password?.message}</p>
         <button className="btn-signup">회원가입</button>
       </form>
       <style jsx>{`
@@ -150,12 +156,18 @@ const Signup: NextPage = () => {
             align-items: center;
 
             .btn-signup {
+              transition-duration: 0.5s;
               width: 150px;
               height: 50px;
               background: white;
               border: 1px solid #e8630a;
               border-radius: 10px;
               margin-top: 50px;
+            }
+
+            .btn-signup:hover {
+              background-color: #e8630a;
+              color: white;
             }
           }
         }
