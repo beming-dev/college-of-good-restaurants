@@ -26,13 +26,13 @@ export interface storeType {
 export interface storeFromServer {
   address: "경기 구리시 안골로 91 기꾸초밥";
   category: "초밥";
-  "image-url": null;
-  "kakao-place-id": "16955698";
+  image_url: null;
+  kakao_place_id: "16955698";
   latitude: 38;
   longitude: 128;
   name: "테스트용 가게 기꾸초밥";
   phone: null;
-  "place-id": 1;
+  place_id: 1;
 }
 
 const Map = ({ x = 126.570667, y = 33.450701 }: any) => {

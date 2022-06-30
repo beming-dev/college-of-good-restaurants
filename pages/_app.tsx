@@ -29,7 +29,13 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, []);
 
   const authCheck = async (url: string) => {
-    const publicPaths = ["/login", "/", "/signup", "/nearby-restaurant"];
+    const publicPaths = [
+      "/login",
+      "/",
+      "/signup",
+      "/nearby-restaurant",
+      "/store-detail",
+    ];
     const path = url.split("?")[0];
     if (!user.user && !publicPaths.includes(path)) {
       alert("로그인 후 이용해주세요");
@@ -42,7 +48,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         const exp = getJwtExp(user.user);
         if (exp && exp < Date.now() / 1000) {
           await dispatch(logout());
-          setAuthorized(false);
+          setAuthorized(true);
           localStorage.removeItem("user");
           router.push("/");
         }

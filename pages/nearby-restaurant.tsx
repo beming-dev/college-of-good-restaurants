@@ -44,7 +44,7 @@ const nearbyRestaurant: NextPage<propsType> = ({ collegeInfo }) => {
     resolver: yupResolver(schema),
   });
 
-  //url수정 필요
+  //로그인
   const onSubmit = (data: { searchTarget: string }) => {
     setResultClose(false);
     const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/place/search-place`;
@@ -52,7 +52,7 @@ const nearbyRestaurant: NextPage<propsType> = ({ collegeInfo }) => {
       .post(url, {
         // keyword: data.searchTarget,
         keyword: "기꾸",
-        "college-id": user.user && getJwtCollegeId(user.user),
+        college_id: collegeInfo.college_id.toString(),
       })
       .then((data: any) => setSearchResult(data));
   };
@@ -200,9 +200,12 @@ const nearbyRestaurant: NextPage<propsType> = ({ collegeInfo }) => {
 export async function getServerSideProps(ctx: any) {
   const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/college/get-college`;
   let data: any;
-  await fetchWrapper.post(url, { college_id: ctx.query.id }).then((d) => {
-    data = d;
-  });
+  await fetchWrapper
+    .post(url, { college_id: ctx.query.id })
+    .then((d) => {
+      data = d;
+    })
+    .catch((err) => console.log(err));
 
   return { props: { collegeInfo: data } };
 }

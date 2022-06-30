@@ -9,7 +9,7 @@ interface propsType {
 const SearchItem: NextPage<propsType> = ({ item }) => {
   const router = useRouter();
   const onItemClick = () => {
-    router.push(`/store-detail?id=${item["place-id"]}`);
+    router.push(`/store-detail?id=${item["place_id"]}`);
   };
   return (
     <div className="search-item" onClick={onItemClick}>

@@ -4,16 +4,21 @@ import getConfig from "next/config";
 const { publicRuntimeConfig } = getConfig();
 
 //타입 수정 필요
-type getType = (url: string) => Promise<Response>;
+type getType = (
+  url: string,
+  body: { [id: string]: string }
+) => Promise<Response | ((value: Response) => boolean | PromiseLike<boolean>)>;
 type postType = (
   url: string,
   body: { [id: string]: string }
-) => Promise<Response>;
+) => Promise<Response | ((value: Response) => boolean | PromiseLike<boolean>)>;
 type putType = (
   url: string,
   body: { [id: string]: string }
-) => Promise<Response>;
-type deleteType = (url: string) => Promise<Response>;
+) => Promise<Response | ((value: Response) => boolean | PromiseLike<boolean>)>;
+type deleteType = (
+  url: string
+) => Promise<Response | ((value: Response) => boolean | PromiseLike<boolean>)>;
 type authHeader = (
   url: string,
   data: { [id: string]: string }
@@ -26,11 +31,14 @@ interface fetchWrapper {
   delete: deleteType;
 }
 
-const get: getType = (url) => {
+const get: getType = (url, body) => {
   const requestOptions: RequestInit = {
     method: "GET",
-    credentials: "include",
-    headers: authHeader(url, {}),
+    headers: {
+      "Access-Control-Allow-Headers": "*",
+      "Content-Type": "application/json",
+      ...authHeader(url, body),
+    },
   };
   return fetch(url, requestOptions).then(handleResponse);
 };

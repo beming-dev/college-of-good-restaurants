@@ -20,10 +20,14 @@ const SearchResult: NextPage<propsType> = ({
   const map = useSelector((state: rootState) => state.map);
 
   useEffect(() => {
+    console.log(searchResult);
     if (map.map) {
       searchResult.map((store: storeFromServer) => {
         const marker = new window.kakao.maps.Marker({
-          position: new window.kakao.maps.LatLng(store.y, store.x),
+          position: new window.kakao.maps.LatLng(
+            store.latitude,
+            store.longitude
+          ),
         });
         marker.setMap(map.map);
       });
@@ -47,7 +51,7 @@ const SearchResult: NextPage<propsType> = ({
           <span>no result</span>
         ) : (
           searchResult.map((item: storeFromServer) => (
-            <SearchItem item={item} key={item["place-id"]} />
+            <SearchItem item={item} key={item["place_id"]} />
           ))
         )}
       </div>

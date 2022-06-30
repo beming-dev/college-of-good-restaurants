@@ -43,7 +43,7 @@ const Home: NextPage<props> = ({ college }) => {
       <div className="cover">
         <div className="content">
           <span className="logo">맛집대학</span>
-          <form className="input-box">
+          <div className="input-box">
             <input
               type="text"
               placeholder="학교이름으로 검색해보세요"
@@ -53,7 +53,7 @@ const Home: NextPage<props> = ({ college }) => {
             <div className="image-wrapper">
               <Image src="/search.png" width={30} height={30} alt="search" />
             </div>
-          </form>
+          </div>
           <div className="school-rank">
             {collegeList.map(
               (info, i) =>
