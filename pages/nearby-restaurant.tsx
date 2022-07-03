@@ -51,7 +51,7 @@ const nearbyRestaurant: NextPage<propsType> = ({ collegeInfo }) => {
     fetchWrapper
       .post(url, {
         // keyword: data.searchTarget,
-        keyword: "기꾸",
+        keyword: data.searchTarget,
         college_id: collegeInfo.college_id.toString(),
       })
       .then((data: any) => setSearchResult(data));

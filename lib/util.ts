@@ -69,7 +69,7 @@ export function toStringByFormatting(date: Date) {
   const m = month >= 10 ? month : "0" + month;
   const d = day >= 10 ? day : "0" + day;
 
-  return date.getFullYear() + "-" + m + "-" + d + " ";
+  return date.getFullYear() + "-" + m + "-" + d;
 }
 
 export function sleep(ms: number) {

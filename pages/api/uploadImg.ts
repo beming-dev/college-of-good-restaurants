@@ -21,7 +21,7 @@ export default async function handler(
       url: `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_KEY}`,
       data: form,
     });
-    console.log(response);
+    res.send(response.config.url);
   } catch (err) {
     console.log(err);
   }

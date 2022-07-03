@@ -48,9 +48,9 @@ function MyApp({ Component, pageProps }: AppProps) {
         const exp = getJwtExp(user.user);
         if (exp && exp < Date.now() / 1000) {
           await dispatch(logout());
-          setAuthorized(true);
           localStorage.removeItem("user");
-          router.push("/");
+          window.location.href = "/";
+          //router.push("/");
         }
       }
       setAuthorized(true);

@@ -34,7 +34,8 @@ const SignIn: NextPage<props> = ({ signinDisplay, setSigninDisplay }) => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data: { id: string; pw: string }): void => {
+  const onSubmit = (data: { id: string; pw: string }, e: any): void => {
+    if (logining) return;
     if (data.id === "") {
       alert("아이디를 입력해주세요");
       return;

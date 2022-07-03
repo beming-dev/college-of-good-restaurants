@@ -1,19 +1,24 @@
 import { NextPage } from "next";
 import Image from "next/image";
+import { useSelector, useDispatch } from "react-redux";
+import { rootState } from "../store/modules";
+import { setSelectedSearchResult } from "../store/modules/selected";
 
 interface storeInfo {
   ["something"]: string;
 }
 
 //type 수정 필요
-const RegisterItem: NextPage<any> = ({
-  storeInfo,
-  order,
-  selected,
-  setSelected,
-}) => {
+const RegisterItem: NextPage<any> = ({ storeInfo }) => {
+  const selectedSearchItem = useSelector(
+    (state: rootState) => state.selected
+  ).selectedSearchResult;
+  const dispatch = useDispatch();
   return (
-    <div className="search-item" onClick={() => setSelected(order)}>
+    <div
+      className="search-item"
+      onClick={() => dispatch(setSelectedSearchResult(storeInfo))}
+    >
       <div className="store-image-wrapper"></div>
       <div className="introduce">
         <span className="store-name">{storeInfo.place_name}</span>
@@ -28,7 +33,10 @@ const RegisterItem: NextPage<any> = ({
             border-top: 1px solid #f98600;
             border-bottom: 1px solid #f98600;
             transition-duration: 0.5s;
-            background-color: ${selected === order ? "#f98600" : "white"};
+            background-color: ${selectedSearchItem &&
+            selectedSearchItem.id === storeInfo.id
+              ? "#f98600"
+              : "white"};
             .introduce {
               height: 100%;
               display: flex;

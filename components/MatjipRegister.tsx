@@ -14,8 +14,6 @@ type search = {
 };
 
 const MatjipRegister = ({ registerClose, setRegisterClose }: props) => {
-  const [searchResult, setSearchResult] = useState<search[]>([]);
-  const [selected, setSelected] = useState<number>(0);
   const [pageConvert, setPageConvert] = useState(false);
   const [star, setStar] = useState(0);
 
@@ -30,18 +28,10 @@ const MatjipRegister = ({ registerClose, setRegisterClose }: props) => {
         </div>
         <div className="page-box">
           <MatjipSearch
-            searchResult={searchResult}
-            setSearchResult={setSearchResult}
-            selected={selected}
-            setSelected={setSelected}
             pageConvert={pageConvert}
             setPageConvert={setPageConvert}
           />
           <MatjipReview
-            searchResult={searchResult}
-            setSearchResult={setSearchResult}
-            selected={selected}
-            setSelected={setSelected}
             pageConvert={pageConvert}
             setPageConvert={setPageConvert}
             setRegisterClose={setRegisterClose}

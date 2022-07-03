@@ -10,7 +10,7 @@ type getType = (
 ) => Promise<Response | ((value: Response) => boolean | PromiseLike<boolean>)>;
 type postType = (
   url: string,
-  body: { [id: string]: string }
+  body: any
 ) => Promise<Response | ((value: Response) => boolean | PromiseLike<boolean>)>;
 type putType = (
   url: string,
@@ -44,6 +44,7 @@ const get: getType = (url, body) => {
 };
 
 const post: postType = (url, body) => {
+  console.log(body);
   const requestOptions: RequestInit = {
     method: "POST",
     headers: {

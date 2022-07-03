@@ -1,5 +1,6 @@
 import { NextPage } from "next";
 import { storeFromServer } from "../components/Map";
+import ReviewItem from "../components/ReviewItem";
 import { fetchWrapper } from "../helpers/fetch-wrapper";
 
 interface reviewType {
@@ -12,19 +13,19 @@ interface reviewType {
 }
 interface propsType {
   storeInfo: storeFromServer;
-  reviewInfo: reviewType;
+  reviewInfo: reviewType[];
 }
 
-const storeDetail: NextPage<propsType> = ({ storeInfo }) => {
-  console.log(storeInfo);
+const storeDetail: NextPage<propsType> = ({ storeInfo, reviewInfo }) => {
+  console.log(reviewInfo);
   return (
     <div className="store-detail">
       <div className="content">
         <div className="main">
           <h1 className="store-name">{storeInfo.name}</h1>
           <div className="rate-review">
-            <span className="rate">평점 4.5</span>
-            <span className="review">리뷰 39</span>
+            <span className="rate-count"> 평점 4.5 </span>
+            <span className="review-count"> 리뷰 39 </span>
           </div>
         </div>
         <div className="detail">
@@ -34,6 +35,9 @@ const storeDetail: NextPage<propsType> = ({ storeInfo }) => {
         </div>
         <div className="review">
           <span>리뷰</span>
+          {reviewInfo.map((review, i) => (
+            <ReviewItem review={review} key={i} />
+          ))}
         </div>
       </div>
       <style jsx>{`
@@ -84,6 +88,8 @@ const storeDetail: NextPage<propsType> = ({ storeInfo }) => {
               }
             }
             .review {
+              margin: 20px 0;
+              width: 100%;
               display: flex;
               flex-direction: column;
             }

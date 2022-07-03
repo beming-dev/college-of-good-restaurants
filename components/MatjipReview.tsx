@@ -7,7 +7,7 @@ import React, { useState } from "react";
 import { getJwtUsername, toStringByFormatting } from "../lib/util";
 import axios from "axios";
 import { NextPage } from "next";
-import { rootState } from "../store/modules";
+import type { rootState } from "../store/modules";
 
 interface reviewType {
   reviewDes: string;
@@ -20,22 +20,13 @@ interface imgType {
 }
 
 const MatjipReview: NextPage<any> = (props) => {
-  const {
-    searchResult,
-    setSearchResult,
-    selected,
-    setSelected,
-    pageConvert,
-    setPageConvert,
-    setRegisterClose,
-    star,
-    setStar,
-  } = props;
+  const { pageConvert, setPageConvert, setRegisterClose, star, setStar } =
+    props;
 
-  const [loadedImg, setLoadedImg] = useState<imgType>({
-    imagePreviewUrl: "",
-    imageBlob: null,
-  });
+  const [loadedImg, setLoadedImg] = useState<imgType[]>([]);
+  const selectedSearchResult = useSelector(
+    (state: rootState) => state.selected
+  ).selectedSearchResult;
 
   let user = useSelector((state: rootState) => state.user);
   const {
@@ -45,63 +36,65 @@ const MatjipReview: NextPage<any> = (props) => {
     formState: { errors },
   } = useForm();
 
-  const createReviewData = (data: reviewType) => {
+  const createReviewData = (data: reviewType, img_urls: string[]) => {
     return {
-      "place-id": searchResult[selected].place_id,
-      "user-id": getJwtUsername(user.user),
-      "post-date": toStringByFormatting(Date.now()),
-      "post-text": data.reviewDes,
-      rating: star,
+      img_urls,
+      place_id: selectedSearchResult.id,
+      user_id: getJwtUsername(user.user),
+      post_date: toStringByFormatting(new Date()),
+      post_text: data.reviewDes,
+      rating: star + "",
     };
   };
 
-  // const getImageFromKakao = async () => {
-  //   if (searchResult[selected]) {
-  //     const url = `/api/kakaomap/?id=${searchResult[selected].id}`;
-  //     const resp = await axios({
-  //       method: "POST",
-  //       url: url,
-  //       withCredentials: true,
-  //     });
-  //     const $ = cheerio.load(resp.data);
-  //     const elements = $("#kakaoIndex");
-  //     elements.each((idx: any, el: any) => {
-  //       // ❺ text() 메서드를 사용하기 위해 Node 객체인 el을 $로 감싸서 cheerio 객체로 변환
-  //     });
-  //   }
-  // };
-
-  // getImageFromKakao();
-
   const onEnrollReview = async (data: reviewType) => {
-    console.log(data);
-    const resp = await axios({
-      method: "POST",
-      url: "/api/uploadImg",
-      data: { img: loadedImg.imagePreviewUrl },
-    }).then((data) => console.log(data));
-
     if (!user.user) {
       alert("로그인 후 이용해주세요");
-    } else {
-      try {
-        await fetchWrapper.post(
-          `${process.env.NEXT_PUBLIC_SERVER_IP}/add-review`,
-          createReviewData(data)
-        );
-      } catch (err) {
-        console.log(err);
-      }
+      return;
+    }
+
+    if (data.reviewDes == "") {
+      alert("내용을 입력해주세요.");
+      return;
+    }
+    if (star == 0) {
+      alert("별점을 입력해주세요");
+      return;
+    }
+
+    const urlArr: string[] = [];
+    if (loadedImg.length >= 1) {
+      loadedImg.map(async (img) => {
+        const resp = await axios({
+          method: "POST",
+          url: "/api/uploadImg",
+          data: { img: img.imagePreviewUrl },
+        })
+          .then(async (res) => {
+            console.log(res.data);
+            urlArr.push(res.data);
+          })
+          .catch((err) => alert("이미지 업로드에 실패했습니다."));
+      });
+    }
+
+    try {
+      await fetchWrapper.post(
+        `${process.env.NEXT_PUBLIC_SERVER_IP}/add-review`,
+        createReviewData(data, urlArr)
+      );
       window.alert("등록이 완료되었습니다.");
-      setSearchResult([]);
-      setSelected(0);
       setPageConvert(false);
       setRegisterClose(true);
+    } catch (err) {
+      console.log(err);
+      alert("등록에 실패하였습니다.");
+      return;
     }
   };
 
   const onConvert = (dir: number) => {
-    if (dir === 1 && searchResult.length !== 0) {
+    if (dir === 1 && selectedSearchResult) {
       setPageConvert(true);
     } else {
       setPageConvert(false);
@@ -114,7 +107,10 @@ const MatjipReview: NextPage<any> = (props) => {
     if (file) {
       reader.readAsDataURL(file);
       reader.onloadend = () => {
-        setLoadedImg({ imagePreviewUrl: reader.result, imageBlob: file });
+        setLoadedImg([
+          ...loadedImg,
+          { imagePreviewUrl: reader.result, imageBlob: file },
+        ]);
       };
     }
   };
@@ -124,14 +120,10 @@ const MatjipReview: NextPage<any> = (props) => {
       <div className="storeInfo">
         <div className="introduce">
           <span className="store-name">
-            {searchResult.length !== 0
-              ? searchResult[selected].place_name
-              : "no"}
+            {selectedSearchResult && selectedSearchResult.place_name}
           </span>
           <span className="address">
-            {searchResult.length !== 0
-              ? searchResult[selected].road_address_name
-              : "no"}
+            {selectedSearchResult && selectedSearchResult.road_address_name}
           </span>
         </div>
       </div>
@@ -142,11 +134,15 @@ const MatjipReview: NextPage<any> = (props) => {
           accept="image/*"
           onChange={onImgChange}
         />
-        {loadedImg.imagePreviewUrl ? (
-          <Image src={loadedImg.imagePreviewUrl} width="40px" height="40px" />
-        ) : (
-          <></>
-        )}
+        {loadedImg.length >= 1 &&
+          loadedImg.map((img, i) => (
+            <Image
+              src={img.imagePreviewUrl}
+              width="40px"
+              height="40px"
+              key={i}
+            />
+          ))}
       </div>
       <div className="rate">
         {_.range(star).map((v) => (

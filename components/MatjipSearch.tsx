@@ -1,22 +1,24 @@
 import Image from "next/image";
+import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { rootState } from "../store/modules";
-import { collegeInfoType } from "../store/modules/selected";
+import {
+  collegeInfoType,
+  setSelectedSearchResult,
+} from "../store/modules/selected";
 import { storeType } from "./Map";
 import RegisterItem from "./RegisterItem";
 type search = {
   [x: string]: string;
 };
 
-const MatjipSearch = ({
-  searchResult,
-  setSearchResult,
-  selected,
-  setSelected,
-  pageConvert,
-  setPageConvert,
-}: any) => {
+const MatjipSearch = ({ pageConvert, setPageConvert }: any) => {
+  const [searchResult, setSearchResult] = useState<storeType[]>([]);
+  const selectedSearchResult = useSelector(
+    (state: rootState) => state.selected
+  ).selectedSearchResult;
+  const dispatch = useDispatch();
   let state = useSelector((state: rootState) => state.selected);
   let { selectedCollege }: { selectedCollege: collegeInfoType } = state;
 
@@ -28,8 +30,10 @@ const MatjipSearch = ({
   } = useForm();
 
   const onSearchComplete = (data: storeType[]) => {
-    console.log(data);
     setSearchResult(data);
+    if (data.length !== 0) {
+      dispatch(setSelectedSearchResult(data[0]));
+    }
   };
 
   const onSearch: SubmitHandler<search> = (data) => {
@@ -43,7 +47,7 @@ const MatjipSearch = ({
   };
 
   const onConvert = (dir: number) => {
-    if (dir === 1 && searchResult.length !== 0) {
+    if (dir === 1 && selectedSearchResult) {
       setPageConvert(true);
     } else {
       setPageConvert(false);
@@ -65,14 +69,8 @@ const MatjipSearch = ({
       </form>
       <div className="result-box">
         {searchResult.length !== 0 ? (
-          searchResult.map((result: search, i: number) => (
-            <RegisterItem
-              storeInfo={result}
-              order={i}
-              selected={selected}
-              setSelected={setSelected}
-              key={i}
-            />
+          searchResult.map((result: any, i: number) => (
+            <RegisterItem storeInfo={result} key={i} />
           ))
         ) : (
           <span>no result</span>

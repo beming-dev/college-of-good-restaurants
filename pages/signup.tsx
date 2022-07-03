@@ -15,20 +15,19 @@ interface signupForm {
 
 const Signup: NextPage = () => {
   const [codeChecked, setCodeChecked] = useState(false);
-
+  const idExp = /^[A-za-z0-9]{5,15}/g;
+  const pwExp = /(?=.*[a-zA-ZS])(?=.*?[#?!@$%^&*-]).{6,24}/;
   const schema = yup.object().shape({
     nickname: yup.string().required("nickname is required"),
     "user-id": yup
       .string()
       .required("id is required")
-      .matches(/^[A-za-z0-9]{5,15}/g, "5~15자 영문, 숫자"),
-    password: yup
-      .string()
-      .required("pw is required")
-      .matches(/(?=.*[a-zA-ZS])(?=.*?[#?!@$%^&*-]).{6,24}/),
+      .matches(idExp, "5~15자 영문, 숫자"),
+    password: yup.string().required("pw is required").matches(pwExp),
   });
 
   const {
+    getValues,
     register,
     handleSubmit,
     watch,
@@ -37,10 +36,11 @@ const Signup: NextPage = () => {
     resolver: yupResolver(schema),
   });
 
-  const onSendAuthCode = (data: signupForm) => {
+  const onSendAuthCode = () => {
+    const v = getValues();
     const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/user-management/signup/send-auth-code`;
     fetchWrapper
-      .post(url, { email: data.email })
+      .post(url, { email: v.email })
       .then((data) => alert("인증번호를 전송했습니다."))
       .catch((err) => {
         console.log(err);
@@ -48,12 +48,13 @@ const Signup: NextPage = () => {
       });
   };
 
-  const onCheckAuthCode = (data: signupForm) => {
+  const onCheckAuthCode = () => {
+    const v = getValues();
     const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/user-management/signup/check-auth-code`;
     fetchWrapper
       .post(url, {
-        email: data.email,
-        "auth-code": data["auth-code"],
+        email: v.email,
+        "auth-code": v["auth-code"],
       })
       .then((data) => {
         console.log(data);
@@ -69,36 +70,72 @@ const Signup: NextPage = () => {
     fetchWrapper.post(url, { ...data });
   };
 
+  const onIdCheck = () => {
+    console.log(errors);
+    const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/user-management/signup/check-user-id`;
+    fetchWrapper.post(url, { user_id: getValues()["user-id"] }).then((data) => {
+      console.log(data);
+    });
+  };
+
+  const onNicknameCheck = () => {
+    if (pwExp.test(getValues().nickname)) {
+      const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/user-management/signup/check-user-nickname`;
+      fetchWrapper
+        .post(url, { user_nickname: getValues().nickname })
+        .then((data) => {
+          console.log(data);
+        });
+    }
+  };
+
   return (
     <div className="signup">
       <span className="title">맛집대학 회원가입</span>
 
-      <form className="mail-box box" onSubmit={handleSubmit(onSendAuthCode)}>
+      <div className="mail-box box">
         <span>학교메일주소</span>
         <input type="text" {...register("email")} />
-        <input type="submit" className="button" value="인증코드전송" />
-      </form>
+        <input
+          type="submit"
+          className="button"
+          value="인증코드전송"
+          onClick={onSendAuthCode}
+        />
+      </div>
       <p className="err-message"></p>
-      <form
-        onSubmit={handleSubmit(onCheckAuthCode)}
-        className="certificate-box box"
-      >
+      <div className="certificate-box box">
         <span>인증코드</span>
         <input type="text" {...register("auth-code")} />
-        <input type="submit" className="button" value="인증코드확인" />
-      </form>
+        <input
+          type="submit"
+          className="button"
+          value="인증코드확인"
+          onClick={onCheckAuthCode}
+        />
+      </div>
       <p className="err-message"></p>
       <form onSubmit={handleSubmit(onSignupSubmit)} className="signup-form">
         <div className="nickname-box box">
           <span>닉네임</span>
           <input type="text" {...register("nickname")} />
-          <input type="submit" className="button" value="중복확인" />
+          <input
+            type="button"
+            className="button"
+            value="중복확인"
+            onClick={onNicknameCheck}
+          />
         </div>
         <p className="err-message">{errors.nickname?.message}</p>
         <div className="id-box box">
           <span>아이디</span>
           <input type="text" {...register("user-id")} />
-          <input type="submit" className="button" value="중복확인" />
+          <input
+            type="button"
+            className="button"
+            value="중복확인"
+            onClick={onIdCheck}
+          />
         </div>
         <p className="err-message">{errors["user-id"]?.message}</p>
         <div className="pw-box box">
