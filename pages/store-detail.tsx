@@ -1,7 +1,13 @@
+import { map } from "cheerio/lib/api/traversing";
 import { NextPage } from "next";
-import { storeFromServer } from "../components/Map";
+import Map, { storeFromServer } from "../components/Map";
 import ReviewItem from "../components/ReviewItem";
 import { fetchWrapper } from "../helpers/fetch-wrapper";
+import Image from "next/image";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import { rootState } from "../store/modules";
+import { getJwtUsername, toStringByFormatting } from "../lib/util";
 
 interface reviewType {
   rating: number;
@@ -17,16 +23,70 @@ interface propsType {
 }
 
 const storeDetail: NextPage<propsType> = ({ storeInfo, reviewInfo }) => {
-  console.log(reviewInfo);
+  const user = useSelector((state: rootState) => state.user);
+  const map = useSelector((state: rootState) => state.map);
+  const [hearted, setHearted] = useState(false);
+  const iconList = [
+    { imgName: "/map.png", txt: "지도" },
+    { imgName: "/roadfind.png", txt: "길찾기" },
+    { imgName: "/roadview.png", txt: "roadview" },
+    { imgName: "/share.png", txt: "공유하기" },
+  ];
+  const onHeartClick = () => {
+    let url;
+    let form;
+    if (hearted) {
+      url = `${process.env.NEXT_PUBLIC_SERVER_IP}/place-like/remove`;
+      form = {
+        place_id: storeInfo.place_id,
+        user_id: getJwtUsername(user.user),
+      };
+    } else {
+      url = `${process.env.NEXT_PUBLIC_SERVER_IP}/place-like/add`;
+      form = {
+        place_id: storeInfo.place_id,
+        user_id: getJwtUsername(user.user),
+        like_date: toStringByFormatting(new Date()),
+      };
+    }
+    fetchWrapper
+      .post(url, form)
+      .then((data) => {
+        setHearted(!hearted);
+      })
+      .catch((err) => console.log(err));
+  };
   return (
     <div className="store-detail">
+      <div className="map-box">
+        <Map x={storeInfo.longitude} y={storeInfo.latitude} />
+      </div>
+      <div className="cover"></div>
       <div className="content">
         <div className="main">
           <h1 className="store-name">{storeInfo.name}</h1>
           <div className="rate-review">
             <span className="rate-count"> 평점 4.5 </span>
             <span className="review-count"> 리뷰 39 </span>
+            <div className="heart-wrapper" onClick={onHeartClick}>
+              {hearted ? (
+                <Image src="/heart-red.png" layout="fill" objectFit="contain" />
+              ) : (
+                <Image src="/heart.png" layout="fill" objectFit="contain" />
+              )}
+            </div>
           </div>
+          <div className="icon-box">
+            {iconList.map((icon, i) => (
+              <div className="icon-item" key={i}>
+                <div className="img-container">
+                  <Image src={icon.imgName} layout="fill" objectFit="contain" />
+                </div>
+                <span>{icon.txt}</span>
+              </div>
+            ))}
+          </div>
+          <div className="icon-box"></div>
         </div>
         <div className="detail">
           <h2>상세정보</h2>
@@ -42,6 +102,24 @@ const storeDetail: NextPage<propsType> = ({ storeInfo, reviewInfo }) => {
       </div>
       <style jsx>{`
         .store-detail {
+          .map-box {
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -2;
+          }
+          .cover {
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            background-color: rgba(255, 255, 255, 0.5);
+          }
+
           display: flex;
           align-items: center;
           justify-content: center;
@@ -51,6 +129,7 @@ const storeDetail: NextPage<propsType> = ({ storeInfo, reviewInfo }) => {
             display: flex;
             flex-direction: column;
             align-items: center;
+            padding: 20px;
             border: 1px solid #ebebeb;
 
             .main {
@@ -67,9 +146,36 @@ const storeDetail: NextPage<propsType> = ({ storeInfo, reviewInfo }) => {
 
               .rate-review {
                 display: flex;
-                margin: 10px 0;
+                align-items: center;
+                margin: 20px 0;
                 span {
                   margin: 0 10px;
+                }
+
+                .heart-wrapper {
+                  position: relative;
+                  width: 20px;
+                  height: 20px;
+                }
+              }
+
+              .icon-box {
+                width: 70%;
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 5px;
+
+                .icon-item {
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+
+                  .img-container {
+                    position: relative;
+                    width: 30px;
+                    height: 30px;
+                    margin-bottom: 5px;
+                  }
                 }
               }
             }
@@ -78,6 +184,7 @@ const storeDetail: NextPage<propsType> = ({ storeInfo, reviewInfo }) => {
               display: flex;
               flex-direction: column;
               align-items: start;
+              margin: 20px 0px;
               h2 {
                 font-size: 20px;
                 font-weight: bold;
@@ -110,13 +217,13 @@ export async function getServerSideProps(ctx: any) {
   const url02 = `${process.env.NEXT_PUBLIC_SERVER_IP}/review/get-reviews`;
   let resp02: any = 1;
   await fetchWrapper
-    .post(url02, { place_id: parseInt(ctx.query.id) })
+    .post(url02, { place_id: ctx.query.id, page: "1" })
     .then((data) => {
       resp02 = data;
     })
     .catch((err) => console.log(err));
 
-  return { props: { storeInfo: resp01, reviewInfo: resp02 } };
+  return { props: { storeInfo: resp01, reviewInfo: resp02 ? resp02 : [] } };
 }
 
 export default storeDetail;

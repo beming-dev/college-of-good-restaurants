@@ -19,10 +19,12 @@ interface imgType {
   imageBlob: any;
 }
 
-const MatjipReview: NextPage<any> = (props) => {
-  const { pageConvert, setPageConvert, setRegisterClose, star, setStar } =
-    props;
-
+const MatjipReview: NextPage<any> = ({
+  pageConvert,
+  setPageConvert,
+  setRegisterClose,
+}) => {
+  const [star, setStar] = useState(0);
   const [loadedImg, setLoadedImg] = useState<imgType[]>([]);
   const selectedSearchResult = useSelector(
     (state: rootState) => state.selected
@@ -71,7 +73,6 @@ const MatjipReview: NextPage<any> = (props) => {
           data: { img: img.imagePreviewUrl },
         })
           .then(async (res) => {
-            console.log(res.data);
             urlArr.push(res.data);
           })
           .catch((err) => alert("이미지 업로드에 실패했습니다."));

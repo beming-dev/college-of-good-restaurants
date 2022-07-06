@@ -3,13 +3,13 @@ import Image from "next/image";
 import { useSelector, useDispatch } from "react-redux";
 import { rootState } from "../store/modules";
 import { setSelectedSearchResult } from "../store/modules/selected";
+import { storeType } from "./Map";
 
-interface storeInfo {
-  ["something"]: string;
+interface propsType {
+  storeInfo: storeType;
 }
-
 //type 수정 필요
-const RegisterItem: NextPage<any> = ({ storeInfo }) => {
+const RegisterItem: NextPage<propsType> = ({ storeInfo }) => {
   const selectedSearchItem = useSelector(
     (state: rootState) => state.selected
   ).selectedSearchResult;

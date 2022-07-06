@@ -44,7 +44,6 @@ const get: getType = (url, body) => {
 };
 
 const post: postType = (url, body) => {
-  console.log(body);
   const requestOptions: RequestInit = {
     method: "POST",
     headers: {

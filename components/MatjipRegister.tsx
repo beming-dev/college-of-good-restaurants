@@ -15,7 +15,6 @@ type search = {
 
 const MatjipRegister = ({ registerClose, setRegisterClose }: props) => {
   const [pageConvert, setPageConvert] = useState(false);
-  const [star, setStar] = useState(0);
 
   return (
     <div className="MatjipRegister">
@@ -35,8 +34,6 @@ const MatjipRegister = ({ registerClose, setRegisterClose }: props) => {
             pageConvert={pageConvert}
             setPageConvert={setPageConvert}
             setRegisterClose={setRegisterClose}
-            star={star}
-            setStar={setStar}
           />
         </div>
       </div>

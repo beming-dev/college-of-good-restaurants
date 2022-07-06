@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { NextPage } from "next";
 import Image from "next/image";
 
@@ -23,12 +24,31 @@ const ReviewItem: NextPage<propsType> = ({ review }) => {
           </div>
           <div className="about-review">
             <div className="area">
-              <span className="date">{review.post_date}</span>
-              <div className="rate">{review.rating}</div>
+              <span className="date">
+                {new Date(review.post_date).toISOString().split("T")[0]}
+              </span>
+              <div className="rate">
+                {_.range(review.rating).map((_, i) => (
+                  <div className="star-img-wrapper" key={i}>
+                    <Image
+                      src="/star-yellow.png"
+                      layout="fill"
+                      objectFit="contain"
+                    />
+                  </div>
+                ))}
+                {_.range(5 - review.rating).map((_, i) => (
+                  <div className="star-img-wrapper" key={i}>
+                    <Image src="/star.png" layout="fill" objectFit="contain" />
+                  </div>
+                ))}
+              </div>
             </div>
-            <textarea readOnly className="description">
-              {review.post_text}
-            </textarea>
+            <textarea
+              readOnly
+              className="description"
+              value={review.post_text || ""}
+            ></textarea>
           </div>
         </div>
         {review.image_urls.map((url) => {})}
@@ -64,6 +84,18 @@ const ReviewItem: NextPage<propsType> = ({ review }) => {
 
                 .area {
                   display: flex;
+                  flex-direction: column;
+
+                  .rate {
+                    margin: 5px 0;
+                    display: flex;
+                    .star-img-wrapper {
+                      position: relative;
+                      width: 20px;
+                      height: 20px;
+                      margin-right: 2px;
+                    }
+                  }
                 }
                 .description {
                   width: 100%;
