@@ -10,8 +10,8 @@ export default async function handler(
   let response;
   try {
     response = await axios.post(`http://localhost:3000/example/${id}`);
+    res.send(response.data);
   } catch (err) {
     console.log(err);
   }
-  res.send(response.data);
 }

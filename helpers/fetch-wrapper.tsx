@@ -10,7 +10,8 @@ type getType = (
 ) => Promise<Response | ((value: Response) => boolean | PromiseLike<boolean>)>;
 type postType = (
   url: string,
-  body: any
+  body: any,
+  user?: any
 ) => Promise<Response | ((value: Response) => boolean | PromiseLike<boolean>)>;
 type putType = (
   url: string,
@@ -43,13 +44,13 @@ const get: getType = (url, body) => {
   return fetch(url, requestOptions).then(handleResponse);
 };
 
-const post: postType = (url, body) => {
+const post: postType = (url, body, user = null) => {
   const requestOptions: RequestInit = {
     method: "POST",
     headers: {
       "Access-Control-Allow-Headers": "*",
       "Content-Type": "application/json",
-      ...authHeader(url, body),
+      ...authHeader(url, body, user),
     },
     body: body.username && body.password ? "" : JSON.stringify(body),
   };
@@ -76,13 +77,11 @@ const _delete: deleteType = (url) => {
 
 // helper functions
 
-const authHeader: authHeader = (url, data) => {
+const authHeader: authHeader = (url, data, user = null) => {
   // return auth header with jwt if user is logged in and request is to the api url
-  const user: any = data.user;
-  const isLoggedIn = user && user.token;
   const isApiUrl = url.startsWith(publicRuntimeConfig.apiUrl);
-  if (isLoggedIn && isApiUrl) {
-    return { Authorization: `Bearer ${user.token}` };
+  if (user && isApiUrl) {
+    return { Authorization: `Bearer ${user}` };
   } else if (url.includes("login") && data.username && data.password) {
     return {
       Authorization:

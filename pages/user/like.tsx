@@ -18,10 +18,22 @@ const Like = () => {
     fetchWrapper
       .post(url, { user_id: getJwtUsername(user.user) })
       .then((data: any) => {
+        console.log(data);
         setLikeList(data);
+      })
+      .catch((err) => {
+        alert("좋아요 리스트 호출 과정에서 에러 발생");
       })
       .catch((err) => console.log(err));
   }, []);
+
+  return (
+    <div className="like">
+      {likeList.map((store, i) => (
+        <div key={i}></div>
+      ))}
+    </div>
+  );
 };
 
 export default Like;

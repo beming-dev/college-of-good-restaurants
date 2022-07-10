@@ -4,7 +4,7 @@ import Map, { storeFromServer } from "../components/Map";
 import ReviewItem from "../components/ReviewItem";
 import { fetchWrapper } from "../helpers/fetch-wrapper";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { rootState } from "../store/modules";
 import { getJwtUsername, toStringByFormatting } from "../lib/util";
@@ -26,6 +26,28 @@ const storeDetail: NextPage<propsType> = ({ storeInfo, reviewInfo }) => {
   const user = useSelector((state: rootState) => state.user);
   const map = useSelector((state: rootState) => state.map);
   const [hearted, setHearted] = useState(false);
+
+  useEffect(() => {
+    if (user.user) {
+      const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/place-like/exist`;
+      fetchWrapper
+        .post(url, {
+          user_id: getJwtUsername(user.user),
+          place_id: storeInfo.place_id,
+        })
+        .then((data: any) => {
+          if (data.result) {
+            setHearted(true);
+          } else {
+            setHearted(false);
+          }
+        })
+        .catch((err) => {
+          alert("좋아요 확인 과정에서 오류 발생");
+        });
+    }
+  }, []);
+
   const iconList = [
     { imgName: "/map.png", txt: "지도" },
     { imgName: "/roadfind.png", txt: "길찾기" },
@@ -54,7 +76,7 @@ const storeDetail: NextPage<propsType> = ({ storeInfo, reviewInfo }) => {
       .then((data) => {
         setHearted(!hearted);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => alert("좋아요 처리 과정에서 에러 발생"));
   };
   return (
     <div className="store-detail">
@@ -69,11 +91,17 @@ const storeDetail: NextPage<propsType> = ({ storeInfo, reviewInfo }) => {
             <span className="rate-count"> 평점 4.5 </span>
             <span className="review-count"> 리뷰 39 </span>
             <div className="heart-wrapper" onClick={onHeartClick}>
-              {hearted ? (
-                <Image src="/heart-red.png" layout="fill" objectFit="contain" />
-              ) : (
-                <Image src="/heart.png" layout="fill" objectFit="contain" />
-              )}
+              {hearted
+                ? user.user && (
+                    <Image
+                      src="/heart-red.png"
+                      layout="fill"
+                      objectFit="contain"
+                    />
+                  )
+                : user.user && (
+                    <Image src="/heart.png" layout="fill" objectFit="contain" />
+                  )}
             </div>
           </div>
           <div className="icon-box">

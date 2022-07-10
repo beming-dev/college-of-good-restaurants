@@ -16,7 +16,7 @@ interface reviewType {
 }
 interface imgType {
   imagePreviewUrl: string | ArrayBuffer | null;
-  imageBlob: any;
+  fileName: any;
 }
 
 const MatjipReview: NextPage<any> = ({
@@ -46,6 +46,19 @@ const MatjipReview: NextPage<any> = ({
       post_date: toStringByFormatting(new Date()),
       post_text: data.reviewDes,
       rating: star + "",
+    };
+  };
+  const createPlaceData = () => {
+    return {
+      category_name: selectedSearchResult.category_name,
+      kakao_id: selectedSearchResult.id,
+      phone: selectedSearchResult.phone,
+      place_name: selectedSearchResult.place_name,
+      place_url: selectedSearchResult.place_url,
+      road_address_name: selectedSearchResult.road_address_name,
+      x: selectedSearchResult.x,
+      y: selectedSearchResult.y,
+      image_url: "~~",
     };
   };
 
@@ -79,19 +92,40 @@ const MatjipReview: NextPage<any> = ({
       });
     }
 
-    try {
-      await fetchWrapper.post(
-        `${process.env.NEXT_PUBLIC_SERVER_IP}/add-review`,
-        createReviewData(data, urlArr)
-      );
-      window.alert("등록이 완료되었습니다.");
-      setPageConvert(false);
-      setRegisterClose(true);
-    } catch (err) {
-      console.log(err);
-      alert("등록에 실패하였습니다.");
-      return;
-    }
+    await fetchWrapper
+      .post(
+        `${process.env.NEXT_PUBLIC_SERVER_IP}/place/add-place`,
+        createPlaceData(),
+        user.user
+      )
+      .then((data) => {
+        console.log(data);
+        window.alert("등록이 완료되었습니다.");
+        setPageConvert(false);
+        setRegisterClose(true);
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("가게 등록에 실패하였습니다.");
+        return;
+      });
+
+    await fetchWrapper
+      .post(
+        `${process.env.NEXT_PUBLIC_SERVER_IP}/review/add-review`,
+        createReviewData(data, urlArr),
+        user.user
+      )
+      .then(() => {
+        window.alert("등록이 완료되었습니다.");
+        setPageConvert(false);
+        setRegisterClose(true);
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("리뷰 등록에 실패하였습니다.");
+        return;
+      });
   };
 
   const onConvert = (dir: number) => {
@@ -102,15 +136,16 @@ const MatjipReview: NextPage<any> = ({
     }
   };
 
-  let reader = new FileReader();
   const onImgChange = (e: any) => {
+    let reader = new FileReader();
     const file = e.target.files[0];
     if (file) {
       reader.readAsDataURL(file);
       reader.onloadend = () => {
+        console.log(file);
         setLoadedImg([
           ...loadedImg,
-          { imagePreviewUrl: reader.result, imageBlob: file },
+          { imagePreviewUrl: reader.result, fileName: file.name },
         ]);
       };
     }
@@ -134,6 +169,7 @@ const MatjipReview: NextPage<any> = ({
           name="chooseFile"
           accept="image/*"
           onChange={onImgChange}
+          multiple
         />
         {loadedImg.length >= 1 &&
           loadedImg.map((img, i) => (

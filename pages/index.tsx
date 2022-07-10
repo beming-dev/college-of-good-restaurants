@@ -240,7 +240,7 @@ const Home: NextPage<props> = ({ college }) => {
 
 export async function getServerSideProps() {
   const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/common/college-student-count`;
-  let resp: Response = await fetchWrapper.post(url, {});
+  let resp: any = await fetchWrapper.post(url, {});
 
   return { props: { college: resp } };
 }

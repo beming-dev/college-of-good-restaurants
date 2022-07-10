@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { fetchWrapper } from "../helpers/fetch-wrapper";
 import * as yup from "yup";
+import Router, { useRouter } from "next/router";
 
 interface signupForm {
   email: string;
@@ -15,6 +16,10 @@ interface signupForm {
 
 const Signup: NextPage = () => {
   const [codeChecked, setCodeChecked] = useState(false);
+  const [nicknameChecked, setNicknameChecked] = useState(false);
+  const [idChecked, setIdChecked] = useState(false);
+  const router = useRouter();
+
   const idExp = /^[A-za-z0-9]{5,15}/g;
   const pwExp = /(?=.*[a-zA-ZS])(?=.*?[#?!@$%^&*-]).{6,24}/;
   const schema = yup.object().shape({
@@ -43,7 +48,6 @@ const Signup: NextPage = () => {
       .post(url, { email: v.email })
       .then((data) => alert("인증번호를 전송했습니다."))
       .catch((err) => {
-        console.log(err);
         alert("전송에 실패했습니다.");
       });
   };
@@ -58,6 +62,9 @@ const Signup: NextPage = () => {
       })
       .then((data) => {
         console.log(data);
+      })
+      .catch((err) => {
+        alert("인증코드 확인에 실패하였습니다.");
       });
   };
 
@@ -66,26 +73,62 @@ const Signup: NextPage = () => {
       alert("학교 메일을 인증해주세요.");
       return;
     }
+    if (!nicknameChecked) {
+      alert("닉네임 중복확인을 해주세요.");
+      return;
+    }
+    if (!idChecked) {
+      alert("아이디 중복확인을 해주세요.");
+      return;
+    }
+
     const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/user-management/signup`;
-    fetchWrapper.post(url, { ...data });
+    fetchWrapper
+      .post(url, { ...data })
+      .then(() => {
+        console.log("회원가입이 완료됐습니다.");
+        router.push("/");
+      })
+      .catch((err) => {
+        alert("회원가입에 실패했습니다.");
+      });
   };
 
   const onIdCheck = () => {
-    console.log(errors);
-    const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/user-management/signup/check-user-id`;
-    fetchWrapper.post(url, { user_id: getValues()["user-id"] }).then((data) => {
-      console.log(data);
-    });
+    if (idExp.test(getValues()["user-id"])) {
+      const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/user-management/signup/check-user-id`;
+      fetchWrapper
+        .post(url, { user_id: getValues()["user-id"] })
+        .then((data: any) => {
+          if (data.message == "id is possible to use") setIdChecked(true);
+          else {
+            alert("중복된 아이디입니다.");
+          }
+        })
+        .catch((err) => {
+          alert("아이디 중복 확인에 실패하였습니다.");
+        });
+    } else {
+      alert("5~15자 영문, 숫자를 입력해주세요.");
+    }
   };
 
   const onNicknameCheck = () => {
-    if (pwExp.test(getValues().nickname)) {
+    if (getValues().nickname !== "") {
       const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/user-management/signup/check-user-nickname`;
       fetchWrapper
         .post(url, { user_nickname: getValues().nickname })
-        .then((data) => {
-          console.log(data);
+        .then((data: any) => {
+          if (data.message == "nickname is possible to use") setIdChecked(true);
+          else {
+            alert("중복된 닉네임입니다.");
+          }
+        })
+        .catch((err) => {
+          alert("닉네임 중복 확인에 실패하였습니다.");
         });
+    } else {
+      alert("닉네임을 입력해주세요.");
     }
   };
 
@@ -118,7 +161,11 @@ const Signup: NextPage = () => {
       <form onSubmit={handleSubmit(onSignupSubmit)} className="signup-form">
         <div className="nickname-box box">
           <span>닉네임</span>
-          <input type="text" {...register("nickname")} />
+          <input
+            type="text"
+            {...register("nickname")}
+            onChange={() => setNicknameChecked(false)}
+          />
           <input
             type="button"
             className="button"
@@ -129,7 +176,11 @@ const Signup: NextPage = () => {
         <p className="err-message">{errors.nickname?.message}</p>
         <div className="id-box box">
           <span>아이디</span>
-          <input type="text" {...register("user-id")} />
+          <input
+            type="text"
+            {...register("user-id")}
+            onChange={() => setNicknameChecked(false)}
+          />
           <input
             type="button"
             className="button"

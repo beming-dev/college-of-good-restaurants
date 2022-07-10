@@ -54,7 +54,10 @@ const nearbyRestaurant: NextPage<propsType> = ({ collegeInfo }) => {
         keyword: data.searchTarget,
         college_id: collegeInfo.college_id.toString(),
       })
-      .then((data: any) => setSearchResult(data));
+      .then((data: any) => setSearchResult(data))
+      .catch((err) => {
+        alert("검색에 실패하였습니다.");
+      });
   };
   const onClickPlus = () => {
     if (!user.user) {
