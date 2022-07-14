@@ -22,7 +22,8 @@ type deleteType = (
 ) => Promise<Response | ((value: Response) => boolean | PromiseLike<boolean>)>;
 type authHeader = (
   url: string,
-  data: { [id: string]: string }
+  data: { [id: string]: string },
+  user?: any
 ) => HeadersInit | undefined | {};
 
 interface fetchWrapper {
@@ -101,7 +102,6 @@ type handleResponseType = (
 const handleResponse: handleResponseType = (response) => {
   return response.text().then((text) => {
     const data = text && JSON.parse(text);
-
     if (!response.ok) {
       // if ([401, 403].includes(response.status) && userService.userValue) {
       //   // auto logout if 401 Unauthorized or 403 Forbidden response returned from api

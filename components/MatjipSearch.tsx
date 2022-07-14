@@ -1,3 +1,4 @@
+import { spawn } from "child_process";
 import Image from "next/image";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -14,6 +15,9 @@ type search = {
 };
 
 const MatjipSearch = ({ pageConvert, setPageConvert }: any) => {
+  const [pages, setPages] = useState(0);
+  const [curPage, setCurPage] = useState(0);
+  const [searchTarget, setSearchTarget] = useState("");
   const [searchResult, setSearchResult] = useState<storeType[]>([]);
   const selectedSearchResult = useSelector(
     (state: rootState) => state.selected
@@ -29,21 +33,35 @@ const MatjipSearch = ({ pageConvert, setPageConvert }: any) => {
     formState: { errors },
   } = useForm();
 
-  const onSearchComplete = (data: storeType[]) => {
+  const onSearchComplete = (
+    data: storeType[],
+    status: any,
+    pagination: any
+  ) => {
+    setPages(pagination.last);
     setSearchResult(data);
     if (data.length !== 0) {
       dispatch(setSelectedSearchResult(data[0]));
     }
   };
 
-  const onSearch: SubmitHandler<search> = (data) => {
-    const ps = new window.kakao.maps.services.Places();
-    const searchOption = {
-      x: selectedCollege.longitude,
-      y: selectedCollege.latitude,
-      radius: parseInt(`${selectedCollege.distance_limit_km}`) * 1000,
-    };
-    ps.keywordSearch(data.target, onSearchComplete, searchOption);
+  const onSearch: SubmitHandler<search> = (data, page) => {
+    console.log(data.target);
+    if (data.target === "") {
+      setSearchResult([]);
+      dispatch(setSelectedSearchResult(null));
+    } else {
+      const ps = new window.kakao.maps.services.Places();
+      const searchOption = {
+        x: selectedCollege.longitude,
+        y: selectedCollege.latitude,
+        radius: parseInt(`${selectedCollege.distance_limit_km}`) * 1000,
+        page,
+      };
+      setCurPage(1);
+      setSearchTarget(data.target);
+      ps.keywordSearch(data.target, onSearchComplete, searchOption);
+    }
   };
 
   const onConvert = (dir: number) => {
@@ -54,9 +72,21 @@ const MatjipSearch = ({ pageConvert, setPageConvert }: any) => {
     }
   };
 
+  const onPageClick = (e: any, page: any) => {
+    const ps = new window.kakao.maps.services.Places();
+    const searchOption = {
+      x: selectedCollege.longitude,
+      y: selectedCollege.latitude,
+      radius: parseInt(`${selectedCollege.distance_limit_km}`) * 1000,
+      page,
+    };
+    setCurPage(page);
+    ps.keywordSearch(searchTarget, onSearchComplete, searchOption);
+  };
+
   return (
     <div className="matjip-search">
-      <form onSubmit={handleSubmit(onSearch)}>
+      <form onSubmit={handleSubmit((data) => onSearch(data, 1))}>
         <input
           type="text"
           {...register("target")}
@@ -76,6 +106,17 @@ const MatjipSearch = ({ pageConvert, setPageConvert }: any) => {
           <span>no result</span>
         )}
       </div>
+      <div className="pages">
+        {_.range(pages).map((num, i) => (
+          <span
+            className={num + 1 === curPage ? "bold" : ""}
+            onClick={(e) => onPageClick(e, num + 1)}
+            key={i}
+          >
+            {num + 1}
+          </span>
+        ))}
+      </div>
       <button className="btn-register" onClick={() => onConvert(1)}>
         등록
       </button>
@@ -87,6 +128,7 @@ const MatjipSearch = ({ pageConvert, setPageConvert }: any) => {
             height: 100%;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
             align-items: center;
             position: relative;
             top: 0;
@@ -118,7 +160,7 @@ const MatjipSearch = ({ pageConvert, setPageConvert }: any) => {
 
             .result-box {
               width: 100%;
-              height: 400px;
+              height: 380px;
               overflow-x: hidden;
               overflow-y: scroll;
             }
@@ -131,6 +173,19 @@ const MatjipSearch = ({ pageConvert, setPageConvert }: any) => {
               background-color: #f98600;
             }
             .result-box::-webkit-scrollbar-track {
+            }
+
+            .pages {
+              height: 20px;
+              margin-top: 5px;
+
+              span {
+                margin: 0 3px;
+              }
+
+              .bold {
+                font-weight: bold;
+              }
             }
 
             .btn-register {
@@ -155,7 +210,7 @@ const MatjipSearch = ({ pageConvert, setPageConvert }: any) => {
                 margin-bottom: 30px;
               }
               .result-box {
-                height: 300px;
+                height: 280px;
               }
             }
           }

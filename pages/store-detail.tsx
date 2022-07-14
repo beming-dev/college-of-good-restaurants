@@ -7,7 +7,14 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { rootState } from "../store/modules";
-import { getJwtUsername, toStringByFormatting } from "../lib/util";
+import {
+  copyToClipBoard,
+  getJwtUsername,
+  toStringByFormatting,
+} from "../lib/util";
+import Link from "next/link";
+import { spawn } from "child_process";
+import { useRouter } from "next/router";
 
 interface reviewType {
   rating: number;
@@ -20,9 +27,11 @@ interface reviewType {
 interface propsType {
   storeInfo: storeFromServer;
   reviewInfo: reviewType[];
+  pages: number;
 }
 
-const storeDetail: NextPage<propsType> = ({ storeInfo, reviewInfo }) => {
+const storeDetail: NextPage<propsType> = ({ storeInfo, reviewInfo, pages }) => {
+  const router = useRouter();
   const user = useSelector((state: rootState) => state.user);
   const map = useSelector((state: rootState) => state.map);
   const [hearted, setHearted] = useState(false);
@@ -49,10 +58,38 @@ const storeDetail: NextPage<propsType> = ({ storeInfo, reviewInfo }) => {
   }, []);
 
   const iconList = [
-    { imgName: "/map.png", txt: "지도" },
-    { imgName: "/roadfind.png", txt: "길찾기" },
-    { imgName: "/roadview.png", txt: "roadview" },
-    { imgName: "/share.png", txt: "공유하기" },
+    {
+      imgName: "/map.png",
+      txt: "지도",
+      onClick: () => {
+        console.log(1);
+        const url = `https://map.kakao.com/link/map/${storeInfo.kakao_place_id}`;
+        window.open(url);
+      },
+    },
+    {
+      imgName: "/roadfind.png",
+      txt: "길찾기",
+      onClick: () => {
+        const url = `https://map.kakao.com/link/to/${storeInfo.kakao_place_id}`;
+        window.open(url);
+      },
+    },
+    {
+      imgName: "/roadview.png",
+      txt: "로드뷰",
+      onClick: () => {
+        const url = `https://map.kakao.com/link/roadview/${storeInfo.kakao_place_id}`;
+        window.open(url);
+      },
+    },
+    {
+      imgName: "/share.png",
+      txt: "공유하기",
+      onClick: (value: string) => {
+        copyToClipBoard(value);
+      },
+    },
   ];
   const onHeartClick = () => {
     let url;
@@ -106,7 +143,17 @@ const storeDetail: NextPage<propsType> = ({ storeInfo, reviewInfo }) => {
           </div>
           <div className="icon-box">
             {iconList.map((icon, i) => (
-              <div className="icon-item" key={i}>
+              <div
+                className="icon-item"
+                key={i}
+                onClick={(e: any) =>
+                  i == 3
+                    ? icon.onClick(
+                        process.env.NEXT_PUBLIC_CLIENT_URL + router.asPath
+                      )
+                    : icon.onClick(e)
+                }
+              >
                 <div className="img-container">
                   <Image src={icon.imgName} layout="fill" objectFit="contain" />
                 </div>
@@ -127,6 +174,11 @@ const storeDetail: NextPage<propsType> = ({ storeInfo, reviewInfo }) => {
             <ReviewItem review={review} key={i} />
           ))}
         </div>
+        <div className="pages">
+          {_.range(pages).map((item, i) => (
+            <span key={i}>{item}</span>
+          ))}
+        </div>
       </div>
       <style jsx>{`
         .store-detail {
@@ -145,7 +197,7 @@ const storeDetail: NextPage<propsType> = ({ storeInfo, reviewInfo }) => {
             top: 0;
             left: 0;
             z-index: -1;
-            background-color: rgba(255, 255, 255, 0.5);
+            background-color: rgba(255, 255, 255, 0.7);
           }
 
           display: flex;
@@ -194,6 +246,7 @@ const storeDetail: NextPage<propsType> = ({ storeInfo, reviewInfo }) => {
                 margin-bottom: 5px;
 
                 .icon-item {
+                  width: 100px;
                   display: flex;
                   flex-direction: column;
                   align-items: center;
@@ -204,6 +257,9 @@ const storeDetail: NextPage<propsType> = ({ storeInfo, reviewInfo }) => {
                     height: 30px;
                     margin-bottom: 5px;
                   }
+                }
+                .icon-item:hover {
+                  cursor: pointer;
                 }
               }
             }
@@ -251,7 +307,22 @@ export async function getServerSideProps(ctx: any) {
     })
     .catch((err) => console.log(err));
 
-  return { props: { storeInfo: resp01, reviewInfo: resp02 ? resp02 : [] } };
+  const url03 = `${process.env.NEXT_PUBLIC_SERVER_IP}/review/get-pages`;
+  let resp03: any = 1;
+  await fetchWrapper
+    .post(url03, { place_id: ctx.query.id })
+    .then((data) => {
+      resp03 = data;
+    })
+    .catch((err) => console.log(err));
+
+  return {
+    props: {
+      storeInfo: resp01,
+      reviewInfo: resp02 ? resp02 : [],
+      pages: resp03,
+    },
+  };
 }
 
 export default storeDetail;

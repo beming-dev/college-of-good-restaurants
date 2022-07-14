@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../store/modules/user";
 import { getJwtExp } from "../lib/util";
 import { rootState } from "../store/modules";
+import ErrorBoundary from "../components/ErrorBoundary";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const user: any = useSelector((state: rootState) => state.user);
@@ -57,7 +58,11 @@ function MyApp({ Component, pageProps }: AppProps) {
     }
   };
 
-  return <Layout>{authorized && <Component {...pageProps} />}</Layout>;
+  return (
+    <ErrorBoundary>
+      <Layout>{authorized && <Component {...pageProps} />}</Layout>
+    </ErrorBoundary>
+  );
 }
 
 export default wrapper.withRedux(MyApp);

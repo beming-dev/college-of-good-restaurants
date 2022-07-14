@@ -29,7 +29,6 @@ const MatjipReview: NextPage<any> = ({
   const selectedSearchResult = useSelector(
     (state: rootState) => state.selected
   ).selectedSearchResult;
-
   let user = useSelector((state: rootState) => state.user);
   const {
     register,
@@ -62,7 +61,7 @@ const MatjipReview: NextPage<any> = ({
     };
   };
 
-  const onEnrollReview = async (data: reviewType) => {
+  const onEnrollReview = async (data: any) => {
     if (!user.user) {
       alert("로그인 후 이용해주세요");
       return;
@@ -99,7 +98,6 @@ const MatjipReview: NextPage<any> = ({
         user.user
       )
       .then((data) => {
-        console.log(data);
         window.alert("등록이 완료되었습니다.");
         setPageConvert(false);
         setRegisterClose(true);

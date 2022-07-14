@@ -53,6 +53,8 @@ const nearbyRestaurant: NextPage<propsType> = ({ collegeInfo }) => {
         // keyword: data.searchTarget,
         keyword: data.searchTarget,
         college_id: collegeInfo.college_id.toString(),
+        scope_start: "1",
+        scope_end: "10",
       })
       .then((data: any) => setSearchResult(data))
       .catch((err) => {

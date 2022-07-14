@@ -78,3 +78,13 @@ export function sleep(ms: number) {
     console.log(1);
   }
 }
+
+export function copyToClipBoard(value: string) {
+  const t = document.createElement("textarea");
+  document.body.appendChild(t);
+  t.value = value;
+  t.select();
+  document.execCommand("copy");
+  document.body.removeChild(t);
+  alert("클립보드에 주소가 복사되었습니다.");
+}

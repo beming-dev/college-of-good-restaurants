@@ -18,15 +18,25 @@ interface props {
 }
 
 const Home: NextPage<props> = ({ college }) => {
-  const cl = college;
+  let cl = college;
+  const collegeSort = (a: collegeInfoType, b: collegeInfoType) => {
+    if (a.number_of_students == b.number_of_students) {
+      return a.college_name > b.college_name ? 1 : -1;
+    }
+    return a.number_of_students < b.number_of_students ? 1 : -1;
+  };
 
-  const [collegeList, setCollegeList] = useState<collegeInfoType[]>(cl);
+  const [collegeList, setCollegeList] = useState<collegeInfoType[]>(
+    cl.sort((a: collegeInfoType, b: collegeInfoType) => collegeSort(a, b))
+  );
 
   const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCollegeList(
-      cl.filter((college: collegeInfoType) =>
-        createFuzzyMatcher(e.target.value).test(college["college_name"])
-      )
+      cl
+        .sort((a: collegeInfoType, b: collegeInfoType) => collegeSort(a, b))
+        .filter((college: collegeInfoType) =>
+          createFuzzyMatcher(e.target.value).test(college["college_name"])
+        )
     );
   };
 
@@ -244,4 +254,5 @@ export async function getServerSideProps() {
 
   return { props: { college: resp } };
 }
+
 export default Home;
