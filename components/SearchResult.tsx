@@ -5,17 +5,24 @@ import { useSelector } from "react-redux";
 import { rootState } from "../store/modules";
 import { NextPage } from "next";
 import { storeFromServer, storeType } from "./Map";
+import { fetchWrapper } from "../helpers/fetch-wrapper";
 
 type propsType = {
   searchResult: storeFromServer[];
   resultClose: boolean;
   setResultClose: React.Dispatch<React.SetStateAction<boolean>>;
+  setSearchResult: React.Dispatch<React.SetStateAction<any>>;
+  setPage: React.Dispatch<React.SetStateAction<number>>;
+  page: number;
 };
 
 const SearchResult: NextPage<propsType> = ({
   searchResult,
   resultClose,
   setResultClose,
+  setSearchResult,
+  setPage,
+  page,
 }) => {
   const map = useSelector((state: rootState) => state.map);
 
@@ -36,6 +43,9 @@ const SearchResult: NextPage<propsType> = ({
   const onExitClick = () => {
     setResultClose(true);
   };
+  const onMoreClick = () => {
+    setPage(page + 1);
+  };
   return (
     <div className="search-result">
       <div className="exit-img-box" onClick={onExitClick}>
@@ -53,6 +63,9 @@ const SearchResult: NextPage<propsType> = ({
             <SearchItem item={item} key={item["place_id"]} />
           ))
         )}
+      </div>
+      <div className="more">
+        <button onClick={onMoreClick}>더보기</button>
       </div>
       <style jsx>
         {`
@@ -82,6 +95,27 @@ const SearchResult: NextPage<propsType> = ({
               padding: 5px;
               border: none;
               outline: none;
+            }
+
+            .more {
+              width: 100%;
+              display: flex;
+              justify-content: center;
+              button {
+                border: none;
+                width: 80%;
+                height: 50px;
+                border-radius: 10px;
+                color: black;
+                background-color: white;
+                border: 1px solid #f98600;
+
+                transition-duration: 0.5s;
+              }
+              button:hover {
+                background-color: #f98600;
+                color: white;
+              }
             }
           }
 

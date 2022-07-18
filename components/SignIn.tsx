@@ -61,6 +61,7 @@ const SignIn: NextPage<props> = ({ signinDisplay, setSigninDisplay }) => {
       })
       .catch((err) => {
         alert("로그인에 실패하였습니다.");
+        setLogining(false);
       });
   };
 

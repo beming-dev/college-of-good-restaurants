@@ -37,10 +37,14 @@ const MatjipReview: NextPage<any> = ({
     formState: { errors },
   } = useForm();
 
-  const createReviewData = (data: reviewType, img_urls: string[]) => {
+  const createReviewData = (
+    data: reviewType,
+    img_urls: string[],
+    place_id: string
+  ) => {
     return {
       img_urls,
-      place_id: selectedSearchResult.id,
+      place_id,
       user_id: getJwtUsername(user.user),
       post_date: toStringByFormatting(new Date()),
       post_text: data.reviewDes,
@@ -62,6 +66,7 @@ const MatjipReview: NextPage<any> = ({
   };
 
   const onEnrollReview = async (data: any) => {
+    console.log(selectedSearchResult.category_name);
     if (!user.user) {
       alert("로그인 후 이용해주세요");
       return;
@@ -97,31 +102,31 @@ const MatjipReview: NextPage<any> = ({
         createPlaceData(),
         user.user
       )
-      .then((data) => {
-        window.alert("등록이 완료되었습니다.");
+      .then(async (res: any) => {
+        console.log(res);
+        await fetchWrapper
+          .post(
+            `${process.env.NEXT_PUBLIC_SERVER_IP}/review/add-review`,
+            createReviewData(data, urlArr, res.place_id),
+            user.user
+          )
+          .then(() => {
+            window.alert("등록이 완료되었습니다.");
+            setPageConvert(false);
+            setRegisterClose(true);
+          })
+          .catch((err) => {
+            console.log(err);
+            alert("리뷰 등록에 실패하였습니다.");
+            return;
+          });
+
         setPageConvert(false);
         setRegisterClose(true);
       })
       .catch((err) => {
         console.log(err);
         alert("가게 등록에 실패하였습니다.");
-        return;
-      });
-
-    await fetchWrapper
-      .post(
-        `${process.env.NEXT_PUBLIC_SERVER_IP}/review/add-review`,
-        createReviewData(data, urlArr),
-        user.user
-      )
-      .then(() => {
-        window.alert("등록이 완료되었습니다.");
-        setPageConvert(false);
-        setRegisterClose(true);
-      })
-      .catch((err) => {
-        console.log(err);
-        alert("리뷰 등록에 실패하였습니다.");
         return;
       });
   };

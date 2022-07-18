@@ -12,15 +12,13 @@ import {
   getJwtUsername,
   toStringByFormatting,
 } from "../lib/util";
-import Link from "next/link";
-import { spawn } from "child_process";
 import { useRouter } from "next/router";
 
 interface reviewType {
   rating: number;
   place_id: number;
   user_id: string;
-  post_date: number;
+  post_date: string;
   post_text: string;
   image_urls: string[];
 }
@@ -30,11 +28,98 @@ interface propsType {
   pages: number;
 }
 
-const storeDetail: NextPage<propsType> = ({ storeInfo, reviewInfo, pages }) => {
+const storeDetail: NextPage<propsType> = ({ storeInfo, reviewInfo }) => {
+  reviewInfo = [
+    {
+      image_urls: [
+        "https://test.image.1",
+        "https://test.image.2",
+        "https://test.image.3",
+      ],
+      place_id: 1,
+      post_date: "2022-05-31",
+      post_text: "테스트용 리뷰",
+      rating: 4,
+      user_id: "wonbinkim",
+    },
+    {
+      image_urls: [
+        "https://test.image.1",
+        "https://test.image.2",
+        "https://test.image.3",
+      ],
+      place_id: 1,
+      post_date: "2022-05-31",
+      post_text: "테스트용 리뷰",
+      rating: 4,
+      user_id: "wonbinkim",
+    },
+    {
+      image_urls: [
+        "https://test.image.1",
+        "https://test.image.2",
+        "https://test.image.3",
+      ],
+      place_id: 1,
+      post_date: "2022-05-31",
+      post_text: "테스트용 리뷰",
+      rating: 4,
+      user_id: "wonbinkim",
+    },
+    {
+      image_urls: [
+        "https://test.image.1",
+        "https://test.image.2",
+        "https://test.image.3",
+      ],
+      place_id: 1,
+      post_date: "2022-05-31",
+      post_text: "테스트용 리뷰",
+      rating: 4,
+      user_id: "wonbinkim",
+    },
+    {
+      image_urls: [
+        "https://test.image.1",
+        "https://test.image.2",
+        "https://test.image.3",
+      ],
+      place_id: 1,
+      post_date: "2022-05-31",
+      post_text: "테스트용 리뷰",
+      rating: 4,
+      user_id: "wonbinkim",
+    },
+    {
+      image_urls: [
+        "https://test.image.1",
+        "https://test.image.2",
+        "https://test.image.3",
+      ],
+      place_id: 1,
+      post_date: "2022-05-31",
+      post_text: "테스트용 리뷰",
+      rating: 4,
+      user_id: "wonbinkim",
+    },
+    {
+      image_urls: [
+        "https://test.image.1",
+        "https://test.image.2",
+        "https://test.image.3",
+      ],
+      place_id: 1,
+      post_date: "2022-05-31",
+      post_text: "테스트용 리뷰",
+      rating: 4,
+      user_id: "wonbinkim",
+    },
+  ];
   const router = useRouter();
   const user = useSelector((state: rootState) => state.user);
   const map = useSelector((state: rootState) => state.map);
   const [hearted, setHearted] = useState(false);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     if (user.user) {
@@ -45,7 +130,7 @@ const storeDetail: NextPage<propsType> = ({ storeInfo, reviewInfo, pages }) => {
           place_id: storeInfo.place_id,
         })
         .then((data: any) => {
-          if (data.result) {
+          if (data.result === "true") {
             setHearted(true);
           } else {
             setHearted(false);
@@ -174,14 +259,10 @@ const storeDetail: NextPage<propsType> = ({ storeInfo, reviewInfo, pages }) => {
             <ReviewItem review={review} key={i} />
           ))}
         </div>
-        <div className="pages">
-          {_.range(pages).map((item, i) => (
-            <span key={i}>{item}</span>
-          ))}
-        </div>
       </div>
       <style jsx>{`
         .store-detail {
+          height: fit-content;
           .map-box {
             width: 100vw;
             height: 100vh;
@@ -307,20 +388,10 @@ export async function getServerSideProps(ctx: any) {
     })
     .catch((err) => console.log(err));
 
-  const url03 = `${process.env.NEXT_PUBLIC_SERVER_IP}/review/get-pages`;
-  let resp03: any = 1;
-  await fetchWrapper
-    .post(url03, { place_id: ctx.query.id })
-    .then((data) => {
-      resp03 = data;
-    })
-    .catch((err) => console.log(err));
-
   return {
     props: {
       storeInfo: resp01,
       reviewInfo: resp02 ? resp02 : [],
-      pages: resp03,
     },
   };
 }

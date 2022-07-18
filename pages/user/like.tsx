@@ -3,11 +3,16 @@ import { fetchWrapper } from "../../helpers/fetch-wrapper";
 import { getJwtUsername } from "../../lib/util";
 import { rootState } from "../../store/modules";
 import { useEffect, useState } from "react";
+import LikeItem from "../../components/LikeItem";
+import { storeFromServer } from "../../components/Map";
 
 interface likeType {
-  place_id: number;
-  user_id: string;
-  like_data: number;
+  like_data: {
+    place_id: number;
+    user_id: string;
+    like_data: number;
+  };
+  place_data: storeFromServer;
 }
 
 const Like = () => {
@@ -18,20 +23,30 @@ const Like = () => {
     fetchWrapper
       .post(url, { user_id: getJwtUsername(user.user) })
       .then((data: any) => {
-        console.log(data);
         setLikeList(data);
       })
       .catch((err) => {
         alert("좋아요 리스트 호출 과정에서 에러 발생");
-      })
-      .catch((err) => console.log(err));
+        console.log(err);
+      });
   }, []);
 
   return (
-    <div className="like">
+    <div className="like-page">
       {likeList.map((store, i) => (
-        <div key={i}></div>
+        <LikeItem
+          storeInfo={store.place_data}
+          key={store.place_data.place_id}
+        />
       ))}
+      <style jsx>
+        {`
+          .like-page {
+            width: 100%;
+            height: 100%;
+          }
+        `}
+      </style>
     </div>
   );
 };

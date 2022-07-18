@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import Map from "../components/Map";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
@@ -24,12 +24,37 @@ const nearbyRestaurant: NextPage<propsType> = ({ collegeInfo }) => {
   useEffect(() => {
     dispatch(setSelectedCollege(collegeInfo));
   }, []);
-
   let user = useSelector((state: rootState) => state.user);
   const [resultClose, setResultClose] = useState(true);
   const [menuClose, setMenuClose] = useState(true);
   const [registerClose, setRegisterClose] = useState(true);
   const [searchResult, setSearchResult] = useState([]);
+  const [page, setPage] = useState(1);
+  const [keyword, setKeyword] = useState("");
+  const resultCount = 10;
+
+  useEffect(() => {
+    let data = {
+      keyword,
+      college_id: collegeInfo.college_id.toString(),
+      scope_start: (page - 1) * resultCount + 1 + "",
+      scope_end: page * resultCount + "",
+    };
+    console.log(data);
+    if (page !== 1) {
+      const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/place/search-place`;
+      fetchWrapper
+        .post(url, data)
+        .then((data: any) => {
+          console.log(data);
+          let arr: any = [...searchResult, ...data];
+          setSearchResult(arr);
+        })
+        .catch((err) => {
+          alert("검색 결과가 없습니다.");
+        });
+    }
+  }, [page]);
 
   const schema = yup.object().shape({
     searchTarget: yup.string().required(),
@@ -46,6 +71,8 @@ const nearbyRestaurant: NextPage<propsType> = ({ collegeInfo }) => {
 
   //로그인
   const onSubmit = (data: { searchTarget: string }) => {
+    setPage(1);
+    setKeyword(data.searchTarget);
     setResultClose(false);
     const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/place/search-place`;
     fetchWrapper
@@ -53,10 +80,12 @@ const nearbyRestaurant: NextPage<propsType> = ({ collegeInfo }) => {
         // keyword: data.searchTarget,
         keyword: data.searchTarget,
         college_id: collegeInfo.college_id.toString(),
-        scope_start: "1",
-        scope_end: "10",
+        scope_start: (page - 1) * resultCount + 1 + "",
+        scope_end: page * resultCount + "",
       })
-      .then((data: any) => setSearchResult(data))
+      .then((data: any) => {
+        setSearchResult(data);
+      })
       .catch((err) => {
         alert("검색에 실패하였습니다.");
       });
@@ -70,7 +99,7 @@ const nearbyRestaurant: NextPage<propsType> = ({ collegeInfo }) => {
   };
 
   return (
-    <div>
+    <div className="nearby-restaurant">
       <Map y={collegeInfo.latitude} x={collegeInfo.longitude} />
       <MatjipRegister
         registerClose={registerClose}
@@ -82,6 +111,9 @@ const nearbyRestaurant: NextPage<propsType> = ({ collegeInfo }) => {
           resultClose={resultClose}
           setResultClose={setResultClose}
           searchResult={searchResult}
+          setSearchResult={setSearchResult}
+          setPage={setPage}
+          page={page}
         />
         <form className="input-box" onSubmit={handleSubmit(onSubmit)}>
           <input
