@@ -21,7 +21,11 @@ const Like = () => {
   useEffect(() => {
     const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/place-like/user-like-list`;
     fetchWrapper
-      .post(url, { user_id: getJwtUsername(user.user) })
+      .post(url, {
+        user_id: getJwtUsername(user.user),
+        scope_start: "1",
+        scope_end: "10",
+      })
       .then((data: any) => {
         setLikeList(data);
       })
@@ -43,7 +47,10 @@ const Like = () => {
         {`
           .like-page {
             width: 100%;
-            height: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
           }
         `}
       </style>

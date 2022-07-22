@@ -13,6 +13,7 @@ import {
   toStringByFormatting,
 } from "../lib/util";
 import { useRouter } from "next/router";
+import axios from "axios";
 
 interface reviewType {
   rating: number;
@@ -140,6 +141,14 @@ const storeDetail: NextPage<propsType> = ({ storeInfo, reviewInfo }) => {
           alert("좋아요 확인 과정에서 오류 발생");
         });
     }
+  }, []);
+
+  useEffect(() => {
+    axios({
+      method: "POST",
+      url: "/api/crawler",
+      data: { id: storeInfo.kakao_place_id },
+    }).then((data) => console.log(data));
   }, []);
 
   const iconList = [

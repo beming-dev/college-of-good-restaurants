@@ -47,7 +47,7 @@ const HamburgerMenu = ({ menuClose, setMenuClose }: props) => {
       </div>
       <div className="option">
         <div className="option-box" onClick={() => router.push("/")}>
-          <Image src="/good.png" width={40} height={40} />
+          <Image src="/home.png" width={40} height={40} />
           <span>메인으로</span>
         </div>
         <div className="option-box" onClick={() => router.push("/user/like")}>
@@ -58,9 +58,9 @@ const HamburgerMenu = ({ menuClose, setMenuClose }: props) => {
           <Image src="/plus-black.png" width={40} height={40} />
           <span>맛집 등록</span>
         </div>
-        <div className="option-box">
-          <Image src="/setting.png" width={40} height={40} />
-          <span>설정</span>
+        <div className="option-box" onClick={() => router.push("/mypage")}>
+          <Image src="/user-black.png" width={40} height={40} />
+          <span>마이페이지</span>
         </div>
       </div>
       <style jsx>

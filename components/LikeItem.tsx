@@ -7,12 +7,14 @@ import { fetchWrapper } from "../helpers/fetch-wrapper";
 import { useSelector } from "react-redux";
 import { rootState } from "../store/modules";
 import { getJwtUsername, toStringByFormatting } from "../lib/util";
+import { useRouter } from "next/router";
 
 type propsType = {
   storeInfo: storeFromServer;
 };
 
 const LikeItem: NextPage<propsType> = ({ storeInfo }) => {
+  const router = useRouter();
   const user = useSelector((store: rootState) => store.user);
   const [hearted, setHearted] = useState(true);
   const onHeartClick = () => {
@@ -37,9 +39,13 @@ const LikeItem: NextPage<propsType> = ({ storeInfo }) => {
       .catch((err) => console.log(err));
   };
 
+  const onItemClick = () => {
+    router.push(`/store-detail?id=${storeInfo.place_id}`);
+  };
+
   return (
-    <div className="like-item">
-      <span>이미지</span>
+    <div className="like-item" onClick={onItemClick}>
+      <span className="img-wrapper">이미지</span>
       <div className="store-info">
         <span className="name">{storeInfo.name}</span>
         <span className="address">{storeInfo.address}</span>
@@ -59,22 +65,39 @@ const LikeItem: NextPage<propsType> = ({ storeInfo }) => {
       </div>
       <div className="ex-func" onClick={onHeartClick}>
         {hearted ? (
-          <Image src="/heart-red.png" width="30px" height="27px" />
+          <Image src="/heart-red.png" layout="fill" />
         ) : (
-          <Image src="/heart.png" width="30px" height="27px" />
+          <Image src="/heart.png" layout="fill" />
         )}
       </div>
       <style jsx>
         {`
+          .like-item:hover {
+            background: #f98600;
+            color: white;
+          }
           .like-item {
             width: 60%;
+            padding: 0 10px;
             display: flex;
-            border: 1px solid black;
+            border: 1px solid #f98600;
+            border-radius: 5px;
+            justify-content: space-between;
             align-items: center;
+            transition-duration: 0.5s;
 
+            .img-wrapper {
+              width: 15%;
+            }
             .store-info {
+              width: 65%;
               display: flex;
               flex-direction: column;
+
+              span,
+              .rating-area {
+                margin: 3px 0;
+              }
 
               .rating-area {
                 display: flex;
@@ -85,6 +108,11 @@ const LikeItem: NextPage<propsType> = ({ storeInfo }) => {
                   position: relative;
                 }
               }
+            }
+            .ex-func {
+              width: 30px;
+              height: 27px;
+              position: relative;
             }
           }
         `}

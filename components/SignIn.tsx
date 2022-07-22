@@ -57,7 +57,7 @@ const SignIn: NextPage<props> = ({ signinDisplay, setSigninDisplay }) => {
         dispatch(login(user));
         localStorage.setItem("user", JSON.stringify(user.jwt));
         setLogining(false);
-        router.push("/");
+        window.location.href = "/";
       })
       .catch((err) => {
         alert("로그인에 실패하였습니다.");

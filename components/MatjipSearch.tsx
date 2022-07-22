@@ -38,6 +38,7 @@ const MatjipSearch = ({ pageConvert, setPageConvert }: any) => {
     status: any,
     pagination: any
   ) => {
+    console.log(data);
     setPages(pagination.last);
     setSearchResult(data);
     if (data.length !== 0) {
@@ -46,7 +47,6 @@ const MatjipSearch = ({ pageConvert, setPageConvert }: any) => {
   };
 
   const onSearch: SubmitHandler<search> = (data, page) => {
-    console.log(data.target);
     if (data.target === "") {
       setSearchResult([]);
       dispatch(setSelectedSearchResult(null));
