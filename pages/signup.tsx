@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import type { NextPage } from "next";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { fetchWrapper } from "../helpers/fetch-wrapper";
 import * as yup from "yup";
 import Router, { useRouter } from "next/router";
+import clause from "../clause";
 
 interface signupForm {
   email: string;
@@ -19,6 +20,7 @@ const Signup: NextPage = () => {
   const [nicknameChecked, setNicknameChecked] = useState(false);
   const [idChecked, setIdChecked] = useState(false);
   const router = useRouter();
+  const checkboxRef = useRef<HTMLInputElement>(null);
 
   const idExp = /^[A-za-z0-9]{5,15}/g;
   const pwExp = /(?=.*[a-zA-ZS])(?=.*?[#?!@$%^&*-]).{6,24}/;
@@ -78,6 +80,10 @@ const Signup: NextPage = () => {
   };
 
   const onSignupSubmit = (data: signupForm) => {
+    if (checkboxRef.current.checked) {
+      alert("약관에 동의해주세요.");
+      return;
+    }
     if (!codeChecked) {
       alert("학교 메일을 인증해주세요.");
       return;
@@ -162,13 +168,17 @@ const Signup: NextPage = () => {
 
       <div className="mail-box box">
         <span>학교메일주소</span>
-        <input type="text" {...register("email")} />
+        <input
+          type="text"
+          {...register("email", {
+            onChange: (e) => setCodeChecked(false),
+          })}
+        />
         <input
           type="submit"
           className="button"
           value="인증코드전송"
           onClick={onSendAuthCode}
-          onChange={() => setCodeChecked(false)}
         />
       </div>
       <p className="err-message"></p>
@@ -188,8 +198,11 @@ const Signup: NextPage = () => {
           <span>닉네임</span>
           <input
             type="text"
-            {...register("nickname")}
-            onChange={() => setNicknameChecked(false)}
+            {...register("nickname", {
+              onChange: (e) => {
+                setNicknameChecked(false);
+              },
+            })}
           />
           <input
             type="button"
@@ -203,8 +216,11 @@ const Signup: NextPage = () => {
           <span>아이디</span>
           <input
             type="text"
-            {...register("user_id")}
-            onChange={() => setNicknameChecked(false)}
+            {...register("user_id", {
+              onChange: (e) => {
+                setNicknameChecked(false);
+              },
+            })}
           />
           <input
             type="button"
@@ -219,6 +235,21 @@ const Signup: NextPage = () => {
           <input type="text" {...register("password")} />
         </div>
         <p className="err-message">{errors.password?.message}</p>
+
+        <div className="clause-area">
+          <textarea
+            name="clause"
+            id="clause"
+            rows="10"
+            cols="45"
+            value={clause}
+            readOnly
+          ></textarea>
+          <div>
+            <input type="checkbox" ref={checkboxRef} />
+            <span>약관에 동의합니다.</span>
+          </div>
+        </div>
         <button className="btn-signup">회원가입</button>
       </form>
       <style jsx>{`
@@ -307,6 +338,7 @@ const Signup: NextPage = () => {
             }
 
             .box {
+              width: 350px;
               flex-direction: column;
               align-items: center;
               justify-content: center;
@@ -314,10 +346,14 @@ const Signup: NextPage = () => {
               span {
                 width: auto;
               }
-              input[type="text"] {
+
+              input {
+                width: 70%;
                 margin: 5px 0;
               }
+
               .button {
+                width: 30%;
                 margin: 0;
               }
             }

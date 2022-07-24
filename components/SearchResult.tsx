@@ -89,6 +89,20 @@ const SearchResult: NextPage<propsType> = ({
               right: 30px;
             }
 
+            .result {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              overflow-y: scroll;
+            }
+            .result::-webkit-scrollbar {
+              width: 5px;
+              background-color: white;
+            }
+            .result::-webkit-scrollbar-thumb {
+              background-color: #f98600;
+            }
+
             #select-sort {
               width: 70px;
               height: 30px;
@@ -101,6 +115,7 @@ const SearchResult: NextPage<propsType> = ({
               width: 100%;
               display: flex;
               justify-content: center;
+              margin: 10px 0;
               button {
                 border: none;
                 width: 80%;

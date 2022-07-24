@@ -2,7 +2,7 @@ import _ from "lodash";
 import { NextPage } from "next";
 import Image from "next/image";
 
-interface reviewType {
+export interface reviewType {
   rating: number;
   place_id: number;
   user_id: string;

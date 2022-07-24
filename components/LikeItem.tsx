@@ -85,6 +85,7 @@ const LikeItem: NextPage<propsType> = ({ storeInfo }) => {
             justify-content: space-between;
             align-items: center;
             transition-duration: 0.5s;
+            margin: 10px 0;
 
             .img-wrapper {
               width: 15%;

@@ -40,6 +40,7 @@ const SearchItem: NextPage<propsType> = ({ item }) => {
               .review-area {
                 display: flex;
                 align-items: center;
+                margin: 5px 0;
               }
             }
           }

@@ -70,8 +70,8 @@ const nearbyRestaurant: NextPage<propsType> = ({ collegeInfo }) => {
   });
 
   //로그인
-  const onSubmit = (data: { searchTarget: string }) => {
-    setPage(1);
+  const onSubmit = async (data: { searchTarget: string }) => {
+    await setPage(1);
     setKeyword(data.searchTarget);
     setResultClose(false);
     const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/place/search-place`;
@@ -80,8 +80,8 @@ const nearbyRestaurant: NextPage<propsType> = ({ collegeInfo }) => {
         // keyword: data.searchTarget,
         keyword: data.searchTarget,
         college_id: collegeInfo.college_id.toString(),
-        scope_start: (page - 1) * resultCount + 1 + "",
-        scope_end: page * resultCount + "",
+        scope_start: 1 + "",
+        scope_end: resultCount + "",
       })
       .then((data: any) => {
         setSearchResult(data);

@@ -50,7 +50,7 @@ const HamburgerMenu = ({ menuClose, setMenuClose }: props) => {
           <Image src="/home.png" width={40} height={40} />
           <span>메인으로</span>
         </div>
-        <div className="option-box" onClick={() => router.push("/user/like")}>
+        <div className="option-box" onClick={() => router.push("/mypage/like")}>
           <Image src="/good.png" width={40} height={40} />
           <span>좋아요 목록</span>
         </div>

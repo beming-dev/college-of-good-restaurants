@@ -122,6 +122,10 @@ const storeDetail: NextPage<propsType> = ({ storeInfo, reviewInfo }) => {
   const [hearted, setHearted] = useState(false);
   const [page, setPage] = useState(1);
 
+  const onMoreClick = () => {
+    setPage(page + 1);
+  };
+
   useEffect(() => {
     if (user.user) {
       const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/place-like/exist`;
@@ -267,6 +271,9 @@ const storeDetail: NextPage<propsType> = ({ storeInfo, reviewInfo }) => {
           {reviewInfo.map((review, i) => (
             <ReviewItem review={review} key={i} />
           ))}
+          <button className="btn-more" onClick={onMoreClick}>
+            더보기
+          </button>
         </div>
       </div>
       <style jsx>{`
@@ -373,6 +380,21 @@ const storeDetail: NextPage<propsType> = ({ storeInfo, reviewInfo }) => {
               width: 100%;
               display: flex;
               flex-direction: column;
+
+              .btn-more {
+                margin-top: 20px;
+                align-self: center;
+                width: 150px;
+                height: 50px;
+                border-radius: 5px;
+                background: white;
+                border: 1px solid #f98600;
+                transition-duration: 0.5s;
+              }
+              .btn-more:hover {
+                background: #f98600;
+                color: white;
+              }
             }
           }
         }
