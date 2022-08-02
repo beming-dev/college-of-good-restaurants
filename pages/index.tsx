@@ -7,6 +7,7 @@ import Nav from "../components/Nav";
 import CollegeRankItem from "../components/CollegeRankItem";
 import { fetchWrapper } from "../helpers/fetch-wrapper";
 import { createFuzzyMatcher } from "../lib/util";
+import { useWindowSize } from "../lib/hook";
 
 interface collegeInfoType {
   college_name: string;
@@ -19,6 +20,8 @@ interface props {
 
 const Home: NextPage<props> = ({ college }) => {
   let cl = college;
+  const windowSize = useWindowSize();
+
   const collegeSort = (a: collegeInfoType, b: collegeInfoType) => {
     if (a.number_of_students == b.number_of_students) {
       return a.college_name > b.college_name ? 1 : -1;
@@ -67,7 +70,7 @@ const Home: NextPage<props> = ({ college }) => {
           <div className="school-rank">
             {collegeList.map(
               (info, i) =>
-                i < 8 && (
+                i < (windowSize.height < 700 ? 6 : 8) && (
                   <CollegeRankItem
                     collegeName={info["college_name"]}
                     studentNum={info["number_of_students"]}
@@ -98,11 +101,13 @@ const Home: NextPage<props> = ({ college }) => {
             height: 100vh;
             z-index: 2;
             background-color: rgba(255, 255, 255, 0.5);
+            flex-shrink: 0;
 
             .content {
               display: flex;
               flex-direction: column;
               align-items: center;
+              flex-shrink: 0;
 
               .logo {
                 font-family: "Nanum Pen Script";
@@ -138,7 +143,6 @@ const Home: NextPage<props> = ({ college }) => {
               .school-rank {
                 width: 400px;
                 height: fit-content;
-                min-height: 400px;
                 max-height: 400px;
                 overflow-y: hidden;
               }
@@ -238,6 +242,20 @@ const Home: NextPage<props> = ({ college }) => {
                   height: fit-content;
                   max-height: 360px;
                   overflow-y: hidden;
+                }
+              }
+            }
+          }
+          @media (max-height: 700px) {
+            .cover {
+              .content {
+                height: fit-content;
+                .input-box {
+                  margin: 40px 0;
+                }
+                .school-rank {
+                  height: 300px;
+                  min-height: none;
                 }
               }
             }

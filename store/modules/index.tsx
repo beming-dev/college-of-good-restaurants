@@ -1,11 +1,11 @@
-import { combineReducers } from "@reduxjs/toolkit";
+import { AnyAction, combineReducers } from "@reduxjs/toolkit";
 import { HYDRATE } from "next-redux-wrapper";
 
 import user from "./user";
 import map from "./map";
 import selected from "./selected";
 
-const reducer = (state: any, action: any) => {
+const reducer = (state: any, action: AnyAction) => {
   if (action.type === HYDRATE) {
     return {
       ...state,

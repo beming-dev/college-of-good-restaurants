@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 import { rootState } from "../store/modules";
 import { NextPage } from "next";
 import { storeFromServer, storeType } from "./Map";
-import { fetchWrapper } from "../helpers/fetch-wrapper";
 
 type propsType = {
   searchResult: storeFromServer[];
@@ -34,8 +33,21 @@ const SearchResult: NextPage<propsType> = ({
             store.latitude,
             store.longitude
           ),
+          clickable: true,
         });
         marker.setMap(map.map);
+
+        const iwContent = `<a href="/store-detail?id=${store.place_id}" style="padding:5px;" >${store.name}</a>`;
+        const iwRemovable = true;
+
+        const infowindow = new window.kakao.maps.InfoWindow({
+          content: iwContent,
+          removable: iwRemovable,
+        });
+
+        window.kakao.maps.event.addListener(marker, "click", () => {
+          infowindow.open(map.map, marker);
+        });
       });
     }
   }, [searchResult]);
