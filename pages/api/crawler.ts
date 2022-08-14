@@ -34,7 +34,6 @@ export default async function handler(
       1000
     );
     result2 = await result2.getAttribute("style");
-    console.log(result2);
     res.send(result);
   } catch (err) {
     console.log(err);

@@ -61,10 +61,6 @@ const Signup: NextPage = () => {
 
   const onCheckAuthCode = () => {
     const v = getValues();
-    console.log({
-      email: v.email,
-      auth_code: v["auth_code"],
-    });
     const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/user-management/signup/check-auth-code`;
     fetchWrapper
       .post(url, {
@@ -80,7 +76,7 @@ const Signup: NextPage = () => {
   };
 
   const onSignupSubmit = (data: signupForm) => {
-    if (checkboxRef.current.checked) {
+    if (checkboxRef.current?.checked) {
       alert("약관에 동의해주세요.");
       return;
     }
@@ -101,7 +97,7 @@ const Signup: NextPage = () => {
     fetchWrapper
       .post(url, { ...data })
       .then(() => {
-        console.log("회원가입이 완료됐습니다.");
+        alert("회원가입이 완료됐습니다.");
         router.push("/");
       })
       .catch((err) => {

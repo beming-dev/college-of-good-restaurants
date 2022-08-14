@@ -1,7 +1,7 @@
 import { map } from "cheerio/lib/api/traversing";
 import { NextPage } from "next";
 import Map, { storeFromServer } from "../components/Map";
-import ReviewItem from "../components/ReviewItem";
+import ReviewItem, { reviewType } from "../components/ReviewItem";
 import { fetchWrapper } from "../helpers/fetch-wrapper";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -15,14 +15,6 @@ import {
 import { useRouter } from "next/router";
 import axios from "axios";
 
-interface reviewType {
-  rating: number;
-  place_id: number;
-  user_id: string;
-  post_date: string;
-  post_text: string;
-  image_urls: string[];
-}
 interface propsType {
   storeInfo: storeFromServer;
   reviewInfo: reviewType[];
@@ -30,92 +22,6 @@ interface propsType {
 }
 
 const storeDetail: NextPage<propsType> = ({ storeInfo, reviewInfo }) => {
-  reviewInfo = [
-    {
-      image_urls: [
-        "https://test.image.1",
-        "https://test.image.2",
-        "https://test.image.3",
-      ],
-      place_id: 1,
-      post_date: "2022-05-31",
-      post_text: "테스트용 리뷰",
-      rating: 4,
-      user_id: "wonbinkim",
-    },
-    {
-      image_urls: [
-        "https://test.image.1",
-        "https://test.image.2",
-        "https://test.image.3",
-      ],
-      place_id: 1,
-      post_date: "2022-05-31",
-      post_text: "테스트용 리뷰",
-      rating: 4,
-      user_id: "wonbinkim",
-    },
-    {
-      image_urls: [
-        "https://test.image.1",
-        "https://test.image.2",
-        "https://test.image.3",
-      ],
-      place_id: 1,
-      post_date: "2022-05-31",
-      post_text: "테스트용 리뷰",
-      rating: 4,
-      user_id: "wonbinkim",
-    },
-    {
-      image_urls: [
-        "https://test.image.1",
-        "https://test.image.2",
-        "https://test.image.3",
-      ],
-      place_id: 1,
-      post_date: "2022-05-31",
-      post_text: "테스트용 리뷰",
-      rating: 4,
-      user_id: "wonbinkim",
-    },
-    {
-      image_urls: [
-        "https://test.image.1",
-        "https://test.image.2",
-        "https://test.image.3",
-      ],
-      place_id: 1,
-      post_date: "2022-05-31",
-      post_text: "테스트용 리뷰",
-      rating: 4,
-      user_id: "wonbinkim",
-    },
-    {
-      image_urls: [
-        "https://test.image.1",
-        "https://test.image.2",
-        "https://test.image.3",
-      ],
-      place_id: 1,
-      post_date: "2022-05-31",
-      post_text: "테스트용 리뷰",
-      rating: 4,
-      user_id: "wonbinkim",
-    },
-    {
-      image_urls: [
-        "https://test.image.1",
-        "https://test.image.2",
-        "https://test.image.3",
-      ],
-      place_id: 1,
-      post_date: "2022-05-31",
-      post_text: "테스트용 리뷰",
-      rating: 4,
-      user_id: "wonbinkim",
-    },
-  ];
   const router = useRouter();
   const user = useSelector((state: rootState) => state.user);
   const map = useSelector((state: rootState) => state.map);
@@ -160,7 +66,6 @@ const storeDetail: NextPage<propsType> = ({ storeInfo, reviewInfo }) => {
       imgName: "/map.png",
       txt: "지도",
       onClick: () => {
-        console.log(1);
         const url = `https://map.kakao.com/link/map/${storeInfo.kakao_place_id}`;
         window.open(url);
       },
@@ -413,7 +318,7 @@ export async function getServerSideProps(ctx: any) {
   const url02 = `${process.env.NEXT_PUBLIC_SERVER_IP}/review/get-reviews`;
   let resp02: any = 1;
   await fetchWrapper
-    .post(url02, { place_id: ctx.query.id, page: "1" })
+    .post(url02, { place_id: ctx.query.id, scope_start: "1", scope_end: "10" })
     .then((data) => {
       resp02 = data;
     })

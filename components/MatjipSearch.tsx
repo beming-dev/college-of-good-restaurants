@@ -38,7 +38,6 @@ const MatjipSearch = ({ pageConvert, setPageConvert }: any) => {
     status: any,
     pagination: any
   ) => {
-    console.log(data);
     setPages(pagination.last);
     setSearchResult(data);
     if (data.length !== 0) {

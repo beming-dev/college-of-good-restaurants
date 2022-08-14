@@ -25,6 +25,7 @@ const MatjipReview: NextPage<any> = ({
   setRegisterClose,
 }) => {
   const [star, setStar] = useState(0);
+  const [registering, setRegistering] = useState(false);
   const [loadedImg, setLoadedImg] = useState<imgType[]>([]);
   const selectedSearchResult = useSelector(
     (state: rootState) => state.selected
@@ -66,7 +67,8 @@ const MatjipReview: NextPage<any> = ({
   };
 
   const onEnrollReview = async (data: any) => {
-    console.log(selectedSearchResult.category_name);
+    if (registering) return;
+
     if (!user.user) {
       alert("로그인 후 이용해주세요");
       return;
@@ -81,54 +83,55 @@ const MatjipReview: NextPage<any> = ({
       return;
     }
 
+    await setRegistering(true);
     const urlArr: string[] = [];
+
     if (loadedImg.length >= 1) {
-      loadedImg.map(async (img) => {
+      await loadedImg.map(async (img) => {
         const resp = await axios({
           method: "POST",
           url: "/api/uploadImg",
           data: { img: img.imagePreviewUrl },
         })
           .then(async (res) => {
-            urlArr.push(res.data);
+            await urlArr.push(res.data);
           })
           .catch((err) => alert("이미지 업로드에 실패했습니다."));
       });
+
+      await fetchWrapper
+        .post(
+          `${process.env.NEXT_PUBLIC_SERVER_IP}/place/add-place`,
+          createPlaceData(),
+          user.user
+        )
+        .then(async (res: any) => {
+          await fetchWrapper
+            .post(
+              `${process.env.NEXT_PUBLIC_SERVER_IP}/review/add-review`,
+              createReviewData(data, urlArr, res.place_id),
+              user.user
+            )
+            .then(() => {
+              window.alert("등록이 완료되었습니다.");
+              setPageConvert(false);
+              setRegisterClose(true);
+              setRegistering(false);
+            })
+            .catch((err) => {
+              console.log(err);
+              alert("리뷰 등록에 실패하였습니다.");
+              setRegistering(false);
+              return;
+            });
+        })
+        .catch((err) => {
+          console.log(err);
+          alert("가게 등록에 실패하였습니다.");
+          setRegistering(false);
+          return;
+        });
     }
-
-    await fetchWrapper
-      .post(
-        `${process.env.NEXT_PUBLIC_SERVER_IP}/place/add-place`,
-        createPlaceData(),
-        user.user
-      )
-      .then(async (res: any) => {
-        console.log(res);
-        await fetchWrapper
-          .post(
-            `${process.env.NEXT_PUBLIC_SERVER_IP}/review/add-review`,
-            createReviewData(data, urlArr, res.place_id),
-            user.user
-          )
-          .then(() => {
-            window.alert("등록이 완료되었습니다.");
-            setPageConvert(false);
-            setRegisterClose(true);
-          })
-          .catch((err) => {
-            console.log(err);
-            alert("리뷰 등록에 실패하였습니다.");
-            return;
-          });
-
-        setPageConvert(false);
-        setRegisterClose(true);
-      })
-      .catch((err) => {
-        console.log(err);
-        alert("가게 등록에 실패하였습니다.");
-        return;
-      });
   };
 
   const onConvert = (dir: number) => {
@@ -145,7 +148,6 @@ const MatjipReview: NextPage<any> = ({
     if (file) {
       reader.readAsDataURL(file);
       reader.onloadend = () => {
-        console.log(file);
         setLoadedImg([
           ...loadedImg,
           { imagePreviewUrl: reader.result, fileName: file.name },

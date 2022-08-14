@@ -9,9 +9,14 @@ import { rootState } from "../store/modules";
 type props = {
   menuClose: boolean;
   setMenuClose: React.Dispatch<React.SetStateAction<boolean>>;
+  setRegisterClose: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const HamburgerMenu = ({ menuClose, setMenuClose }: props) => {
+const HamburgerMenu = ({
+  menuClose,
+  setMenuClose,
+  setRegisterClose,
+}: props) => {
   let user: userType = useSelector((state: rootState) => state.user);
   const [signinDisplay, setSigninDisplay] = useState(false);
 
@@ -54,7 +59,7 @@ const HamburgerMenu = ({ menuClose, setMenuClose }: props) => {
           <Image src="/good.png" width={40} height={40} />
           <span>좋아요 목록</span>
         </div>
-        <div className="option-box">
+        <div className="option-box" onClick={() => setRegisterClose(false)}>
           <Image src="/plus-black.png" width={40} height={40} />
           <span>맛집 등록</span>
         </div>

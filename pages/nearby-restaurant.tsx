@@ -40,13 +40,11 @@ const nearbyRestaurant: NextPage<propsType> = ({ collegeInfo }) => {
       scope_start: (page - 1) * resultCount + 1 + "",
       scope_end: page * resultCount + "",
     };
-    console.log(data);
     if (page !== 1) {
       const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/place/search-place`;
       fetchWrapper
         .post(url, data)
         .then((data: any) => {
-          console.log(data);
           let arr: any = [...searchResult, ...data];
           setSearchResult(arr);
         })
@@ -105,7 +103,11 @@ const nearbyRestaurant: NextPage<propsType> = ({ collegeInfo }) => {
         registerClose={registerClose}
         setRegisterClose={setRegisterClose}
       />
-      <HamburgerMenu menuClose={menuClose} setMenuClose={setMenuClose} />
+      <HamburgerMenu
+        menuClose={menuClose}
+        setMenuClose={setMenuClose}
+        setRegisterClose={setRegisterClose}
+      />
       <div className="content">
         <SearchResult
           resultClose={resultClose}

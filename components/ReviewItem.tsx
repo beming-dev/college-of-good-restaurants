@@ -3,18 +3,23 @@ import { NextPage } from "next";
 import Image from "next/image";
 
 export interface reviewType {
-  rating: number;
-  place_id: number;
-  user_id: string;
-  post_date: number;
-  post_text: string;
-  image_urls: string[];
+  comments: any;
+  review: {
+    image_urls: string[];
+    place_id: number;
+    post_date: string;
+    post_text: string;
+    rating: number;
+    review_id: number;
+    user_id: string;
+  };
 }
 interface propsType {
   review: reviewType;
 }
 
 const ReviewItem: NextPage<propsType> = ({ review }) => {
+  console.log(review);
   return (
     <div className="review-item">
       <div className="content">
@@ -25,10 +30,10 @@ const ReviewItem: NextPage<propsType> = ({ review }) => {
           <div className="about-review">
             <div className="area">
               <span className="date">
-                {new Date(review.post_date).toISOString().split("T")[0]}
+                {new Date(review.review.post_date).toISOString().split("T")[0]}
               </span>
               <div className="rate">
-                {_.range(review.rating).map((_, i) => (
+                {_.range(review.review.rating).map((_, i) => (
                   <div className="star-img-wrapper" key={i}>
                     <Image
                       src="/star-yellow.png"
@@ -37,7 +42,7 @@ const ReviewItem: NextPage<propsType> = ({ review }) => {
                     />
                   </div>
                 ))}
-                {_.range(5 - review.rating).map((_, i) => (
+                {_.range(5 - review.review.rating).map((_, i) => (
                   <div className="star-img-wrapper" key={i}>
                     <Image src="/star.png" layout="fill" objectFit="contain" />
                   </div>
@@ -47,11 +52,13 @@ const ReviewItem: NextPage<propsType> = ({ review }) => {
             <textarea
               readOnly
               className="description"
-              value={review.post_text || ""}
+              value={review.review.post_text || ""}
             ></textarea>
           </div>
         </div>
-        {review.image_urls.map((url) => {})}
+        {/* {review.review.image_urls.map((url) => (
+          <Image src={url} width="30px" height="30px" />
+        ))} */}
       </div>
       <style jsx>
         {`

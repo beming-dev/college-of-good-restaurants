@@ -1,14 +1,57 @@
 import Image from "next/image";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 import { useRouter } from "next/router";
 import MypageNav from "../../components/MypageNav";
+import { fetchWrapper } from "../../helpers/fetch-wrapper";
+import { useSelector } from "react-redux";
+import { rootState } from "../../store/modules";
 
 const mypage = () => {
+  interface pwChange {
+    user_id: string;
+    old_password: string;
+    new_password: string;
+  }
+
   const router = useRouter();
+  const user = useSelector((state: rootState) => state.user);
+  const {
+    getValues,
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<pwChange>({});
+
+  const onPwChange = (data: pwChange) => {
+    const pwExp = /(?=.*[a-zA-ZS])(?=.*?[#?!@$%^&*-]).{6,24}/;
+
+    const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/user-management/security/change-password`;
+    fetchWrapper
+      .post(
+        url,
+        {
+          user_id: data.user_id,
+          old_password: btoa(data.old_password),
+          new_password: btoa(data.new_password),
+        },
+        user.user
+      )
+      .then((data) => {
+        alert("비밀번호가 변경되었습니다.");
+      }, user.user)
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <div className="mypage">
       <MypageNav />
       <div className="container2">
-        <div className="container">
+        <form className="container" onSubmit={handleSubmit(onPwChange)}>
           <div className="about-user">
             <div className="info">
               <span className="school">서울시립대학교</span>
@@ -19,25 +62,38 @@ const mypage = () => {
             </div>
           </div>
           <div className="login-info">
-            <div className="nickname box">
+            <div className="nickname box" onSubmit={handleSubmit(onPwChange)}>
               <label htmlFor="">닉네임</label>
               <input type="text" readOnly value={"beming"} />
             </div>
             <div className="id box">
               <label htmlFor="">아이디</label>
-              <input type="text" readOnly value={"wonbinkim"} />
+              <input
+                type="text"
+                readOnly
+                {...register("user_id")}
+                value={"wonbinkim"}
+              />
             </div>
             <div className="password box">
-              <label htmlFor="">현재 비밀번호</label>
-              <input type="password" />
+              <label htmlFor="old-pw">현재 비밀번호</label>
+              <input
+                id="old-pw"
+                type="password"
+                {...register("old_password")}
+              />
             </div>
             <div className="password-cahage box">
-              <label htmlFor="">변경할 비밀번호</label>
-              <input type="text" />
+              <label htmlFor="new-pw">변경할 비밀번호</label>
+              <input
+                id="new-pw"
+                type="password"
+                {...register("new_password")}
+              />
             </div>
           </div>
-          <button className="btn-change">비밀번호 변경</button>
-        </div>
+          <input type="submit" className="btn-change" value="비밀번호 변경" />
+        </form>
       </div>
       <style jsx>{`
         .mypage {

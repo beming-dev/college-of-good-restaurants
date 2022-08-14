@@ -16,6 +16,8 @@ const MypageNav = () => {
       <style jsx>
         {`
           .mypage-nav {
+            display: flex;
+            flex-shrink: 0;
             width: 150px;
             margin-left: 50px;
             ul {
