@@ -4,6 +4,7 @@ import { HYDRATE } from "next-redux-wrapper";
 import user from "./user";
 import map from "./map";
 import selected from "./selected";
+import close from "./close";
 
 const reducer = (state: any, action: AnyAction) => {
   if (action.type === HYDRATE) {
@@ -16,6 +17,7 @@ const reducer = (state: any, action: AnyAction) => {
     user,
     map,
     selected,
+    close,
   })(state, action);
 };
 

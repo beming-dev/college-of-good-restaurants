@@ -1,6 +1,5 @@
 import { NextPage } from "next";
 import Image from "next/image";
-import { storeFromServer, storeType } from "./Map";
 import _ from "lodash";
 import { useEffect, useState } from "react";
 import { fetchWrapper } from "../helpers/fetch-wrapper";
@@ -8,9 +7,10 @@ import { useSelector } from "react-redux";
 import { rootState } from "../store/modules";
 import { getJwtUsername, toStringByFormatting } from "../lib/util";
 import { useRouter } from "next/router";
+import { serverStoreType } from "../lib/types";
 
 type propsType = {
-  storeInfo: storeFromServer;
+  storeInfo: serverStoreType;
 };
 
 const LikeItem: NextPage<propsType> = ({ storeInfo }) => {

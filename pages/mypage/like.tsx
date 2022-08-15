@@ -4,8 +4,8 @@ import { getJwtUsername } from "../../lib/util";
 import { rootState } from "../../store/modules";
 import { useEffect, useState } from "react";
 import LikeItem from "../../components/LikeItem";
-import { storeFromServer } from "../../components/Map";
 import MypageNav from "../../components/MypageNav";
+import { serverStoreType } from "../../lib/types";
 
 interface likeType {
   like_data: {
@@ -13,7 +13,7 @@ interface likeType {
     user_id: string;
     like_data: number;
   };
-  place_data: storeFromServer;
+  place_data: serverStoreType;
 }
 
 const Like = () => {

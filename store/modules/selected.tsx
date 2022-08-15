@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { storeType } from "../../components/Map";
+import { kakaoStoreType } from "../../lib/types";
 
 interface selectedState {
   selectedCollege: null | collegeInfoType;
-  selectedSearchResult: null | storeType;
+  selectedSearchResult: null | kakaoStoreType;
 }
 
 const initialState: selectedState = {

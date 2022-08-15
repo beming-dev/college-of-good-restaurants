@@ -1,6 +1,5 @@
 import { map } from "cheerio/lib/api/traversing";
 import { NextPage } from "next";
-import Map, { storeFromServer } from "../components/Map";
 import ReviewItem, { reviewType } from "../components/ReviewItem";
 import { fetchWrapper } from "../helpers/fetch-wrapper";
 import Image from "next/image";
@@ -14,9 +13,10 @@ import {
 } from "../lib/util";
 import { useRouter } from "next/router";
 import axios from "axios";
+import { serverStoreType } from "../lib/types";
 
 interface propsType {
-  storeInfo: storeFromServer;
+  storeInfo: serverStoreType;
   reviewInfo: reviewType[];
   pages: number;
 }

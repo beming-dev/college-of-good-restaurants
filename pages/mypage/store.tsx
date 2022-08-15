@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-import { storeFromServer } from "../../components/Map";
 import MypageNav from "../../components/MypageNav";
 import SearchItem from "../../components/SearchItem";
 import { fetchWrapper } from "../../helpers/fetch-wrapper";
 import { useSelector } from "react-redux";
 import { rootState } from "../../store/modules";
 import { getJwtUsername } from "../../lib/util";
+import { serverStoreType } from "../../lib/types";
 
 const store = () => {
-  const [storeList, setStoreList] = useState<storeFromServer[]>([]);
+  const [storeList, setStoreList] = useState<serverStoreType[]>([]);
 
   const user = useSelector((state: rootState) => state.user);
 
@@ -29,7 +29,7 @@ const store = () => {
       <MypageNav />
       <div className="container">
         <div className="store-box">
-          {storeList.map((store: storeFromServer) => (
+          {storeList.map((store: serverStoreType) => (
             <SearchItem item={store} key={store.place_id} />
           ))}
         </div>

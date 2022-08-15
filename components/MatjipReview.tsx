@@ -2,12 +2,13 @@ import { fetchWrapper } from "../helpers/fetch-wrapper";
 import { SubmitHandler, useForm } from "react-hook-form";
 import _ from "lodash";
 import Image from "next/image";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import React, { useState } from "react";
 import { getJwtUsername, toStringByFormatting } from "../lib/util";
 import axios from "axios";
 import { NextPage } from "next";
 import type { rootState } from "../store/modules";
+import { setRegisterClose } from "../store/modules/close";
 
 interface reviewType {
   reviewDes: string;
@@ -19,11 +20,8 @@ interface imgType {
   fileName: any;
 }
 
-const MatjipReview: NextPage<any> = ({
-  pageConvert,
-  setPageConvert,
-  setRegisterClose,
-}) => {
+const MatjipReview: NextPage<any> = ({ pageConvert, setPageConvert }) => {
+  const dispatch = useDispatch();
   const [star, setStar] = useState(0);
   const [registering, setRegistering] = useState(false);
   const [loadedImg, setLoadedImg] = useState<imgType[]>([]);
@@ -115,7 +113,7 @@ const MatjipReview: NextPage<any> = ({
             .then(() => {
               window.alert("등록이 완료되었습니다.");
               setPageConvert(false);
-              setRegisterClose(true);
+              dispatch(setRegisterClose(true));
               setRegistering(false);
             })
             .catch((err) => {

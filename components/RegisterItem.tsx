@@ -1,12 +1,12 @@
 import { NextPage } from "next";
 import Image from "next/image";
 import { useSelector, useDispatch } from "react-redux";
+import { kakaoStoreType } from "../lib/types";
 import { rootState } from "../store/modules";
 import { setSelectedSearchResult } from "../store/modules/selected";
-import { storeType } from "./Map";
 
 interface propsType {
-  storeInfo: storeType;
+  storeInfo: kakaoStoreType;
 }
 //type 수정 필요
 const RegisterItem: NextPage<propsType> = ({ storeInfo }) => {

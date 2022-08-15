@@ -3,12 +3,12 @@ import Image from "next/image";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
+import { kakaoStoreType } from "../lib/types";
 import { rootState } from "../store/modules";
 import {
   collegeInfoType,
   setSelectedSearchResult,
 } from "../store/modules/selected";
-import { storeType } from "./Map";
 import RegisterItem from "./RegisterItem";
 type search = {
   [x: string]: string;
@@ -34,7 +34,7 @@ const MatjipSearch = ({ pageConvert, setPageConvert }: any) => {
   } = useForm();
 
   const onSearchComplete = (
-    data: storeType[],
+    data: kakaoStoreType[],
     status: any,
     pagination: any
   ) => {
