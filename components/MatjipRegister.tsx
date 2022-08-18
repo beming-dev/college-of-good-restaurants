@@ -7,20 +7,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { setRegisterClose } from "../store/modules/close";
 import { rootState } from "../store/modules";
 
-type props = {};
-
-type search = {
-  [x: string]: string;
-};
-
 const MatjipRegister = () => {
   let close = useSelector((state: rootState) => state.close);
   const [pageConvert, setPageConvert] = useState(false);
   const dispatch = useDispatch();
 
   return (
-    <div className="MatjipRegister">
-      <div className="content">
+    <article className="MatjipRegister">
+      <section className="content">
         <div
           className="exit-image-wrapper"
           onClick={() => dispatch(setRegisterClose(true))}
@@ -37,7 +31,7 @@ const MatjipRegister = () => {
             setPageConvert={setPageConvert}
           />
         </div>
-      </div>
+      </section>
 
       <style jsx>
         {`
@@ -162,7 +156,7 @@ const MatjipRegister = () => {
           }
         `}
       </style>
-    </div>
+    </article>
   );
 };
 

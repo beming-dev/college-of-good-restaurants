@@ -21,7 +21,6 @@ const Map = ({ x = 126.570667, y = 33.450701 }: any) => {
 
   useEffect(() => {
     if (!mapLoaded) return;
-
     window.kakao.maps.load(() => {
       const container = document.getElementById("map");
       const options = {

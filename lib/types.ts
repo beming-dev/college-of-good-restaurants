@@ -38,3 +38,17 @@ export interface serverStoreType {
   rating: number;
   review_count: number;
 }
+
+export interface signupFormType {
+  email: string;
+  auth_code: string;
+  user_id: string;
+  password: string;
+  nickname: string;
+}
+
+export interface pwChangeType {
+  user_id: string;
+  old_password: string;
+  new_password: string;
+}

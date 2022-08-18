@@ -7,19 +7,19 @@ import { userType } from "../store/modules/user";
 import { rootState } from "../store/modules";
 import { setMenuClose, setRegisterClose } from "../store/modules/close";
 
-type props = {};
-
 const HamburgerMenu = () => {
+  const router = useRouter();
+
+  const dispatch = useDispatch();
   let user: userType = useSelector((state: rootState) => state.user);
   let close = useSelector((state: rootState) => state.close);
 
   const [signinDisplay, setSigninDisplay] = useState(false);
-  const dispatch = useDispatch();
-  const router = useRouter();
 
   const onExitClick = () => {
     dispatch(setMenuClose(true));
   };
+
   return (
     <div className="hamburger-menu">
       <SignIn

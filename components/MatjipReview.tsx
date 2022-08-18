@@ -22,13 +22,15 @@ interface imgType {
 
 const MatjipReview: NextPage<any> = ({ pageConvert, setPageConvert }) => {
   const dispatch = useDispatch();
-  const [star, setStar] = useState(0);
-  const [registering, setRegistering] = useState(false);
-  const [loadedImg, setLoadedImg] = useState<imgType[]>([]);
+  let user = useSelector((state: rootState) => state.user);
   const selectedSearchResult = useSelector(
     (state: rootState) => state.selected
   ).selectedSearchResult;
-  let user = useSelector((state: rootState) => state.user);
+
+  const [star, setStar] = useState(0);
+  const [registering, setRegistering] = useState(false);
+  const [loadedImg, setLoadedImg] = useState<imgType[]>([]);
+
   const {
     register,
     handleSubmit,
@@ -50,6 +52,7 @@ const MatjipReview: NextPage<any> = ({ pageConvert, setPageConvert }) => {
       rating: star + "",
     };
   };
+
   const createPlaceData = () => {
     return {
       category_name: selectedSearchResult.category_name,
@@ -64,7 +67,7 @@ const MatjipReview: NextPage<any> = ({ pageConvert, setPageConvert }) => {
     };
   };
 
-  const onEnrollReview = async (data: any) => {
+  const onEnrollStore = async (data: any) => {
     if (registering) return;
 
     if (!user.user) {
@@ -81,9 +84,14 @@ const MatjipReview: NextPage<any> = ({ pageConvert, setPageConvert }) => {
       return;
     }
 
-    await setRegistering(true);
-    const urlArr: string[] = [];
+    setRegistering(true);
 
+    const urlArr: string[] = [];
+    uploadImg(urlArr);
+    enrollPlace(data, urlArr);
+  };
+
+  const uploadImg = async (urlArr: string[]) => {
     if (loadedImg.length >= 1) {
       await loadedImg.map(async (img) => {
         const resp = await axios({
@@ -96,40 +104,46 @@ const MatjipReview: NextPage<any> = ({ pageConvert, setPageConvert }) => {
           })
           .catch((err) => alert("이미지 업로드에 실패했습니다."));
       });
-
-      await fetchWrapper
-        .post(
-          `${process.env.NEXT_PUBLIC_SERVER_IP}/place/add-place`,
-          createPlaceData(),
-          user.user
-        )
-        .then(async (res: any) => {
-          await fetchWrapper
-            .post(
-              `${process.env.NEXT_PUBLIC_SERVER_IP}/review/add-review`,
-              createReviewData(data, urlArr, res.place_id),
-              user.user
-            )
-            .then(() => {
-              window.alert("등록이 완료되었습니다.");
-              setPageConvert(false);
-              dispatch(setRegisterClose(true));
-              setRegistering(false);
-            })
-            .catch((err) => {
-              console.log(err);
-              alert("리뷰 등록에 실패하였습니다.");
-              setRegistering(false);
-              return;
-            });
-        })
-        .catch((err) => {
-          console.log(err);
-          alert("가게 등록에 실패하였습니다.");
-          setRegistering(false);
-          return;
-        });
     }
+  };
+
+  const enrollPlace = async (data: reviewType, urlArr: string[]) => {
+    await fetchWrapper
+      .post(
+        `${process.env.NEXT_PUBLIC_SERVER_IP}/place/add-place`,
+        createPlaceData(),
+        user.user
+      )
+      .then(async (res: any) => {
+        enrollReview(data, urlArr, res);
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("가게 등록에 실패하였습니다.");
+        setRegistering(false);
+        return;
+      });
+  };
+
+  const enrollReview = async (data: reviewType, urlArr: string[], res: any) => {
+    await fetchWrapper
+      .post(
+        `${process.env.NEXT_PUBLIC_SERVER_IP}/review/add-review`,
+        createReviewData(data, urlArr, res.place_id),
+        user.user
+      )
+      .then(() => {
+        window.alert("등록이 완료되었습니다.");
+        setPageConvert(false);
+        dispatch(setRegisterClose(true));
+        setRegistering(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("리뷰 등록에 실패하였습니다.");
+        setRegistering(false);
+        return;
+      });
   };
 
   const onConvert = (dir: number) => {
@@ -155,7 +169,7 @@ const MatjipReview: NextPage<any> = ({ pageConvert, setPageConvert }) => {
   };
 
   return (
-    <form className="matjip-review" onSubmit={handleSubmit(onEnrollReview)}>
+    <form className="matjip-review" onSubmit={handleSubmit(onEnrollStore)}>
       <div className="storeInfo">
         <div className="introduce">
           <span className="store-name">

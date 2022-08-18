@@ -7,9 +7,9 @@ import { rootState } from "../../store/modules";
 import { getJwtUsername } from "../../lib/util";
 
 const review = () => {
-  const [reviewList, setReviewList] = useState<reviewType[]>([]);
-
   const user = useSelector((state: rootState) => state.user);
+
+  const [reviewList, setReviewList] = useState<reviewType[]>([]);
 
   useEffect(() => {
     const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/review/get-review-by-user-id`;
@@ -23,6 +23,7 @@ const review = () => {
         setReviewList(result);
       });
   }, []);
+
   return (
     <div className="review">
       <MypageNav />

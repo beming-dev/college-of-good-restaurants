@@ -8,9 +8,9 @@ import { getJwtUsername } from "../../lib/util";
 import { serverStoreType } from "../../lib/types";
 
 const store = () => {
-  const [storeList, setStoreList] = useState<serverStoreType[]>([]);
-
   const user = useSelector((state: rootState) => state.user);
+
+  const [storeList, setStoreList] = useState<serverStoreType[]>([]);
 
   useEffect(() => {
     const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/place/get-place-by-user-id`;
@@ -24,6 +24,7 @@ const store = () => {
         setStoreList(data);
       });
   }, []);
+
   return (
     <div className="store">
       <MypageNav />

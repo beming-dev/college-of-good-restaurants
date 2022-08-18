@@ -3,28 +3,30 @@ import Image from "next/image";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { kakaoStoreType } from "../lib/types";
+import { kakaoStoreType, serverStoreType } from "../lib/types";
 import { rootState } from "../store/modules";
 import {
   collegeInfoType,
   setSelectedSearchResult,
 } from "../store/modules/selected";
 import RegisterItem from "./RegisterItem";
+
 type search = {
   [x: string]: string;
 };
 
 const MatjipSearch = ({ pageConvert, setPageConvert }: any) => {
-  const [pages, setPages] = useState(0);
-  const [curPage, setCurPage] = useState(0);
-  const [searchTarget, setSearchTarget] = useState("");
-  const [searchResult, setSearchResult] = useState<storeType[]>([]);
-  const selectedSearchResult = useSelector(
-    (state: rootState) => state.selected
-  ).selectedSearchResult;
   const dispatch = useDispatch();
   let state = useSelector((state: rootState) => state.selected);
   let { selectedCollege }: { selectedCollege: collegeInfoType } = state;
+
+  const [pages, setPages] = useState(0);
+  const [curPage, setCurPage] = useState(0);
+  const [searchTarget, setSearchTarget] = useState("");
+  const [searchResult, setSearchResult] = useState<kakaoStoreType[]>([]);
+  const selectedSearchResult = useSelector(
+    (state: rootState) => state.selected
+  ).selectedSearchResult;
 
   const {
     register,
@@ -84,7 +86,7 @@ const MatjipSearch = ({ pageConvert, setPageConvert }: any) => {
   };
 
   return (
-    <div className="matjip-search">
+    <section className="matjip-search">
       <form onSubmit={handleSubmit((data) => onSearch(data, 1))}>
         <input
           type="text"
@@ -250,7 +252,7 @@ const MatjipSearch = ({ pageConvert, setPageConvert }: any) => {
           }
         `}
       </style>
-    </div>
+    </section>
   );
 };
 

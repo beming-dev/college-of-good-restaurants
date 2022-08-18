@@ -1,4 +1,3 @@
-import { map } from "cheerio/lib/api/traversing";
 import { NextPage } from "next";
 import ReviewItem, { reviewType } from "../components/ReviewItem";
 import { fetchWrapper } from "../helpers/fetch-wrapper";
@@ -12,53 +11,26 @@ import {
   toStringByFormatting,
 } from "../lib/util";
 import { useRouter } from "next/router";
-import axios from "axios";
 import { serverStoreType } from "../lib/types";
+import Map from "../components/Map";
 
-interface propsType {
-  storeInfo: serverStoreType;
-  reviewInfo: reviewType[];
-  pages: number;
-}
-
-const storeDetail: NextPage<propsType> = ({ storeInfo, reviewInfo }) => {
+const storeDetail: NextPage = () => {
   const router = useRouter();
+
   const user = useSelector((state: rootState) => state.user);
-  const map = useSelector((state: rootState) => state.map);
+
   const [hearted, setHearted] = useState(false);
   const [page, setPage] = useState(1);
+  const [storeInfo, setStoreInfo] = useState<serverStoreType>();
+  const [reviewInfo, setReviewInfo] = useState<reviewType[]>([]);
 
   const onMoreClick = () => {
     setPage(page + 1);
   };
 
   useEffect(() => {
-    if (user.user) {
-      const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/place-like/exist`;
-      fetchWrapper
-        .post(url, {
-          user_id: getJwtUsername(user.user),
-          place_id: storeInfo.place_id,
-        })
-        .then((data: any) => {
-          if (data.result === "true") {
-            setHearted(true);
-          } else {
-            setHearted(false);
-          }
-        })
-        .catch((err) => {
-          alert("좋아요 확인 과정에서 오류 발생");
-        });
-    }
-  }, []);
-
-  useEffect(() => {
-    axios({
-      method: "POST",
-      url: "/api/crawler",
-      data: { id: storeInfo.kakao_place_id },
-    }).then((data) => console.log(data));
+    getPlaceData();
+    getReviewData();
   }, []);
 
   const iconList = [
@@ -94,39 +66,86 @@ const storeDetail: NextPage<propsType> = ({ storeInfo, reviewInfo }) => {
       },
     },
   ];
+
+  const getPlaceData = () => {
+    const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/place/get-place`;
+    fetchWrapper
+      .post(url, { place_id: router.query.id })
+      .then((store: serverStoreType) => {
+        setStoreInfo(store);
+        getHeartData(store);
+      });
+  };
+
+  const getHeartData = (store: serverStoreType) => {
+    if (user.user) {
+      const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/place-like/exist`;
+      fetchWrapper
+        .post(url, {
+          user_id: getJwtUsername(user.user),
+          place_id: store.place_id,
+        })
+        .then((data: any) => {
+          if (data.result === "true") {
+            setHearted(true);
+          } else {
+            setHearted(false);
+          }
+        })
+        .catch(() => {
+          alert("좋아요 확인 과정에서 오류 발생");
+        });
+    }
+  };
+
+  const getReviewData = () => {
+    const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/review/get-reviews`;
+    fetchWrapper
+      .post(url, {
+        place_id: router.query.id,
+        scope_start: "1",
+        scope_end: "10",
+      })
+      .then((data: reviewType[]) => {
+        setReviewInfo(data);
+      })
+      .catch((err: any) => console.log(err));
+  };
+
   const onHeartClick = () => {
     let url;
     let form;
     if (hearted) {
       url = `${process.env.NEXT_PUBLIC_SERVER_IP}/place-like/remove`;
       form = {
-        place_id: storeInfo.place_id,
+        place_id: storeInfo?.place_id,
         user_id: getJwtUsername(user.user),
       };
     } else {
       url = `${process.env.NEXT_PUBLIC_SERVER_IP}/place-like/add`;
       form = {
-        place_id: storeInfo.place_id,
+        place_id: storeInfo?.place_id,
         user_id: getJwtUsername(user.user),
         like_date: toStringByFormatting(new Date()),
       };
     }
     fetchWrapper
       .post(url, form)
-      .then((data) => {
+      .then(() => {
         setHearted(!hearted);
       })
-      .catch((err) => alert("좋아요 처리 과정에서 에러 발생"));
+      .catch(() => alert("좋아요 처리 과정에서 에러 발생"));
   };
+
   return (
     <div className="store-detail">
       <div className="map-box">
-        <Map x={storeInfo.longitude} y={storeInfo.latitude} />
+        <Map x={storeInfo?.longitude} y={storeInfo?.latitude} />
       </div>
       <div className="cover"></div>
       <div className="content">
         <div className="main">
-          <h1 className="store-name">{storeInfo.name}</h1>
+          <h1 className="store-name">{storeInfo?.name}</h1>
           <div className="rate-review">
             <span className="rate-count"> 평점 4.5 </span>
             <span className="review-count"> 리뷰 39 </span>
@@ -168,12 +187,12 @@ const storeDetail: NextPage<propsType> = ({ storeInfo, reviewInfo }) => {
         </div>
         <div className="detail">
           <h2>상세정보</h2>
-          <span className="address">{storeInfo.address}</span>
-          <span className="phone">{storeInfo.phone || "00-0000-0000"}</span>
+          <span className="address">{storeInfo?.address}</span>
+          <span className="phone">{storeInfo?.phone || "00-0000-0000"}</span>
         </div>
         <div className="review">
           <span>리뷰</span>
-          {reviewInfo.map((review, i) => (
+          {reviewInfo?.map((review, i) => (
             <ReviewItem review={review} key={i} />
           ))}
           <button className="btn-more" onClick={onMoreClick}>
@@ -307,29 +326,5 @@ const storeDetail: NextPage<propsType> = ({ storeInfo, reviewInfo }) => {
     </div>
   );
 };
-
-export async function getServerSideProps(ctx: any) {
-  const url01 = `${process.env.NEXT_PUBLIC_SERVER_IP}/place/get-place`;
-  let resp01;
-  await fetchWrapper.post(url01, { place_id: ctx.query.id }).then((data) => {
-    resp01 = data;
-  });
-
-  const url02 = `${process.env.NEXT_PUBLIC_SERVER_IP}/review/get-reviews`;
-  let resp02: any = 1;
-  await fetchWrapper
-    .post(url02, { place_id: ctx.query.id, scope_start: "1", scope_end: "10" })
-    .then((data) => {
-      resp02 = data;
-    })
-    .catch((err) => console.log(err));
-
-  return {
-    props: {
-      storeInfo: resp01,
-      reviewInfo: resp02 ? resp02 : [],
-    },
-  };
-}
 
 export default storeDetail;
