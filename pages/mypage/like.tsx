@@ -4,8 +4,8 @@ import { getJwtUsername } from "../../lib/util";
 import { rootState } from "../../store/modules";
 import { useEffect, useState } from "react";
 import LikeItem from "../../components/LikeItem";
-import { storeFromServer } from "../../components/Map";
 import MypageNav from "../../components/MypageNav";
+import { serverStoreType } from "../../lib/types";
 
 interface likeType {
   like_data: {
@@ -13,18 +13,15 @@ interface likeType {
     user_id: string;
     like_data: number;
   };
-  place_data: storeFromServer;
+  place_data: serverStoreType;
 }
 
 const Like = () => {
+  let user = useSelector((state: rootState) => state.user);
+
   const [likeList, setLikeList] = useState<likeType[]>([]);
   const [page, setPage] = useState(1);
 
-  const onMoreClick = () => {
-    if (likeList.length === 10 * page) setPage(page + 1);
-  };
-
-  let user = useSelector((state: rootState) => state.user);
   useEffect(() => {
     const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/place-like/user-like-list`;
     fetchWrapper
@@ -41,6 +38,10 @@ const Like = () => {
         console.log(err);
       });
   }, [page]);
+
+  const onMoreClick = () => {
+    if (likeList.length === 10 * page) setPage(page + 1);
+  };
 
   return (
     <div className="like-page">

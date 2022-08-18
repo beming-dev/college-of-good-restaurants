@@ -3,25 +3,21 @@ import Image from "next/image";
 
 import MatjipSearch from "./MatjipSearch";
 import MatjipReview from "./MatjipReview";
+import { useDispatch, useSelector } from "react-redux";
+import { setRegisterClose } from "../store/modules/close";
+import { rootState } from "../store/modules";
 
-type props = {
-  registerClose: boolean;
-  setRegisterClose: React.Dispatch<React.SetStateAction<boolean>>;
-};
-
-type search = {
-  [x: string]: string;
-};
-
-const MatjipRegister = ({ registerClose, setRegisterClose }: props) => {
+const MatjipRegister = () => {
+  let close = useSelector((state: rootState) => state.close);
   const [pageConvert, setPageConvert] = useState(false);
+  const dispatch = useDispatch();
 
   return (
-    <div className="MatjipRegister">
-      <div className="content">
+    <article className="MatjipRegister">
+      <section className="content">
         <div
           className="exit-image-wrapper"
-          onClick={() => setRegisterClose(true)}
+          onClick={() => dispatch(setRegisterClose(true))}
         >
           <Image src="/exit.png" width="40px" height="40px" />
         </div>
@@ -33,10 +29,9 @@ const MatjipRegister = ({ registerClose, setRegisterClose }: props) => {
           <MatjipReview
             pageConvert={pageConvert}
             setPageConvert={setPageConvert}
-            setRegisterClose={setRegisterClose}
           />
         </div>
-      </div>
+      </section>
 
       <style jsx>
         {`
@@ -47,7 +42,7 @@ const MatjipRegister = ({ registerClose, setRegisterClose }: props) => {
             left: 0;
             width: 100vw;
             height: 100vh;
-            display: ${registerClose ? "none" : "flex"};
+            display: ${close.registerClose ? "none" : "flex"};
             align-items: center;
             justify-content: center;
             background: rgba(0, 0, 0, 0.5);
@@ -161,7 +156,7 @@ const MatjipRegister = ({ registerClose, setRegisterClose }: props) => {
           }
         `}
       </style>
-    </div>
+    </article>
   );
 };
 

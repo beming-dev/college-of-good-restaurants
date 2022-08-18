@@ -12,26 +12,57 @@ import MatjipRegister from "../components/MatjipRegister";
 import { rootState } from "../store/modules";
 import { NextPage } from "next";
 import { fetchWrapper } from "../helpers/fetch-wrapper";
-import { getJwtCollegeId } from "../lib/util";
 import { collegeInfoType, setSelectedCollege } from "../store/modules/selected";
+import {
+  setMenuClose,
+  setRegisterClose,
+  setResultClose,
+} from "../store/modules/close";
+import { useRouter } from "next/router";
 
-interface propsType {
-  collegeInfo: collegeInfoType;
-}
+interface propsType {}
 
-const nearbyRestaurant: NextPage<propsType> = ({ collegeInfo }) => {
+const nearbyRestaurant: NextPage<propsType> = () => {
+  const router = useRouter();
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(setSelectedCollege(collegeInfo));
-  }, []);
   let user = useSelector((state: rootState) => state.user);
-  const [resultClose, setResultClose] = useState(true);
-  const [menuClose, setMenuClose] = useState(true);
-  const [registerClose, setRegisterClose] = useState(true);
+  let close = useSelector((state: rootState) => state.close);
+
+  const [collegeInfo, setCollegeInfo] = useState<collegeInfoType>({
+    college_id: 1,
+    college_mail_domain: "",
+    college_name: "",
+    distance_limit_km: 0,
+    latitude: 1.0,
+    longitude: 2.0,
+  });
   const [searchResult, setSearchResult] = useState([]);
   const [page, setPage] = useState(1);
   const [keyword, setKeyword] = useState("");
   const resultCount = 10;
+
+  const schema = yup.object().shape({
+    searchTarget: yup.string().required(),
+  });
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+
+  useEffect(() => {
+    const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/college/get-college`;
+    fetchWrapper
+      .post(url, { college_id: router.query.id || 1 })
+      .then((collegeInfo: any) => {
+        setCollegeInfo(collegeInfo);
+        dispatch(setSelectedCollege(collegeInfo));
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
   useEffect(() => {
     let data = {
@@ -48,30 +79,18 @@ const nearbyRestaurant: NextPage<propsType> = ({ collegeInfo }) => {
           let arr: any = [...searchResult, ...data];
           setSearchResult(arr);
         })
-        .catch((err) => {
+        .catch(() => {
           alert("검색 결과가 없습니다.");
         });
     }
   }, [page]);
 
-  const schema = yup.object().shape({
-    searchTarget: yup.string().required(),
-  });
-
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
-
   //로그인
   const onSubmit = async (data: { searchTarget: string }) => {
     await setPage(1);
     setKeyword(data.searchTarget);
-    setResultClose(false);
+    dispatch(setResultClose(false));
+
     const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/place/search-place`;
     fetchWrapper
       .post(url, {
@@ -92,28 +111,18 @@ const nearbyRestaurant: NextPage<propsType> = ({ collegeInfo }) => {
     if (!user.user) {
       alert("로그인 후 이용해주세요");
     } else {
-      setRegisterClose(false);
+      dispatch(setRegisterClose(false));
     }
   };
 
   return (
-    <div className="nearby-restaurant">
+    <main className="nearby-restaurant">
       <Map y={collegeInfo.latitude} x={collegeInfo.longitude} />
-      <MatjipRegister
-        registerClose={registerClose}
-        setRegisterClose={setRegisterClose}
-      />
-      <HamburgerMenu
-        menuClose={menuClose}
-        setMenuClose={setMenuClose}
-        setRegisterClose={setRegisterClose}
-      />
+      <MatjipRegister />
+      <HamburgerMenu />
       <div className="content">
         <SearchResult
-          resultClose={resultClose}
-          setResultClose={setResultClose}
           searchResult={searchResult}
-          setSearchResult={setSearchResult}
           setPage={setPage}
           page={page}
         />
@@ -127,7 +136,10 @@ const nearbyRestaurant: NextPage<propsType> = ({ collegeInfo }) => {
           <button className="ico-search">
             <Image src="/search.png" width={30} height={30} alt="search" />
           </button>
-          <div className="ico-hamburger" onClick={() => setMenuClose(false)}>
+          <div
+            className="ico-hamburger"
+            onClick={() => dispatch(setMenuClose(false))}
+          >
             <Image
               src="/hamburger.png"
               width={30}
@@ -232,21 +244,8 @@ const nearbyRestaurant: NextPage<propsType> = ({ collegeInfo }) => {
           }
         `}
       </style>
-    </div>
+    </main>
   );
 };
-
-export async function getServerSideProps(ctx: any) {
-  const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/college/get-college`;
-  let data: any;
-  await fetchWrapper
-    .post(url, { college_id: ctx.query.id })
-    .then((d) => {
-      data = d;
-    })
-    .catch((err) => console.log(err));
-
-  return { props: { collegeInfo: data } };
-}
 
 export default nearbyRestaurant;

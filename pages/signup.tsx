@@ -6,24 +6,19 @@ import { fetchWrapper } from "../helpers/fetch-wrapper";
 import * as yup from "yup";
 import Router, { useRouter } from "next/router";
 import clause from "../clause";
-
-interface signupForm {
-  email: string;
-  auth_code: string;
-  user_id: string;
-  password: string;
-  nickname: string;
-}
+import { signupFormType } from "../lib/types";
 
 const Signup: NextPage = () => {
-  const [codeChecked, setCodeChecked] = useState(false);
-  const [nicknameChecked, setNicknameChecked] = useState(false);
-  const [idChecked, setIdChecked] = useState(false);
   const router = useRouter();
   const checkboxRef = useRef<HTMLInputElement>(null);
 
+  const [codeChecked, setCodeChecked] = useState(false);
+  const [nicknameChecked, setNicknameChecked] = useState(false);
+  const [idChecked, setIdChecked] = useState(false);
+
   const idExp = /^[A-za-z0-9]{5,15}/g;
   const pwExp = /(?=.*[a-zA-ZS])(?=.*?[#?!@$%^&*-]).{6,24}/;
+
   const schema = yup.object().shape({
     nickname: yup.string().required("nickname is required"),
     user_id: yup
@@ -32,14 +27,13 @@ const Signup: NextPage = () => {
       .matches(idExp, "5~15자 영문, 숫자"),
     password: yup.string().required("pw is required").matches(pwExp),
   });
-
   const {
     getValues,
     register,
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<signupForm>({
+  } = useForm<signupFormType>({
     resolver: yupResolver(schema),
   });
 
@@ -53,8 +47,8 @@ const Signup: NextPage = () => {
     const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/user-management/signup/send-auth-code`;
     fetchWrapper
       .post(url, { email: getValues().email })
-      .then((data) => alert("인증번호를 전송했습니다."))
-      .catch((err) => {
+      .then(() => alert("인증번호를 전송했습니다."))
+      .catch(() => {
         alert("전송에 실패했습니다.");
       });
   };
@@ -67,15 +61,15 @@ const Signup: NextPage = () => {
         email: v.email,
         auth_code: v["auth_code"],
       })
-      .then((data) => {
+      .then(() => {
         setCodeChecked(true);
       })
-      .catch((err) => {
+      .catch(() => {
         alert("인증코드 확인에 실패하였습니다.");
       });
   };
 
-  const onSignupSubmit = (data: signupForm) => {
+  const onSignupSubmit = (data: signupFormType) => {
     if (checkboxRef.current?.checked) {
       alert("약관에 동의해주세요.");
       return;
@@ -100,7 +94,7 @@ const Signup: NextPage = () => {
         alert("회원가입이 완료됐습니다.");
         router.push("/");
       })
-      .catch((err) => {
+      .catch(() => {
         alert("회원가입에 실패했습니다.");
       });
   };
@@ -150,7 +144,7 @@ const Signup: NextPage = () => {
             alert("중복된 닉네임입니다.");
           }
         })
-        .catch((err) => {
+        .catch(() => {
           alert("닉네임 중복 확인에 실패하였습니다.");
         });
     } else {
@@ -159,7 +153,7 @@ const Signup: NextPage = () => {
   };
 
   return (
-    <div className="signup">
+    <main className="signup">
       <span className="title">맛집대학 회원가입</span>
 
       <div className="mail-box box">
@@ -236,8 +230,8 @@ const Signup: NextPage = () => {
           <textarea
             name="clause"
             id="clause"
-            rows="10"
-            cols="45"
+            rows={parseInt("10")}
+            cols={parseInt("45")}
             value={clause}
             readOnly
           ></textarea>
@@ -364,7 +358,7 @@ const Signup: NextPage = () => {
           }
         }
       `}</style>
-    </div>
+    </main>
   );
 };
 

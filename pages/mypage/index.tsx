@@ -7,25 +7,22 @@ import MypageNav from "../../components/MypageNav";
 import { fetchWrapper } from "../../helpers/fetch-wrapper";
 import { useSelector } from "react-redux";
 import { rootState } from "../../store/modules";
+import { pwChangeType } from "../../lib/types";
 
 const mypage = () => {
-  interface pwChange {
-    user_id: string;
-    old_password: string;
-    new_password: string;
-  }
-
   const router = useRouter();
+
   const user = useSelector((state: rootState) => state.user);
+
   const {
     getValues,
     register,
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<pwChange>({});
+  } = useForm<pwChangeType>({});
 
-  const onPwChange = (data: pwChange) => {
+  const onPwChange = (data: pwChangeType) => {
     const pwExp = /(?=.*[a-zA-ZS])(?=.*?[#?!@$%^&*-]).{6,24}/;
 
     const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/user-management/security/change-password`;
@@ -39,7 +36,7 @@ const mypage = () => {
         },
         user.user
       )
-      .then((data) => {
+      .then(() => {
         alert("비밀번호가 변경되었습니다.");
       }, user.user)
       .catch((err) => {

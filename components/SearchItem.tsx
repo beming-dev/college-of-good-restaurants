@@ -1,10 +1,10 @@
 import { NextPage } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { storeFromServer } from "./Map";
+import { serverStoreType } from "../lib/types";
 
 interface propsType {
-  item: storeFromServer;
+  item: serverStoreType;
 }
 const SearchItem: NextPage<propsType> = ({ item }) => {
   const router = useRouter();

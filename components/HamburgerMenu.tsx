@@ -2,28 +2,24 @@ import Image from "next/image";
 import { useState } from "react";
 import SignIn from "./SignIn";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { userType } from "../store/modules/user";
 import { rootState } from "../store/modules";
+import { setMenuClose, setRegisterClose } from "../store/modules/close";
 
-type props = {
-  menuClose: boolean;
-  setMenuClose: React.Dispatch<React.SetStateAction<boolean>>;
-  setRegisterClose: React.Dispatch<React.SetStateAction<boolean>>;
-};
+const HamburgerMenu = () => {
+  const router = useRouter();
 
-const HamburgerMenu = ({
-  menuClose,
-  setMenuClose,
-  setRegisterClose,
-}: props) => {
+  const dispatch = useDispatch();
   let user: userType = useSelector((state: rootState) => state.user);
+  let close = useSelector((state: rootState) => state.close);
+
   const [signinDisplay, setSigninDisplay] = useState(false);
 
-  const router = useRouter();
   const onExitClick = () => {
-    setMenuClose(true);
+    dispatch(setMenuClose(true));
   };
+
   return (
     <div className="hamburger-menu">
       <SignIn
@@ -59,7 +55,10 @@ const HamburgerMenu = ({
           <Image src="/good.png" width={40} height={40} />
           <span>좋아요 목록</span>
         </div>
-        <div className="option-box" onClick={() => setRegisterClose(false)}>
+        <div
+          className="option-box"
+          onClick={() => dispatch(setRegisterClose(false))}
+        >
           <Image src="/plus-black.png" width={40} height={40} />
           <span>맛집 등록</span>
         </div>
@@ -73,7 +72,7 @@ const HamburgerMenu = ({
           .hamburger-menu {
             position: absolute;
             top: 0;
-            left: ${menuClose ? -500 : 0}px;
+            left: ${close.menuClose ? -500 : 0}px;
             width: 400px;
             height: 100vh;
             border-radius: 0 10px 10px 0;
@@ -135,7 +134,7 @@ const HamburgerMenu = ({
             .hamburger-menu {
               position: absolute;
               top: 0;
-              left: ${menuClose ? -350 : 0}px;
+              left: ${close.menuClose ? -350 : 0}px;
               width: 300px;
               padding: 0 25px;
 
@@ -155,7 +154,7 @@ const HamburgerMenu = ({
             .hamburger-menu {
               position: absolute;
               top: 0;
-              left: ${menuClose ? -100 : 0}vw;
+              left: ${close.menuClose ? -100 : 0}vw;
               width: 100vw;
               padding: 0 0;
 

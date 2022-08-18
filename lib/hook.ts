@@ -1,16 +1,12 @@
 import { useEffect, useState } from "react";
+import { windowSizeType } from "./types";
 
-type windowSize = {
-  width: number | undefined;
-  height: number | undefined;
-};
-
-export function useWindowSize() {
+export const useWindowSize = (): windowSizeType => {
   // Initialize state with undefined width/height so server and client renders match
   // Learn more here: https://joshwcomeau.com/react/the-perils-of-rehydration/
-  const [windowSize, setWindowSize] = useState<windowSize>({
-    width: undefined,
-    height: undefined,
+  const [windowSize, setWindowSize] = useState<windowSizeType>({
+    width: 0,
+    height: 0,
   });
 
   useEffect(() => {
@@ -30,4 +26,4 @@ export function useWindowSize() {
     }
   }, []); // Empty array ensures that effect is only run on mount
   return windowSize;
-}
+};

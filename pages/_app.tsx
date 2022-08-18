@@ -9,6 +9,7 @@ import { logout } from "../store/modules/user";
 import { getJwtExp } from "../lib/util";
 import { rootState } from "../store/modules";
 import ErrorBoundary from "../components/ErrorBoundary";
+import Head from "next/head";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const user: any = useSelector((state: rootState) => state.user);
@@ -60,6 +61,11 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <ErrorBoundary>
+      <Head>
+        <title>맛집대학</title>
+        <meta name="description" content="NextJS Events" />
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>
       <Layout>{authorized && <Component {...pageProps} />}</Layout>
     </ErrorBoundary>
   );

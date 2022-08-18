@@ -8,11 +8,7 @@ type getType = (
   url: string,
   body: { [id: string]: string }
 ) => Promise<Response | ((value: Response) => boolean | PromiseLike<boolean>)>;
-type postType = (
-  url: string,
-  body: any,
-  user?: any
-) => Promise<Response | ((value: Response) => boolean | PromiseLike<boolean>)>;
+type postType = (url: string, body: any, user?: any) => any;
 type putType = (
   url: string,
   body: { [id: string]: string }
