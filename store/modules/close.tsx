@@ -4,6 +4,8 @@ interface closeState {
   resultClose: boolean;
   menuClose: boolean;
   registerClose: boolean;
+  enrollReviewClose: boolean;
+  updateReviewClose: boolean;
 }
 
 // @edit 타입 나머지 상관없음
@@ -15,6 +17,8 @@ const initialState: closeState = {
   resultClose: true,
   menuClose: true,
   registerClose: true,
+  enrollReviewClose: true,
+  updateReviewClose: true,
 };
 
 const userSlice = createSlice({
@@ -30,9 +34,20 @@ const userSlice = createSlice({
     setRegisterClose: (state, action) => {
       state.registerClose = action.payload;
     },
+    setEnrollReviewClose: (state, action) => {
+      state.enrollReviewClose = action.payload;
+    },
+    setUpdateReviewClose: (state, action) => {
+      state.updateReviewClose = action.payload;
+    },
   },
 });
 
-export const { setRegisterClose, setResultClose, setMenuClose } =
-  userSlice.actions;
+export const {
+  setRegisterClose,
+  setResultClose,
+  setMenuClose,
+  setEnrollReviewClose,
+  setUpdateReviewClose,
+} = userSlice.actions;
 export default userSlice.reducer;

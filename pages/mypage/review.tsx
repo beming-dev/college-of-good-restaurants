@@ -40,6 +40,7 @@ const review = () => {
             width: 100%;
             height: 100vh;
             display: flex;
+            overflow-x: hidden;
             justify-content: center;
             align-items: center;
             .container {
@@ -47,8 +48,10 @@ const review = () => {
               flex-direction: column;
               align-items: center;
               width: 100%;
+              height: 100%;
 
               .review-box {
+                margin: 150px 0;
                 width: 700px;
               }
             }

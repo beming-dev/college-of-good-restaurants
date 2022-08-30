@@ -51,6 +51,7 @@ const store = () => {
               width: 100%;
 
               .store-box {
+                margin: 150px 0;
                 width: 700px;
               }
             }

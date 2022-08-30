@@ -43,8 +43,9 @@ const MatjipReview: NextPage<any> = ({ pageConvert, setPageConvert }) => {
     img_urls: string[],
     place_id: string
   ) => {
+    console.log(img_urls);
     return {
-      img_urls,
+      image_urls: img_urls,
       place_id,
       user_id: getJwtUsername(user.user),
       post_date: toStringByFormatting(new Date()),
@@ -86,7 +87,7 @@ const MatjipReview: NextPage<any> = ({ pageConvert, setPageConvert }) => {
 
     setRegistering(true);
 
-    const urlArr: string[] = [];
+    let urlArr: string[] = [];
     uploadImg(urlArr);
     enrollPlace(data, urlArr);
   };
@@ -118,8 +119,8 @@ const MatjipReview: NextPage<any> = ({ pageConvert, setPageConvert }) => {
         enrollReview(data, urlArr, res);
       })
       .catch((err) => {
-        console.log(err);
-        alert("가게 등록에 실패하였습니다.");
+        if (err === "해당 가게가 이미 존재합니다.")
+          alert("이미 존재하는 가게입니다. 리뷰 등록이 완료되었습니다.");
         setRegistering(false);
         return;
       });

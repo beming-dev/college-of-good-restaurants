@@ -3,7 +3,7 @@ import ReviewItem, { reviewType } from "../components/ReviewItem";
 import { fetchWrapper } from "../helpers/fetch-wrapper";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { rootState } from "../store/modules";
 import {
   copyToClipBoard,
@@ -13,9 +13,12 @@ import {
 import { useRouter } from "next/router";
 import { serverStoreType } from "../lib/types";
 import Map from "../components/Map";
+import EnrollReview from "../components/EnrollReview";
+import { setEnrollReviewClose } from "../store/modules/close";
 
 const storeDetail: NextPage = () => {
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const user = useSelector((state: rootState) => state.user);
 
@@ -69,12 +72,14 @@ const storeDetail: NextPage = () => {
 
   const getPlaceData = () => {
     const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/place/get-place`;
-    fetchWrapper
-      .post(url, { place_id: router.query.id })
-      .then((store: serverStoreType) => {
-        setStoreInfo(store);
-        getHeartData(store);
-      });
+    if (router.query.id) {
+      fetchWrapper
+        .post(url, { place_id: router.query.id })
+        .then((store: serverStoreType) => {
+          setStoreInfo(store);
+          getHeartData(store);
+        });
+    }
   };
 
   const getHeartData = (store: serverStoreType) => {
@@ -100,16 +105,18 @@ const storeDetail: NextPage = () => {
 
   const getReviewData = () => {
     const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/review/get-reviews`;
-    fetchWrapper
-      .post(url, {
-        place_id: router.query.id,
-        scope_start: "1",
-        scope_end: "10",
-      })
-      .then((data: reviewType[]) => {
-        setReviewInfo(data);
-      })
-      .catch((err: any) => console.log(err));
+    if (router.query.id) {
+      fetchWrapper
+        .post(url, {
+          place_id: router.query.id,
+          scope_start: "1",
+          scope_end: "10",
+        })
+        .then((data: reviewType[]) => {
+          setReviewInfo(data);
+        })
+        .catch((err: any) => console.log(err));
+    }
   };
 
   const onHeartClick = () => {
@@ -187,11 +194,21 @@ const storeDetail: NextPage = () => {
         </div>
         <div className="detail">
           <h2>상세정보</h2>
-          <span className="address">{storeInfo?.address}</span>
-          <span className="phone">{storeInfo?.phone || "00-0000-0000"}</span>
+          <div className="address-box">
+            <div className="location-img-wrapper">
+              <Image src="/location.png" layout="fill" />
+            </div>
+            <span className="address">{storeInfo?.address}</span>
+          </div>
+          <div className="phone-box">
+            <div className="phone-img-wrapper">
+              <Image src="/phone.png" layout="fill" />
+            </div>
+            <span className="phone">{storeInfo?.phone || "00-0000-0000"}</span>
+          </div>
         </div>
         <div className="review">
-          <span>리뷰</span>
+          <span style={{ marginBottom: "10px" }}>리뷰</span>
           {reviewInfo?.map((review, i) => (
             <ReviewItem review={review} key={i} />
           ))}
@@ -199,10 +216,22 @@ const storeDetail: NextPage = () => {
             더보기
           </button>
         </div>
+
+        <button
+          className="btn-enroll-review"
+          onClick={() => dispatch(setEnrollReviewClose(false))}
+        >
+          리뷰등록
+        </button>
+        <EnrollReview store={storeInfo} />
       </div>
       <style jsx>{`
         .store-detail {
-          height: fit-content;
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
           .map-box {
             width: 100vw;
             height: 100vh;
@@ -218,7 +247,7 @@ const storeDetail: NextPage = () => {
             top: 0;
             left: 0;
             z-index: -1;
-            background-color: rgba(255, 255, 255, 0.7);
+            background-color: rgba(255, 255, 255, 0.2);
           }
 
           display: flex;
@@ -232,6 +261,7 @@ const storeDetail: NextPage = () => {
             align-items: center;
             padding: 20px;
             border: 1px solid #ebebeb;
+            background-color: rgba(255, 255, 255, 0.9);
 
             .main {
               display: flex;
@@ -295,8 +325,25 @@ const storeDetail: NextPage = () => {
                 font-weight: bold;
                 margin: 10px 0px;
               }
-              span {
-                margin: 5px 0px;
+              .address-box {
+                margin: 5px 0;
+                display: flex;
+                .location-img-wrapper {
+                  margin-right: 5px;
+                  position: relative;
+                  width: 16px;
+                  height: 20px;
+                }
+              }
+              .phone-box {
+                margin: 5px 0;
+                display: flex;
+                .phone-img-wrapper {
+                  margin-right: 5px;
+                  position: relative;
+                  width: 20px;
+                  height: 20px;
+                }
               }
             }
             .review {
@@ -319,6 +366,26 @@ const storeDetail: NextPage = () => {
                 background: #f98600;
                 color: white;
               }
+            }
+          }
+
+          .btn-enroll-review {
+            font-size: 15px;
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px;
+            background-color: white;
+            border-radius: 5px;
+            border: 2px solid #f98600;
+            cursor: pointer;
+          }
+        }
+
+        @media (max-width: 960px) {
+          .store-detail {
+            .content {
+              width: 500px;
             }
           }
         }

@@ -52,3 +52,15 @@ export interface pwChangeType {
   old_password: string;
   new_password: string;
 }
+
+export interface commentType {
+  comment_text: string;
+}
+
+export interface commentServerType {
+  comment_date: string;
+  comment_id: number;
+  comment_text: string;
+  review_id: number;
+  user_id: string;
+}
