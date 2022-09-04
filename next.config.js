@@ -15,4 +15,7 @@ const nextConfig = (module.exports = {
         ? "http://13.209.174.50:8080" // development api
         : "http://13.209.174.50:8080", // production api
   },
+  images: {
+    domains: ["i.ibb.co", "mblogthumb-phinf.pstatic.net"],
+  },
 });

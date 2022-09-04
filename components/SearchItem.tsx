@@ -28,7 +28,7 @@ const SearchItem: NextPage<propsType> = ({ item }) => {
         {`
           .search-item {
             margin: 10px 0;
-            width: 80%;
+            width: 100%;
             display: flex;
             align-items: center;
             justify-content: space-between;

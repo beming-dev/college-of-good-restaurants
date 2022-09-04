@@ -3,17 +3,14 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { fetchWrapper } from "../helpers/fetch-wrapper";
+import { commentType, reviewType } from "../lib/types";
 import { getJwtUsername } from "../lib/util";
 import { rootState } from "../store/modules";
-import { reviewType } from "./ReviewItem";
 
-interface commentType {
-  comment_date: string;
-  comment_id: string;
-  comment_text: string;
-  review_id: string;
-  user_id: string;
+interface formType {
+  comment_des: string;
 }
+
 const ReviewComment = ({
   review,
   comment,
@@ -31,7 +28,7 @@ const ReviewComment = ({
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<{ comment_des: string }>();
+  } = useForm<formType>();
 
   const [edit, setEdit] = useState(false);
 
@@ -45,15 +42,15 @@ const ReviewComment = ({
     const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/comment/delete-comment`;
     fetchWrapper
       .post(url, createDeleteData(), user.user)
-      .then((data: any) => {
+      .then(() => {
         router.reload();
       })
-      .catch((err: any) => {
+      .catch(() => {
         alert("삭제에 실패했습니다.");
       });
   };
 
-  const createEditData = (data: any) => {
+  const createEditData = (data: formType) => {
     return {
       comment_id: comment.comment_id,
       review_id: review.review.review_id,
@@ -62,15 +59,15 @@ const ReviewComment = ({
     };
   };
 
-  const onCommentEditComplete = (data: any) => {
+  const onCommentEditComplete = (data: formType) => {
     const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/comment/update-comment`;
     fetchWrapper
       .post(url, createEditData(data), user.user)
-      .then((data: any) => {
+      .then(() => {
         router.reload();
         setEdit(false);
       })
-      .catch((err: any) => alert("수정 실패"));
+      .catch(() => alert("수정 실패"));
   };
 
   const onCommentEdit = () => {
@@ -129,6 +126,7 @@ const ReviewComment = ({
               font-size: 15px;
               outline: none;
               border: 0px;
+              padding: 3px;
             }
           }
           .buttons {

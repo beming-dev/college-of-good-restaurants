@@ -5,26 +5,17 @@ import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchWrapper } from "../helpers/fetch-wrapper";
-import { commentServerType, signupFormType } from "../lib/types";
+import { commentType, reviewType, signupFormType } from "../lib/types";
 import { getJwtUsername } from "../lib/util";
 import { rootState } from "../store/modules";
 import { setUpdateReviewClose } from "../store/modules/close";
+import ErrorBoundary from "./ErrorBoundary";
 import ReviewComment from "./ReviewComment";
 import UpdateReview from "./UpdateReview";
 
-export interface reviewType {
-  comments: any;
-  review: {
-    image_urls: string[];
-    place_id: number;
-    post_date: string;
-    post_text: string;
-    rating: number;
-    review_id: string;
-    user_id: string;
-  };
+interface formType {
+  comment_des: string;
 }
-
 interface propsType {
   review: reviewType;
 }
@@ -39,7 +30,7 @@ const ReviewItem: NextPage<propsType> = ({ review }) => {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<{ comment_des: string }>();
+  } = useForm<formType>();
 
   const user: any = useSelector((state: rootState) => state.user);
 
@@ -47,29 +38,29 @@ const ReviewItem: NextPage<propsType> = ({ review }) => {
     const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/review/delete-review`;
     fetchWrapper
       .post(url, { review_id: review.review.review_id }, user.user)
-      .then((data) => {
+      .then(() => {
         alert("리뷰를 삭제했습니다.");
         router.reload();
       })
-      .catch((err) => alert("리뷰 삭제에 실패했습니다."));
+      .catch(() => alert("리뷰 삭제에 실패했습니다."));
   };
   const onReviewEdit = () => {
     dispatch(setUpdateReviewClose(false));
   };
 
-  const createEnrollData = (data: any) => {
+  const createEnrollData = (data: formType) => {
     return {
       review_id: review.review.review_id,
       user_id: getJwtUsername(user.user),
       comment_text: data.comment_des,
     };
   };
-  const onEnrollComment = (data: any) => {
+  const onEnrollComment = (data: formType) => {
     const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/comment/add-comment`;
     fetchWrapper
       .post(url, createEnrollData(data))
-      .then((data) => router.reload())
-      .catch((err) => alert("댓글 등록에 실패했습니다."));
+      .then(() => router.reload())
+      .catch(() => alert("댓글 등록에 실패했습니다."));
   };
 
   return (
@@ -105,11 +96,15 @@ const ReviewItem: NextPage<propsType> = ({ review }) => {
                 ))}
               </div>
 
-              {/* {review.review.image_urls.map((imgUrl) => (
-                <div className="img-wrapper">
-                  <Image src={imgUrl} width="30px" height="30px" />
-                </div>
-              ))} */}
+              <div className="img-box">
+                {review.review.image_urls.map((imgUrl, i) => (
+                  <ErrorBoundary key={i}>
+                    <div className="img-wrapper">
+                      <Image src={imgUrl} layout="fill" objectFit="contain" />
+                    </div>
+                  </ErrorBoundary>
+                ))}
+              </div>
             </div>
             <textarea
               readOnly
@@ -128,7 +123,7 @@ const ReviewItem: NextPage<propsType> = ({ review }) => {
             )}
           </div>
         </div>
-        {review.comments.map((comment: commentServerType, i: number) => (
+        {review.comments.map((comment: commentType, i: number) => (
           <ReviewComment
             comment={comment}
             review={review}
@@ -149,9 +144,6 @@ const ReviewItem: NextPage<propsType> = ({ review }) => {
           ></textarea>
           <button>등록</button>
         </form>
-        {/* {review.review.image_urls.map((url) => (
-          <Image src={url} width="30px" height="30px" />
-        ))} */}
       </div>
       <UpdateReview review={review} />
       <style jsx>
@@ -209,6 +201,17 @@ const ReviewItem: NextPage<propsType> = ({ review }) => {
                       margin-right: 2px;
                     }
                   }
+
+                  .img-box {
+                    display: flex;
+                    .img-wrapper {
+                      position: relative;
+                      width: 100px;
+                      height: 100px;
+                      margin-bottom: 5px;
+                      margin-right: 10px;
+                    }
+                  }
                 }
                 .description {
                   width: 100%;
@@ -218,6 +221,7 @@ const ReviewItem: NextPage<propsType> = ({ review }) => {
                   resize: none;
                   outline: none;
                   border: 0px;
+                  margin-top: 5px;
                 }
 
                 .buttons {

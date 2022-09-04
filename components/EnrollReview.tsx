@@ -6,10 +6,11 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { fetchWrapper } from "../helpers/fetch-wrapper";
 import { getJwtUsername, toStringByFormatting } from "../lib/util";
-import { commentServerType, commentType, serverStoreType } from "../lib/types";
+import { commentType, serverStoreType } from "../lib/types";
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import axios from "axios";
 
 interface imgType {
   imagePreviewUrl: string | ArrayBuffer | null;
@@ -38,27 +39,50 @@ const EnrollReview = ({ store }: { store: serverStoreType }) => {
     resolver: yupResolver(schema),
   });
 
-  const createReviewData = (data: commentType) => {
+  const uploadImg = async (callback: any) => {
+    let urlArr: string[] = [];
+
+    if (loadedImg.length >= 1) {
+      await loadedImg.map((img, i) => {
+        const resp = axios({
+          method: "POST",
+          url: "/api/uploadImg",
+          data: { img: img.imagePreviewUrl },
+        })
+          .then(async (res) => {
+            console.log(res);
+            await urlArr.push(res.data);
+            if (i + 1 === loadedImg.length) callback(urlArr);
+          })
+          .catch((err) => alert("이미지 업로드에 실패했습니다."));
+      });
+    } else {
+      callback();
+    }
+  };
+
+  const createReviewData = (data: commentType, urlArr: string[]) => {
     return {
       place_id: store.place_id,
       user_id: getJwtUsername(user.user),
       post_date: toStringByFormatting(new Date()),
       post_text: data.comment_text,
       rating: "4",
-      image_urls: ["이미지1", "이미지2"],
+      image_urls: urlArr,
     };
   };
 
   const onEnrollReview = (data: commentType) => {
-    console.log(data);
-    const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/review/add-review`;
-    fetchWrapper
-      .post(url, createReviewData(data), user.user)
-      .then((data: any) => {
-        dispatch(setEnrollReviewClose(true));
-        router.reload();
-      })
-      .catch((err: any) => alert("리뷰 등록에 실패했습니다."));
+    uploadImg((urlArr: string[]) => {
+      const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/review/add-review`;
+      fetchWrapper
+        .post(url, createReviewData(data, urlArr), user.user)
+        .then(() => {
+          dispatch(setEnrollReviewClose(true));
+          router.reload();
+        })
+        .catch((err: any) => alert("리뷰 등록에 실패했습니다."));
+    });
   };
 
   const onImgChange = (e: any) => {

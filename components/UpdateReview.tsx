@@ -8,8 +8,7 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { fetchWrapper } from "../helpers/fetch-wrapper";
-import { commentServerType, commentType, serverStoreType } from "../lib/types";
-import { reviewType } from "./ReviewItem";
+import { commentType, reviewType } from "../lib/types";
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -43,7 +42,7 @@ const UpdateReview = ({ review }: { review: reviewType }) => {
       review_id: review.review.review_id,
       post_text: data.comment_text,
       rating: star,
-      image_urls: ["이미지1"],
+      image_urls: [],
     };
   };
 

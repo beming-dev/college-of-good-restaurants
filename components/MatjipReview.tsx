@@ -10,11 +10,12 @@ import { NextPage } from "next";
 import type { rootState } from "../store/modules";
 import { setRegisterClose } from "../store/modules/close";
 
-interface reviewType {
+interface formType {
   reviewDes: string;
   star: number;
   imgUrl: string;
 }
+
 interface imgType {
   imagePreviewUrl: string | ArrayBuffer | null;
   fileName: any;
@@ -39,11 +40,10 @@ const MatjipReview: NextPage<any> = ({ pageConvert, setPageConvert }) => {
   } = useForm();
 
   const createReviewData = (
-    data: reviewType,
+    data: formType,
     img_urls: string[],
     place_id: string
   ) => {
-    console.log(img_urls);
     return {
       image_urls: img_urls,
       place_id,
@@ -65,6 +65,7 @@ const MatjipReview: NextPage<any> = ({ pageConvert, setPageConvert }) => {
       x: selectedSearchResult.x,
       y: selectedSearchResult.y,
       image_url: "~~",
+      user_id: getJwtUsername(user.user),
     };
   };
 
@@ -87,28 +88,33 @@ const MatjipReview: NextPage<any> = ({ pageConvert, setPageConvert }) => {
 
     setRegistering(true);
 
-    let urlArr: string[] = [];
-    uploadImg(urlArr);
-    enrollPlace(data, urlArr);
+    uploadImg(data);
   };
 
-  const uploadImg = async (urlArr: string[]) => {
+  const uploadImg = async (data: any) => {
+    let urlArr: string[] = [];
+
     if (loadedImg.length >= 1) {
-      await loadedImg.map(async (img) => {
-        const resp = await axios({
+      await loadedImg.map((img, i) => {
+        const resp = axios({
           method: "POST",
           url: "/api/uploadImg",
           data: { img: img.imagePreviewUrl },
         })
           .then(async (res) => {
             await urlArr.push(res.data);
+            if (i + 1 == loadedImg.length) {
+              enrollPlace(data, urlArr);
+            }
           })
           .catch((err) => alert("이미지 업로드에 실패했습니다."));
       });
+    } else {
+      enrollPlace(data, urlArr);
     }
   };
 
-  const enrollPlace = async (data: reviewType, urlArr: string[]) => {
+  const enrollPlace = async (data: formType, urlArr: string[]) => {
     await fetchWrapper
       .post(
         `${process.env.NEXT_PUBLIC_SERVER_IP}/place/add-place`,
@@ -126,7 +132,7 @@ const MatjipReview: NextPage<any> = ({ pageConvert, setPageConvert }) => {
       });
   };
 
-  const enrollReview = async (data: reviewType, urlArr: string[], res: any) => {
+  const enrollReview = async (data: formType, urlArr: string[], res: any) => {
     await fetchWrapper
       .post(
         `${process.env.NEXT_PUBLIC_SERVER_IP}/review/add-review`,
@@ -138,6 +144,7 @@ const MatjipReview: NextPage<any> = ({ pageConvert, setPageConvert }) => {
         setPageConvert(false);
         dispatch(setRegisterClose(true));
         setRegistering(false);
+        setStar(0);
       })
       .catch((err) => {
         console.log(err);
@@ -187,7 +194,6 @@ const MatjipReview: NextPage<any> = ({ pageConvert, setPageConvert }) => {
           name="chooseFile"
           accept="image/*"
           onChange={onImgChange}
-          multiple
         />
         {loadedImg.length >= 1 &&
           loadedImg.map((img, i) => (

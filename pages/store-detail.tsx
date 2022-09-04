@@ -1,5 +1,5 @@
 import { NextPage } from "next";
-import ReviewItem, { reviewType } from "../components/ReviewItem";
+import ReviewItem from "../components/ReviewItem";
 import { fetchWrapper } from "../helpers/fetch-wrapper";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -11,7 +11,7 @@ import {
   toStringByFormatting,
 } from "../lib/util";
 import { useRouter } from "next/router";
-import { serverStoreType } from "../lib/types";
+import { reviewType, serverStoreType } from "../lib/types";
 import Map from "../components/Map";
 import EnrollReview from "../components/EnrollReview";
 import { setEnrollReviewClose } from "../store/modules/close";
@@ -27,14 +27,10 @@ const storeDetail: NextPage = () => {
   const [storeInfo, setStoreInfo] = useState<serverStoreType>();
   const [reviewInfo, setReviewInfo] = useState<reviewType[]>([]);
 
-  const onMoreClick = () => {
-    setPage(page + 1);
-  };
-
   useEffect(() => {
     getPlaceData();
     getReviewData();
-  }, []);
+  }, [page]);
 
   const iconList = [
     {
@@ -70,6 +66,10 @@ const storeDetail: NextPage = () => {
     },
   ];
 
+  const onMoreClick = () => {
+    setPage(page + 1);
+  };
+
   const getPlaceData = () => {
     const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/place/get-place`;
     if (router.query.id) {
@@ -79,6 +79,22 @@ const storeDetail: NextPage = () => {
           setStoreInfo(store);
           getHeartData(store);
         });
+    }
+  };
+
+  const getReviewData = () => {
+    const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/review/get-reviews`;
+    if (router.query.id) {
+      fetchWrapper
+        .post(url, {
+          place_id: router.query.id,
+          scope_start: "1",
+          scope_end: 10 * page,
+        })
+        .then((data: reviewType[]) => {
+          setReviewInfo(data);
+        })
+        .catch((err: any) => console.log(err));
     }
   };
 
@@ -97,25 +113,10 @@ const storeDetail: NextPage = () => {
             setHearted(false);
           }
         })
-        .catch(() => {
+        .catch((err: any) => {
+          console.log(err);
           alert("좋아요 확인 과정에서 오류 발생");
         });
-    }
-  };
-
-  const getReviewData = () => {
-    const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/review/get-reviews`;
-    if (router.query.id) {
-      fetchWrapper
-        .post(url, {
-          place_id: router.query.id,
-          scope_start: "1",
-          scope_end: "10",
-        })
-        .then((data: reviewType[]) => {
-          setReviewInfo(data);
-        })
-        .catch((err: any) => console.log(err));
     }
   };
 

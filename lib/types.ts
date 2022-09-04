@@ -53,14 +53,23 @@ export interface pwChangeType {
   new_password: string;
 }
 
-export interface commentType {
-  comment_text: string;
+export interface reviewType {
+  comments: any;
+  review: {
+    image_urls: string[];
+    place_id: number;
+    post_date: string;
+    post_text: string;
+    rating: number;
+    review_id: string;
+    user_id: string;
+  };
 }
 
-export interface commentServerType {
+export interface commentType {
   comment_date: string;
-  comment_id: number;
+  comment_id: string;
   comment_text: string;
-  review_id: number;
+  review_id: string;
   user_id: string;
 }
