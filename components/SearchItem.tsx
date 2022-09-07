@@ -5,8 +5,9 @@ import { serverStoreType } from "../lib/types";
 
 interface propsType {
   item: serverStoreType;
+  typ: string;
 }
-const SearchItem: NextPage<propsType> = ({ item }) => {
+const SearchItem: NextPage<propsType> = ({ item, typ }) => {
   const router = useRouter();
   const onItemClick = () => {
     router.push(`/store-detail?id=${item["place_id"]}`);
@@ -16,9 +17,9 @@ const SearchItem: NextPage<propsType> = ({ item }) => {
       <div className="txt-area">
         <span className="title">{item.name}</span>
         <div className="review-area">
-          <span className="txt-rate">4.1</span>
+          <span className="txt-rate">{item.rating} </span>
           <div className="img-rate"></div>
-          <span className="review-num">(11)</span>
+          <span className="review-num"> ({item.review_count})</span>
         </div>
         <span className="address">{item.address}</span>
       </div>
@@ -32,6 +33,9 @@ const SearchItem: NextPage<propsType> = ({ item }) => {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            padding: ${typ === "mypage" ? "10px" : "0"};
+            background-color: ${typ === "mypage" ? "#cccccc" : "white"};
+            border-radius: ${typ === "mypage" ? "10px" : "0"};
 
             .txt-area {
               display: flex;

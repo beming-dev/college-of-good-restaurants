@@ -8,12 +8,18 @@ import { serverStoreType } from "../lib/types";
 import { setResultClose } from "../store/modules/close";
 
 type propsType = {
+  setSearchResult: any;
   searchResult: serverStoreType[];
   setPage: React.Dispatch<React.SetStateAction<number>>;
   page: number;
 };
 
-const SearchResult: NextPage<propsType> = ({ searchResult, setPage, page }) => {
+const SearchResult: NextPage<propsType> = ({
+  searchResult,
+  setPage,
+  page,
+  setSearchResult,
+}) => {
   const dispatch = useDispatch();
   const map = useSelector((state: rootState) => state.map);
   const close = useSelector((state: rootState) => state.close);
@@ -52,12 +58,26 @@ const SearchResult: NextPage<propsType> = ({ searchResult, setPage, page }) => {
     setPage(page + 1);
   };
 
+  const onSortChange = (e) => {
+    let newRes;
+    if (e.target.value === "rate") {
+      newRes = searchResult.sort((a: serverStoreType, b: serverStoreType) => {
+        return b.rating - a.rating;
+      });
+    } else {
+      newRes = searchResult.sort((a: serverStoreType, b: serverStoreType) => {
+        return b.review_count - a.review_count;
+      });
+    }
+    setSearchResult([...newRes]);
+  };
+
   return (
     <div className="search-result">
       <div className="exit-img-box" onClick={onExitClick}>
         <Image src="/exit-grey.png" width="25px" height="25px" />
       </div>
-      <select name="sort" id="select-sort">
+      <select name="sort" id="select-sort" onChange={onSortChange}>
         <option value="rate">평점순</option>
         <option value="review">리뷰순</option>
       </select>
@@ -66,7 +86,7 @@ const SearchResult: NextPage<propsType> = ({ searchResult, setPage, page }) => {
           <span>no result</span>
         ) : (
           searchResult.map((item: serverStoreType) => (
-            <SearchItem item={item} key={item["place_id"]} />
+            <SearchItem item={item} key={item["place_id"]} typ="" />
           ))
         )}
       </div>

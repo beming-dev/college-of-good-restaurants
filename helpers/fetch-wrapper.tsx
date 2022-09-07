@@ -104,7 +104,7 @@ const handleResponse: handleResponseType = (response) => {
       //   userService.logout();
       // }
 
-      const error = (data && data.message) || response.statusText;
+      const error = data || response.statusText;
       return Promise.reject(error);
     }
 

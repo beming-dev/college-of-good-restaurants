@@ -5,12 +5,19 @@ import { fetchWrapper } from "../../helpers/fetch-wrapper";
 import { useSelector } from "react-redux";
 import { rootState } from "../../store/modules";
 import { getJwtUsername } from "../../lib/util";
-import { reviewType } from "../../lib/types";
+import { commentType, reviewType, serverStoreType } from "../../lib/types";
+import SearchItem from "../../components/SearchItem";
+
+interface storeAndReview {
+  comments: commentType[];
+  place: serverStoreType;
+  reivew: reviewType;
+}
 
 const review = () => {
   const user = useSelector((state: rootState) => state.user);
 
-  const [reviewList, setReviewList] = useState<reviewType[]>([]);
+  const [reviewList, setReviewList] = useState<storeAndReview[]>([]);
   const [page, setPage] = useState(1);
 
   useEffect(() => {
@@ -18,11 +25,13 @@ const review = () => {
     fetchWrapper
       .post(url, {
         user_id: getJwtUsername(user.user),
-        scope_start: "1",
+        scope_start: 10 * (page - 1) + 1 + "",
         scope_end: page * 10,
       })
-      .then((result: any) => {
-        setReviewList(result);
+      .then((result: any[]) => {
+        let arr: storeAndReview[] = [...reviewList, ...result];
+
+        setReviewList(arr);
       });
   }, [page]);
 
@@ -36,14 +45,16 @@ const review = () => {
       <div className="container">
         <div className="review-box">
           {reviewList.map((review, i) => (
-            <ReviewItem review={review} key={i} />
+            <div key={i} className="box">
+              <SearchItem item={review.place} typ="mypage" />
+              <ReviewItem review={review} />
+            </div>
           ))}
+          <button className="btn-more" onClick={onMoreClick}>
+            더보기
+          </button>
+          <div className="empty"></div>
         </div>
-
-        <button className="btn-more" onClick={onMoreClick}>
-          더보기
-        </button>
-        <div className="empty"></div>
       </div>
       <style jsx>
         {`
@@ -60,29 +71,38 @@ const review = () => {
               align-items: center;
               width: 100%;
               height: 100%;
+              overflow-y: scroll;
 
               .review-box {
                 margin: 150px 0;
                 width: 700px;
-              }
+                height: 100%;
+                display: flex;
+                flex-direction: column;
 
-              .btn-more {
-                width: 100px;
-                min-height: 50px;
-                background-color: white;
-                border: 1px solid #f98600;
-                border-radius: 5px;
-                font-size: 17px;
-                transition-duration: 0.5s;
-              }
-              .btn-more:hover {
-                color: white;
-                background-color: #f98600;
-              }
+                .box {
+                  margin-bottom: 50px;
+                }
+                .btn-more {
+                  width: 100px;
+                  min-height: 50px;
+                  background-color: white;
+                  border: 1px solid #f98600;
+                  border-radius: 5px;
+                  font-size: 17px;
+                  transition-duration: 0.5s;
+                  align-self: center;
+                  margin-bottom: 50px;
+                }
+                .btn-more:hover {
+                  color: white;
+                  background-color: #f98600;
+                }
 
-              .empty {
-                width: 100%;
-                min-height: 50px;
+                .empty {
+                  width: 50px;
+                  min-height: 50px;
+                }
               }
             }
           }

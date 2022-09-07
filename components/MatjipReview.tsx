@@ -36,6 +36,7 @@ const MatjipReview: NextPage<any> = ({ pageConvert, setPageConvert }) => {
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm();
 
@@ -124,10 +125,12 @@ const MatjipReview: NextPage<any> = ({ pageConvert, setPageConvert }) => {
       .then(async (res: any) => {
         enrollReview(data, urlArr, res);
       })
-      .catch((err) => {
-        if (err === "해당 가게가 이미 존재합니다.")
+      .catch((err: any) => {
+        console.log(err);
+        if (err.message === "해당 가게가 이미 존재합니다.")
           alert("이미 존재하는 가게입니다. 리뷰 등록이 완료되었습니다.");
-        setRegistering(false);
+        enrollReview(data, urlArr, err);
+        init();
         return;
       });
   };
@@ -141,15 +144,12 @@ const MatjipReview: NextPage<any> = ({ pageConvert, setPageConvert }) => {
       )
       .then(() => {
         window.alert("등록이 완료되었습니다.");
-        setPageConvert(false);
-        dispatch(setRegisterClose(true));
-        setRegistering(false);
-        setStar(0);
+        init();
       })
       .catch((err) => {
         console.log(err);
         alert("리뷰 등록에 실패하였습니다.");
-        setRegistering(false);
+        init();
         return;
       });
   };
@@ -160,6 +160,15 @@ const MatjipReview: NextPage<any> = ({ pageConvert, setPageConvert }) => {
     } else {
       setPageConvert(false);
     }
+  };
+
+  const init = () => {
+    setLoadedImg([]);
+    setPageConvert(false);
+    dispatch(setRegisterClose(true));
+    setRegistering(false);
+    setStar(0);
+    setValue("reviewDes", "");
   };
 
   const onImgChange = (e: any) => {

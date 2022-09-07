@@ -14,16 +14,16 @@ const store = () => {
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    console.log(page);
     const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/place/get-place-by-user-id`;
     fetchWrapper
       .post(url, {
         user_id: getJwtUsername(user.user),
-        scope_start: "1",
+        scope_start: 10 * (page - 1) + 1 + "",
         scope_end: page * 10,
       })
       .then((data: any) => {
-        setStoreList(data);
+        let arr = [...data, ...storeList];
+        setStoreList(arr);
       });
   }, [page]);
 
@@ -38,7 +38,7 @@ const store = () => {
         <div className="store-box">
           {storeList.map((store: serverStoreType) => (
             <div className="store-item" key={store.place_id}>
-              <SearchItem item={store} />
+              <SearchItem item={store} typ="mypage" />
             </div>
           ))}
 
@@ -72,7 +72,6 @@ const store = () => {
 
                 .store-item {
                   margin: 5px 0;
-                  border: 1px solid black;
                   border-radius: 5px;
                   padding: 0 50px;
                 }

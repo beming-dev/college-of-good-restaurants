@@ -88,11 +88,12 @@ const storeDetail: NextPage = () => {
       fetchWrapper
         .post(url, {
           place_id: router.query.id,
-          scope_start: "1",
+          scope_start: 10 * (page - 1) + 1 + "",
           scope_end: 10 * page,
         })
         .then((data: reviewType[]) => {
-          setReviewInfo(data);
+          let arr = [...reviewInfo, ...data];
+          setReviewInfo(arr);
         })
         .catch((err: any) => console.log(err));
     }

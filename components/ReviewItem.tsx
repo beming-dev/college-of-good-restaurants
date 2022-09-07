@@ -35,14 +35,16 @@ const ReviewItem: NextPage<propsType> = ({ review }) => {
   const user: any = useSelector((state: rootState) => state.user);
 
   const onReviewDelete = () => {
-    const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/review/delete-review`;
-    fetchWrapper
-      .post(url, { review_id: review.review.review_id }, user.user)
-      .then(() => {
-        alert("리뷰를 삭제했습니다.");
-        router.reload();
-      })
-      .catch(() => alert("리뷰 삭제에 실패했습니다."));
+    if (confirm("정말 삭제하시겠습니까?")) {
+      const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/review/delete-review`;
+      fetchWrapper
+        .post(url, { review_id: review.review.review_id }, user.user)
+        .then(() => {
+          alert("리뷰를 삭제했습니다.");
+          router.reload();
+        })
+        .catch(() => alert("리뷰 삭제에 실패했습니다."));
+    }
   };
   const onReviewEdit = () => {
     dispatch(setUpdateReviewClose(false));
@@ -57,10 +59,14 @@ const ReviewItem: NextPage<propsType> = ({ review }) => {
   };
   const onEnrollComment = (data: formType) => {
     const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/comment/add-comment`;
-    fetchWrapper
-      .post(url, createEnrollData(data))
-      .then(() => router.reload())
-      .catch(() => alert("댓글 등록에 실패했습니다."));
+    if (data.comment_des.length >= 5) {
+      fetchWrapper
+        .post(url, createEnrollData(data))
+        .then(() => router.reload())
+        .catch(() => alert("댓글 등록에 실패했습니다."));
+    } else {
+      alert("5자 이상 내용을 입력해주세요.");
+    }
   };
 
   return (

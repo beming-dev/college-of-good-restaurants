@@ -39,15 +39,17 @@ const ReviewComment = ({
   };
 
   const onCommentDelete = () => {
-    const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/comment/delete-comment`;
-    fetchWrapper
-      .post(url, createDeleteData(), user.user)
-      .then(() => {
-        router.reload();
-      })
-      .catch(() => {
-        alert("삭제에 실패했습니다.");
-      });
+    if (confirm("정말 삭제하시겠습니까?")) {
+      const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/comment/delete-comment`;
+      fetchWrapper
+        .post(url, createDeleteData(), user.user)
+        .then(() => {
+          router.reload();
+        })
+        .catch(() => {
+          alert("삭제에 실패했습니다.");
+        });
+    }
   };
 
   const createEditData = (data: formType) => {

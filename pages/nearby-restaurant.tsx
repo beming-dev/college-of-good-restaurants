@@ -19,6 +19,7 @@ import {
   setResultClose,
 } from "../store/modules/close";
 import { useRouter } from "next/router";
+import { serverStoreType } from "../lib/types";
 
 interface propsType {}
 
@@ -36,7 +37,7 @@ const nearbyRestaurant: NextPage<propsType> = () => {
     latitude: 1.0,
     longitude: 2.0,
   });
-  const [searchResult, setSearchResult] = useState([]);
+  const [searchResult, setSearchResult] = useState<serverStoreType[]>([]);
   const [page, setPage] = useState(1);
   const [keyword, setKeyword] = useState("");
   const resultCount = 10;
@@ -65,23 +66,28 @@ const nearbyRestaurant: NextPage<propsType> = () => {
   }, []);
 
   useEffect(() => {
-    let data = {
-      keyword,
-      college_id: collegeInfo.college_id.toString(),
-      scope_start: (page - 1) * resultCount + 1 + "",
-      scope_end: page * resultCount + "",
-    };
-    if (page !== 1) {
-      const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/place/search-place`;
-      fetchWrapper
-        .post(url, data)
-        .then((data: any) => {
-          let arr: any = [...searchResult, ...data];
-          setSearchResult(arr);
-        })
-        .catch(() => {
-          alert("검색 결과가 없습니다.");
-        });
+    if (page * 10 === searchResult.length) {
+      let data = {
+        keyword,
+        college_id: collegeInfo.college_id.toString(),
+        scope_start: (page - 1) * resultCount + 1 + "",
+        scope_end: page * resultCount + "",
+      };
+      if (page !== 1) {
+        const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/place/search-place`;
+        fetchWrapper
+          .post(url, data)
+          .then((data: any) => {
+            let arr: serverStoreType[] = [...searchResult, ...data];
+            arr = arr.sort((a: serverStoreType, b: serverStoreType) => {
+              return b.rating - a.rating;
+            });
+            setSearchResult(arr);
+          })
+          .catch(() => {
+            alert("검색 결과가 없습니다.");
+          });
+      }
     }
   }, [page]);
 
@@ -97,13 +103,19 @@ const nearbyRestaurant: NextPage<propsType> = () => {
         // keyword: data.searchTarget,
         keyword: data.searchTarget,
         college_id: collegeInfo.college_id.toString(),
-        scope_start: 1 + "",
+        scope_start: 10 * (page - 1) + 1 + "",
         scope_end: resultCount + "",
       })
       .then((data: any) => {
-        setSearchResult(data);
+        let newArr = [...searchResult, ...data];
+        let arr: serverStoreType[] = newArr.sort(
+          (a: serverStoreType, b: serverStoreType) => {
+            return b.rating - a.rating;
+          }
+        );
+        setSearchResult(arr);
       })
-      .catch((err) => {
+      .catch(() => {
         alert("검색에 실패하였습니다.");
       });
   };
@@ -122,6 +134,7 @@ const nearbyRestaurant: NextPage<propsType> = () => {
       <HamburgerMenu />
       <div className="content">
         <SearchResult
+          setSearchResult={setSearchResult}
           searchResult={searchResult}
           setPage={setPage}
           page={page}
