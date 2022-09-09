@@ -12,6 +12,7 @@ import { commentType, reviewType } from "../lib/types";
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import _ from "lodash";
 
 const UpdateReview = ({ review }: { review: reviewType }) => {
   const router = useRouter();
@@ -22,7 +23,7 @@ const UpdateReview = ({ review }: { review: reviewType }) => {
   const [star, setStar] = useState(
     review.review.rating ? review.review.rating : 0
   );
-  const [loadedImg, setLoadedImg] = useState<imgType[]>([]);
+  const [loadedImg, setLoadedImg] = useState<any[]>([]);
 
   const schema = yup.object().shape({
     comment_text: yup.string().required("comment is required"),

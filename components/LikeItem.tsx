@@ -35,8 +35,8 @@ const LikeItem: NextPage<propsType> = ({ storeInfo }) => {
         };
     fetchWrapper
       .post(url, d)
-      .then((data) => setHearted(!hearted))
-      .catch((err) => console.log(err));
+      .then(() => setHearted(!hearted))
+      .catch((err: any) => console.log(err));
   };
 
   const onItemClick = () => {

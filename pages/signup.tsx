@@ -116,7 +116,7 @@ const Signup: NextPage = () => {
             alert("중복된 아이디입니다.");
           }
         })
-        .catch((err) => {
+        .catch(() => {
           alert("아이디 중복 확인에 실패하였습니다.");
         });
     } else {

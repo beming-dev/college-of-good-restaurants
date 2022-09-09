@@ -146,8 +146,7 @@ const MatjipReview: NextPage<any> = ({ pageConvert, setPageConvert }) => {
         window.alert("등록이 완료되었습니다.");
         init();
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
         alert("리뷰 등록에 실패하였습니다.");
         init();
         return;
@@ -205,14 +204,17 @@ const MatjipReview: NextPage<any> = ({ pageConvert, setPageConvert }) => {
           onChange={onImgChange}
         />
         {loadedImg.length >= 1 &&
-          loadedImg.map((img, i) => (
-            <Image
-              src={img.imagePreviewUrl}
-              width="40px"
-              height="40px"
-              key={i}
-            />
-          ))}
+          loadedImg.map(
+            (img, i) =>
+              img.imagePreviewUrl && (
+                <Image
+                  src={img.imagePreviewUrl}
+                  width="40px"
+                  height="40px"
+                  key={i}
+                />
+              )
+          )}
       </div>
       <div className="rate">
         {_.range(star).map((v) => (

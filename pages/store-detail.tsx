@@ -24,7 +24,20 @@ const storeDetail: NextPage = () => {
 
   const [hearted, setHearted] = useState(false);
   const [page, setPage] = useState(1);
-  const [storeInfo, setStoreInfo] = useState<serverStoreType>();
+  const [storeInfo, setStoreInfo] = useState<serverStoreType>({
+    address: "",
+    category: "",
+    image_url: "",
+    kakao_place_id: "",
+    latitude: 1,
+    like_count: 1,
+    longitude: 1,
+    name: "",
+    phone: "",
+    place_id: 1,
+    rating: 1,
+    review_count: 1,
+  });
   const [reviewInfo, setReviewInfo] = useState<reviewType[]>([]);
 
   useEffect(() => {
@@ -37,7 +50,7 @@ const storeDetail: NextPage = () => {
       imgName: "/map.png",
       txt: "지도",
       onClick: () => {
-        const url = `https://map.kakao.com/link/map/${storeInfo.kakao_place_id}`;
+        const url = `https://map.kakao.com/link/map/${storeInfo?.kakao_place_id}`;
         window.open(url);
       },
     },
@@ -45,7 +58,7 @@ const storeDetail: NextPage = () => {
       imgName: "/roadfind.png",
       txt: "길찾기",
       onClick: () => {
-        const url = `https://map.kakao.com/link/to/${storeInfo.kakao_place_id}`;
+        const url = `https://map.kakao.com/link/to/${storeInfo?.kakao_place_id}`;
         window.open(url);
       },
     },
@@ -53,7 +66,7 @@ const storeDetail: NextPage = () => {
       imgName: "/roadview.png",
       txt: "로드뷰",
       onClick: () => {
-        const url = `https://map.kakao.com/link/roadview/${storeInfo.kakao_place_id}`;
+        const url = `https://map.kakao.com/link/roadview/${storeInfo?.kakao_place_id}`;
         window.open(url);
       },
     },

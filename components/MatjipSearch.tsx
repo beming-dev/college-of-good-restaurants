@@ -1,4 +1,5 @@
 import { spawn } from "child_process";
+import _ from "lodash";
 import Image from "next/image";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -47,7 +48,7 @@ const MatjipSearch = ({ pageConvert, setPageConvert }: any) => {
     }
   };
 
-  const onSearch: SubmitHandler<search> = (data, page) => {
+  const onSearch: any = (data: any, page: number) => {
     if (data.target === "") {
       setSearchResult([]);
       dispatch(setSelectedSearchResult(null));

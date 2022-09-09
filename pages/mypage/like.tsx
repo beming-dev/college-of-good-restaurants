@@ -33,9 +33,8 @@ const Like = () => {
       .then((data: any) => {
         setLikeList([...likeList, ...data]);
       })
-      .catch((err) => {
+      .catch(() => {
         alert("좋아요 리스트 호출 과정에서 에러 발생");
-        console.log(err);
       });
   }, [page]);
 

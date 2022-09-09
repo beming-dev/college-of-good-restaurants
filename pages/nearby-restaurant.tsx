@@ -62,7 +62,7 @@ const nearbyRestaurant: NextPage<propsType> = () => {
         setCollegeInfo(collegeInfo);
         dispatch(setSelectedCollege(collegeInfo));
       })
-      .catch((err) => console.log(err));
+      .catch(() => console.log(""));
   }, []);
 
   useEffect(() => {
@@ -90,7 +90,7 @@ const nearbyRestaurant: NextPage<propsType> = () => {
   }, [page]);
 
   //로그인
-  const onSubmit = async (data: { searchTarget: string }) => {
+  const onSubmit: any = async (data: { searchTarget: string }) => {
     await setPage(1);
     setKeyword(data.searchTarget);
     dispatch(setResultClose(false));

@@ -60,7 +60,7 @@ const SearchResult: NextPage<propsType> = ({
     }
   };
 
-  const onSortChange = (e) => {
+  const onSortChange = (e: any) => {
     let newRes;
     if (e.target.value === "rate") {
       newRes = searchResult.sort((a: serverStoreType, b: serverStoreType) => {

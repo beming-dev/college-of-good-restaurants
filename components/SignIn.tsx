@@ -34,7 +34,7 @@ const SignIn: NextPage<props> = ({ signinDisplay, setSigninDisplay }) => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data: { id: string; pw: string }, e: any): void => {
+  const onSubmit: any = (data: { id: string; pw: string }, e: any): void => {
     if (logining) return;
     if (data.id === "") {
       alert("아이디를 입력해주세요");
@@ -59,7 +59,7 @@ const SignIn: NextPage<props> = ({ signinDisplay, setSigninDisplay }) => {
         setLogining(false);
         window.location.href = "/";
       })
-      .catch((err) => {
+      .catch(() => {
         alert("로그인에 실패하였습니다.");
         setLogining(false);
       });

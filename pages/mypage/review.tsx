@@ -44,7 +44,7 @@ const review = () => {
       <MypageNav />
       <div className="container">
         <div className="review-box">
-          {reviewList.map((review, i) => (
+          {reviewList.map((review: any, i) => (
             <div key={i} className="box">
               <SearchItem item={review.place} typ="mypage" />
               <ReviewItem review={review} />

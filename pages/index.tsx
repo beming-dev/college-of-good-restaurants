@@ -68,7 +68,7 @@ const Home: NextPage = () => {
         <div className="school-rank">
           {collegeList.map(
             (info, i) =>
-              i < (windowSize?.height < 700 ? 6 : 8) && (
+              i < (windowSize.height && windowSize.height < 700 ? 6 : 8) && (
                 <CollegeRankItem
                   collegeName={info["college_name"]}
                   studentNum={info["number_of_students"]}

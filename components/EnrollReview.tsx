@@ -11,6 +11,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import axios from "axios";
+import _ from "lodash";
 
 interface imgType {
   imagePreviewUrl: string | ArrayBuffer | null;
@@ -132,14 +133,17 @@ const EnrollReview = ({ store }: { store: serverStoreType }) => {
             multiple
           />
           {loadedImg.length >= 1 &&
-            loadedImg.map((img, i) => (
-              <Image
-                src={img.imagePreviewUrl}
-                width="40px"
-                height="40px"
-                key={i}
-              />
-            ))}
+            loadedImg.map(
+              (img, i) =>
+                img.imagePreviewUrl && (
+                  <Image
+                    src={img.imagePreviewUrl}
+                    width="40px"
+                    height="40px"
+                    key={i}
+                  />
+                )
+            )}
         </div>
         <input
           type="text"
