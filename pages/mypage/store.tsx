@@ -22,7 +22,7 @@ const store = () => {
         scope_end: page * 10,
       })
       .then((data: any) => {
-        let arr = [...data, ...storeList];
+        let arr = [...storeList, ...data];
         setStoreList(arr);
       });
   }, [page]);

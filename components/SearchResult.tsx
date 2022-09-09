@@ -55,7 +55,9 @@ const SearchResult: NextPage<propsType> = ({
     dispatch(setResultClose(true));
   };
   const onMoreClick = () => {
-    setPage(page + 1);
+    if (page * 10 === searchResult.length) {
+      setPage(page + 1);
+    }
   };
 
   const onSortChange = (e) => {
@@ -120,6 +122,7 @@ const SearchResult: NextPage<propsType> = ({
               flex-direction: column;
               align-items: center;
               overflow-y: scroll;
+              padding: 0 10px;
             }
             .result::-webkit-scrollbar {
               width: 5px;

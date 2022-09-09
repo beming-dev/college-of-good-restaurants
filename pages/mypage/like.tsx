@@ -46,16 +46,18 @@ const Like = () => {
   return (
     <div className="like-page">
       <MypageNav />
-      <div className="item-box">
-        {likeList.map((store, i) => (
-          <LikeItem
-            storeInfo={store.place_data}
-            key={store.place_data.place_id}
-          />
-        ))}
-        <button className="btn-more" onClick={onMoreClick}>
-          더 보기
-        </button>
+      <div className="container">
+        <div className="item-box">
+          {likeList.map((store, i) => (
+            <LikeItem
+              storeInfo={store.place_data}
+              key={store.place_data.place_id}
+            />
+          ))}
+          <button className="btn-more" onClick={onMoreClick}>
+            더 보기
+          </button>
+        </div>
       </div>
       <style jsx>
         {`
@@ -66,27 +68,37 @@ const Like = () => {
             justify-content: center;
             align-items: center;
 
-            .item-box {
-              width: 100%;
+            .container {
               display: flex;
               flex-direction: column;
-              justify-content: center;
               align-items: center;
-            }
-            .btn-more {
-              width: 150px;
-              height: 50px;
-              background: white;
-              color: #e8630a;
-              margin-top: 30px;
-              border: 1px solid #e8630a;
-              border-radius: 10px;
-              transition-duration: 0.5s;
-            }
+              width: 100%;
+              height: 100%;
 
-            .btn-more:hover {
-              background: #e8630a;
-              color: white;
+              .item-box {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                margin: 150px 0;
+                justify-content: center;
+                align-items: center;
+              }
+              .btn-more {
+                width: 150px;
+                height: 50px;
+                background: white;
+                color: #e8630a;
+                margin-top: 30px;
+                border: 1px solid #e8630a;
+                border-radius: 10px;
+                transition-duration: 0.5s;
+                margin-bottom: 50px;
+              }
+
+              .btn-more:hover {
+                background: #e8630a;
+                color: white;
+              }
             }
           }
         `}
