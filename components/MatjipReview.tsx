@@ -16,11 +16,6 @@ interface formType {
   imgUrl: string;
 }
 
-interface imgType {
-  imagePreviewUrl: string | ArrayBuffer | null;
-  fileName: any;
-}
-
 const MatjipReview: NextPage<any> = ({ pageConvert, setPageConvert }) => {
   const dispatch = useDispatch();
   const user = useSelector((state: rootState) => state.user);
@@ -30,7 +25,7 @@ const MatjipReview: NextPage<any> = ({ pageConvert, setPageConvert }) => {
 
   const [star, setStar] = useState(0);
   const [registering, setRegistering] = useState(false);
-  const [loadedImg, setLoadedImg] = useState<imgType[]>([]);
+  const [loadedImg, setLoadedImg] = useState<any[]>([]);
 
   const {
     register,
