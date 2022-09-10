@@ -13,11 +13,6 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import _ from "lodash";
 
-interface imgType {
-  imagePreviewUrl: string | ArrayBuffer | null;
-  fileName: any;
-}
-
 const EnrollReview = ({ store }: { store: serverStoreType }) => {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -25,7 +20,7 @@ const EnrollReview = ({ store }: { store: serverStoreType }) => {
   const user = useSelector((state: rootState) => state.user);
 
   const [star, setStar] = useState(0);
-  const [loadedImg, setLoadedImg] = useState<imgType[]>([]);
+  const [loadedImg, setLoadedImg] = useState<any[]>([]);
 
   const schema = yup.object().shape({
     comment_text: yup.string().required("comment is required"),
