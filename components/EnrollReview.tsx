@@ -21,8 +21,8 @@ interface imgType {
 const EnrollReview = ({ store }: { store: serverStoreType }) => {
   const router = useRouter();
   const dispatch = useDispatch();
-  let close = useSelector((state: rootState) => state.close);
-  let user = useSelector((state: rootState) => state.user);
+  const close = useSelector((state: rootState) => state.close);
+  const user = useSelector((state: rootState) => state.user);
 
   const [star, setStar] = useState(0);
   const [loadedImg, setLoadedImg] = useState<imgType[]>([]);
@@ -41,7 +41,7 @@ const EnrollReview = ({ store }: { store: serverStoreType }) => {
   });
 
   const uploadImg = async (callback: any) => {
-    let urlArr: string[] = [];
+    const urlArr: string[] = [];
 
     if (loadedImg.length >= 1) {
       await loadedImg.map((img, i) => {
@@ -87,7 +87,7 @@ const EnrollReview = ({ store }: { store: serverStoreType }) => {
   };
 
   const onImgChange = (e: any) => {
-    let reader = new FileReader();
+    const reader = new FileReader();
     const file = e.target.files[0];
     if (file) {
       reader.readAsDataURL(file);

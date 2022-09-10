@@ -11,8 +11,8 @@ const HamburgerMenu = () => {
   const router = useRouter();
 
   const dispatch = useDispatch();
-  let user: userType = useSelector((state: rootState) => state.user);
-  let close = useSelector((state: rootState) => state.close);
+  const user: userType = useSelector((state: rootState) => state.user);
+  const close = useSelector((state: rootState) => state.close);
 
   const [signinDisplay, setSigninDisplay] = useState(false);
 

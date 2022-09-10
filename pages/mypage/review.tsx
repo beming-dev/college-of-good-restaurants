@@ -29,7 +29,7 @@ const review = () => {
         scope_end: page * 10,
       })
       .then((result: any[]) => {
-        let arr: storeAndReview[] = [...reviewList, ...result];
+        const arr: storeAndReview[] = [...reviewList, ...result];
 
         setReviewList(arr);
       });

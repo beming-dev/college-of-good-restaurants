@@ -17,8 +17,8 @@ import _ from "lodash";
 const UpdateReview = ({ review }: { review: reviewType }) => {
   const router = useRouter();
   const dispatch = useDispatch();
-  let user = useSelector((state: rootState) => state.user);
-  let close = useSelector((state: rootState) => state.close);
+  const user = useSelector((state: rootState) => state.user);
+  const close = useSelector((state: rootState) => state.close);
 
   const [star, setStar] = useState(
     review.review.rating ? review.review.rating : 0
@@ -59,7 +59,7 @@ const UpdateReview = ({ review }: { review: reviewType }) => {
   };
 
   const onImgChange = (e: any) => {
-    let reader = new FileReader();
+    const reader = new FileReader();
     const file = e.target.files[0];
     if (file) {
       reader.readAsDataURL(file);

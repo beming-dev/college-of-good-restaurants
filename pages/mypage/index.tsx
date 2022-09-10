@@ -39,7 +39,9 @@ const mypage = () => {
       .then(() => {
         alert("비밀번호가 변경되었습니다.");
       }, user.user)
-      .catch(() => {});
+      .catch((err: any) => {
+        console.log(err);
+      });
   };
 
   return (

@@ -17,7 +17,7 @@ interface likeType {
 }
 
 const Like = () => {
-  let user = useSelector((state: rootState) => state.user);
+  const user = useSelector((state: rootState) => state.user);
 
   const [likeList, setLikeList] = useState<likeType[]>([]);
   const [page, setPage] = useState(1);

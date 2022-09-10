@@ -1,6 +1,5 @@
 import axios from "axios";
 import type { NextApiRequest, NextApiResponse } from "next";
-const cheerio = require("cheerio");
 
 export default async function handler(
   req: NextApiRequest,

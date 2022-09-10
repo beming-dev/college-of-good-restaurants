@@ -18,8 +18,8 @@ type search = {
 
 const MatjipSearch = ({ pageConvert, setPageConvert }: any) => {
   const dispatch = useDispatch();
-  let state = useSelector((state: rootState) => state.selected);
-  let { selectedCollege }: { selectedCollege: collegeInfoType } = state;
+  const state = useSelector((state: rootState) => state.selected);
+  const { selectedCollege }: { selectedCollege: collegeInfoType } = state;
 
   const [pages, setPages] = useState(0);
   const [curPage, setCurPage] = useState(0);

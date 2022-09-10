@@ -105,7 +105,7 @@ const storeDetail: NextPage = () => {
           scope_end: 10 * page,
         })
         .then((data: reviewType[]) => {
-          let arr = [...reviewInfo, ...data];
+          const arr = [...reviewInfo, ...data];
           setReviewInfo(arr);
         })
         .catch((err: any) => console.log(err));

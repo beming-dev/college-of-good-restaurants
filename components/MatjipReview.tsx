@@ -23,7 +23,7 @@ interface imgType {
 
 const MatjipReview: NextPage<any> = ({ pageConvert, setPageConvert }) => {
   const dispatch = useDispatch();
-  let user = useSelector((state: rootState) => state.user);
+  const user = useSelector((state: rootState) => state.user);
   const selectedSearchResult = useSelector(
     (state: rootState) => state.selected
   ).selectedSearchResult;
@@ -93,7 +93,7 @@ const MatjipReview: NextPage<any> = ({ pageConvert, setPageConvert }) => {
   };
 
   const uploadImg = async (data: any) => {
-    let urlArr: string[] = [];
+    const urlArr: string[] = [];
 
     if (loadedImg.length >= 1) {
       await loadedImg.map((img, i) => {
@@ -171,7 +171,7 @@ const MatjipReview: NextPage<any> = ({ pageConvert, setPageConvert }) => {
   };
 
   const onImgChange = (e: any) => {
-    let reader = new FileReader();
+    const reader = new FileReader();
     const file = e.target.files[0];
     if (file) {
       reader.readAsDataURL(file);

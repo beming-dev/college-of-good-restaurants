@@ -18,12 +18,10 @@ const LikeItem: NextPage<propsType> = ({ storeInfo }) => {
   const user = useSelector((store: rootState) => store.user);
   const [hearted, setHearted] = useState(true);
   const onHeartClick = () => {
-    let url;
-    let d;
-    url = hearted
+    const url = hearted
       ? `${process.env.NEXT_PUBLIC_SERVER_IP}/place-like/remove`
       : `${process.env.NEXT_PUBLIC_SERVER_IP}/place-like/add`;
-    d = hearted
+    const d = hearted
       ? {
           place_id: storeInfo.place_id,
           user_id: getJwtUsername(user.user),

@@ -8,7 +8,7 @@ import { setRegisterClose } from "../store/modules/close";
 import { rootState } from "../store/modules";
 
 const MatjipRegister = () => {
-  let close = useSelector((state: rootState) => state.close);
+  const close = useSelector((state: rootState) => state.close);
   const [pageConvert, setPageConvert] = useState(false);
   const dispatch = useDispatch();
 

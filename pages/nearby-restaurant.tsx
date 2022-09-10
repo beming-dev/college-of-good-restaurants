@@ -21,13 +21,10 @@ import {
 import { useRouter } from "next/router";
 import { serverStoreType } from "../lib/types";
 
-interface propsType {}
-
-const nearbyRestaurant: NextPage<propsType> = () => {
+const nearbyRestaurant: NextPage<any> = () => {
   const router = useRouter();
   const dispatch = useDispatch();
-  let user = useSelector((state: rootState) => state.user);
-  let close = useSelector((state: rootState) => state.close);
+  const user = useSelector((state: rootState) => state.user);
 
   const [collegeInfo, setCollegeInfo] = useState<collegeInfoType>({
     college_id: 1,
@@ -66,7 +63,7 @@ const nearbyRestaurant: NextPage<propsType> = () => {
   }, []);
 
   useEffect(() => {
-    let data = {
+    const data = {
       keyword,
       college_id: collegeInfo.college_id.toString(),
       scope_start: (page - 1) * resultCount + 1 + "",
@@ -105,8 +102,8 @@ const nearbyRestaurant: NextPage<propsType> = () => {
         scope_end: page * resultCount + "",
       })
       .then((data: any) => {
-        let newArr = [...data];
-        let arr: serverStoreType[] = newArr.sort(
+        const newArr = [...data];
+        const arr: serverStoreType[] = newArr.sort(
           (a: serverStoreType, b: serverStoreType) => {
             return b.rating - a.rating;
           }
