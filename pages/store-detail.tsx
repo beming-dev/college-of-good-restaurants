@@ -16,7 +16,11 @@ import Map from "../components/Map";
 import EnrollReview from "../components/EnrollReview";
 import { setEnrollReviewClose } from "../store/modules/close";
 
-const storeDetail: NextPage = () => {
+interface propsType {
+  id: number;
+}
+
+const storeDetail: NextPage<propsType> = ({ id }) => {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -85,9 +89,9 @@ const storeDetail: NextPage = () => {
 
   const getPlaceData = () => {
     const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/place/get-place`;
-    if (router.query.id) {
+    if (id) {
       fetchWrapper
-        .post(url, { place_id: router.query.id })
+        .post(url, { place_id: id })
         .then((store: serverStoreType) => {
           setStoreInfo(store);
           getHeartData(store);
@@ -97,10 +101,10 @@ const storeDetail: NextPage = () => {
 
   const getReviewData = () => {
     const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/review/get-reviews`;
-    if (router.query.id) {
+    if (id) {
       fetchWrapper
         .post(url, {
-          place_id: router.query.id,
+          place_id: id,
           scope_start: 10 * (page - 1) + 1 + "",
           scope_end: 10 * page,
         })
@@ -410,3 +414,11 @@ const storeDetail: NextPage = () => {
 };
 
 export default storeDetail;
+
+export async function getServerSideProps({ query: { id } }: { query: any }) {
+  return {
+    props: {
+      id,
+    },
+  };
+}

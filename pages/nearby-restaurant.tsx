@@ -1,4 +1,4 @@
-import { SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Map from "../components/Map";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
@@ -18,11 +18,9 @@ import {
   setRegisterClose,
   setResultClose,
 } from "../store/modules/close";
-import { useRouter } from "next/router";
 import { serverStoreType } from "../lib/types";
 
-const nearbyRestaurant: NextPage<any> = () => {
-  const router = useRouter();
+const nearbyRestaurant: NextPage<any> = ({ id }) => {
   const dispatch = useDispatch();
   const user = useSelector((state: rootState) => state.user);
 
@@ -54,7 +52,7 @@ const nearbyRestaurant: NextPage<any> = () => {
   useEffect(() => {
     const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/college/get-college`;
     fetchWrapper
-      .post(url, { college_id: router.query.id || 1 })
+      .post(url, { college_id: id || 1 })
       .then((collegeInfo: any) => {
         setCollegeInfo(collegeInfo);
         dispatch(setSelectedCollege(collegeInfo));
@@ -257,3 +255,11 @@ const nearbyRestaurant: NextPage<any> = () => {
 };
 
 export default nearbyRestaurant;
+
+export async function getServerSideProps({ query: { id } }: { query: any }) {
+  return {
+    props: {
+      id,
+    },
+  };
+}
