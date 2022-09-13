@@ -1,13 +1,12 @@
 import axios from "axios";
 import type { NextApiRequest, NextApiResponse } from "next";
-import * as Forma from "form-data";
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  console.log(req.body);
   const loadedImg = req.body.img;
   let response: any;
-  const form2 = new FormData();
   const form = new URLSearchParams();
   try {
     // await imgbbUploader(process.env.NEXT_PUBLIC_IMGBB_KEY, loadedImg)
