@@ -171,10 +171,7 @@ const MatjipReview: NextPage<any> = ({ pageConvert, setPageConvert }) => {
     if (file) {
       reader.readAsDataURL(file);
       reader.onloadend = () => {
-        setLoadedImg([
-          ...loadedImg,
-          { imagePreviewUrl: reader.result, fileName: file.name },
-        ]);
+        setLoadedImg([{ imagePreviewUrl: reader.result, fileName: file.name }]);
       };
     }
   };

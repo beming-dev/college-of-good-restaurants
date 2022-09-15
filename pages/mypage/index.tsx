@@ -1,19 +1,23 @@
 import Image from "next/image";
 import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import { useRouter } from "next/router";
 import MypageNav from "../../components/MypageNav";
 import { fetchWrapper } from "../../helpers/fetch-wrapper";
 import { useSelector } from "react-redux";
 import { rootState } from "../../store/modules";
 import { pwChangeType } from "../../lib/types";
+import { useEffect } from "react";
 
 const mypage = () => {
+  const user = useSelector((state: rootState) => state.user);
   const router = useRouter();
 
-  const user = useSelector((state: rootState) => state.user);
-
+  useEffect(() => {
+    if (!user.user) {
+      alert("로그인후 이용해주세요.");
+      router.push("/");
+    }
+  }, []);
   const {
     getValues,
     register,
@@ -23,8 +27,6 @@ const mypage = () => {
   } = useForm<pwChangeType>({});
 
   const onPwChange = (data: pwChangeType) => {
-    const pwExp = /(?=.*[a-zA-ZS])(?=.*?[#?!@$%^&*-]).{6,24}/;
-
     const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/user-management/security/change-password`;
     fetchWrapper
       .post(

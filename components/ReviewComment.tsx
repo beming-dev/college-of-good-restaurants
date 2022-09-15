@@ -88,16 +88,18 @@ const ReviewComment = ({
         />
       </div>
 
-      {getJwtUsername(user.user) === review.review.user_id && !edit && (
-        <div className="buttons">
-          <button className="btn-delete" onClick={onCommentDelete}>
-            삭제하기
-          </button>
-          <button className="btn-edit" onClick={onCommentEdit}>
-            수정하기
-          </button>
-        </div>
-      )}
+      {user.user &&
+        getJwtUsername(user.user) === review.review.user_id &&
+        !edit && (
+          <div className="buttons">
+            <button className="btn-delete" onClick={onCommentDelete}>
+              삭제하기
+            </button>
+            <button className="btn-edit" onClick={onCommentEdit}>
+              수정하기
+            </button>
+          </div>
+        )}
 
       {edit && (
         <form

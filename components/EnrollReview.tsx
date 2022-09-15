@@ -46,7 +46,6 @@ const EnrollReview = ({ store }: { store: serverStoreType }) => {
           data: { img: img.imagePreviewUrl },
         })
           .then(async (res) => {
-            console.log(res);
             await urlArr.push(res.data);
             if (i + 1 === loadedImg.length) callback(urlArr);
           })

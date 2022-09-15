@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchWrapper } from "../helpers/fetch-wrapper";
-import { commentType, reviewType, signupFormType } from "../lib/types";
+import { commentType, reviewType } from "../lib/types";
 import { getJwtUsername } from "../lib/util";
 import { rootState } from "../store/modules";
 import { setUpdateReviewClose } from "../store/modules/close";
@@ -117,7 +117,7 @@ const ReviewItem: NextPage<propsType> = ({ review }) => {
               className="description"
               value={review.review.post_text || ""}
             ></textarea>
-            {getJwtUsername(user.user) === review.review.user_id && (
+            {user.user && getJwtUsername(user.user) === review.review.user_id && (
               <div className="buttons">
                 <button className="btn-delete" onClick={onReviewDelete}>
                   삭제하기

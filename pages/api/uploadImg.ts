@@ -4,7 +4,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  console.log(req.body);
   const loadedImg = req.body.img;
   let response: any;
   const form = new URLSearchParams();
@@ -24,3 +23,11 @@ export default async function handler(
     console.log(err);
   }
 }
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "32mb", // Set desired value here
+    },
+  },
+};

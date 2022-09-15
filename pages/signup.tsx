@@ -15,6 +15,7 @@ const Signup: NextPage = () => {
   const [codeChecked, setCodeChecked] = useState(false);
   const [nicknameChecked, setNicknameChecked] = useState(false);
   const [idChecked, setIdChecked] = useState(false);
+  const [signuping, setSignuping] = useState(false);
 
   const idExp = /^[A-za-z0-9]{5,15}/g;
   const pwExp = /(?=.*[a-zA-ZS])(?=.*?[#?!@$%^&*-]).{6,24}/;
@@ -70,33 +71,38 @@ const Signup: NextPage = () => {
   };
 
   const onSignupSubmit = (data: signupFormType) => {
-    if (checkboxRef.current?.checked) {
-      alert("약관에 동의해주세요.");
-      return;
-    }
-    if (!codeChecked) {
-      alert("학교 메일을 인증해주세요.");
-      return;
-    }
-    if (!nicknameChecked) {
-      alert("닉네임 중복확인을 해주세요.");
-      return;
-    }
-    if (!idChecked) {
-      alert("아이디 중복확인을 해주세요.");
-      return;
-    }
+    if (!signuping) {
+      setSignuping(true);
+      if (checkboxRef.current?.checked) {
+        alert("약관에 동의해주세요.");
+        return;
+      }
+      if (!codeChecked) {
+        alert("학교 메일을 인증해주세요.");
+        return;
+      }
+      if (!nicknameChecked) {
+        alert("닉네임 중복확인을 해주세요.");
+        return;
+      }
+      if (!idChecked) {
+        alert("아이디 중복확인을 해주세요.");
+        return;
+      }
 
-    const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/user-management/signup`;
-    fetchWrapper
-      .post(url, { ...data })
-      .then(() => {
-        alert("회원가입이 완료됐습니다.");
-        router.push("/");
-      })
-      .catch(() => {
-        alert("회원가입에 실패했습니다.");
-      });
+      const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/user-management/signup`;
+      fetchWrapper
+        .post(url, { ...data })
+        .then(() => {
+          alert("회원가입이 완료됐습니다.");
+          setSignuping(false);
+          router.push("/");
+        })
+        .catch(() => {
+          setSignuping(false);
+          alert("회원가입에 실패했습니다.");
+        });
+    }
   };
 
   const onIdCheck = () => {

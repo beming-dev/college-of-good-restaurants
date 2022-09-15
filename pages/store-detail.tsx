@@ -213,13 +213,19 @@ const storeDetail: NextPage<propsType> = ({ id }) => {
         </div>
         <div className="detail">
           <h2>상세정보</h2>
-          <div className="address-box">
+          <div className="category-box tBox">
+            <div className="category-img-wrapper">
+              <Image src="/category.png" layout="fill" />
+            </div>
+            <span className="address">{storeInfo?.category}</span>
+          </div>
+          <div className="address-box tBox">
             <div className="location-img-wrapper">
               <Image src="/location.png" layout="fill" />
             </div>
             <span className="address">{storeInfo?.address}</span>
           </div>
-          <div className="phone-box">
+          <div className="phone-box tBox">
             <div className="phone-img-wrapper">
               <Image src="/phone.png" layout="fill" />
             </div>
@@ -236,12 +242,14 @@ const storeDetail: NextPage<propsType> = ({ id }) => {
           </button>
         </div>
 
-        <button
-          className="btn-enroll-review"
-          onClick={() => dispatch(setEnrollReviewClose(false))}
-        >
-          리뷰등록
-        </button>
+        {user.user && (
+          <button
+            className="btn-enroll-review"
+            onClick={() => dispatch(setEnrollReviewClose(false))}
+          >
+            리뷰등록
+          </button>
+        )}
         <EnrollReview store={storeInfo} />
       </div>
       <style jsx>{`
@@ -344,7 +352,7 @@ const storeDetail: NextPage<propsType> = ({ id }) => {
                 font-weight: bold;
                 margin: 10px 0px;
               }
-              .address-box {
+              .tBox {
                 margin: 5px 0;
                 display: flex;
                 .location-img-wrapper {
@@ -353,15 +361,17 @@ const storeDetail: NextPage<propsType> = ({ id }) => {
                   width: 16px;
                   height: 20px;
                 }
-              }
-              .phone-box {
-                margin: 5px 0;
-                display: flex;
                 .phone-img-wrapper {
                   margin-right: 5px;
                   position: relative;
                   width: 20px;
                   height: 20px;
+                }
+                .category-img-wrapper {
+                  margin-right: 5px;
+                  position: relative;
+                  width: 18px;
+                  height: 18px;
                 }
               }
             }

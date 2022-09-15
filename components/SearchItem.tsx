@@ -23,7 +23,6 @@ const SearchItem: NextPage<propsType> = ({ item, typ }) => {
         </div>
         <span className="address">{item.address}</span>
       </div>
-      <Image src="/test.jpg" width="50px" height="50px" />
 
       <style jsx>
         {`
