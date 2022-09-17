@@ -6,6 +6,7 @@ import { rootState } from "../store/modules";
 import { NextPage } from "next";
 import { serverStoreType } from "../lib/types";
 import { setResultClose } from "../store/modules/close";
+import _ from "lodash";
 
 type propsType = {
   setSearchResult: any;
@@ -36,7 +37,33 @@ const SearchResult: NextPage<propsType> = ({
         });
         marker.setMap(map.map);
 
-        const iwContent = `<a href="/store-detail?id=${store.place_id}" style="padding:5px;" >${store.name}</a>`;
+        const iwContent = `
+          <div style="display:flex; flex-direction:column; justify-content:center; padding:5px; width:250px"> 
+            <a href="/store-detail?id=${
+              store.place_id
+            }" style="margin-bottom:5px;">
+              ${store.name}
+            </a>
+            <div style="display:flex; align-items:center; margin-bottom:5px;">
+              ${_.range(store.rating)
+                .map(
+                  () =>
+                    "<img src='/star-yellow.png' style='width:15px; height:15px; margin-right:2px;'/>"
+                )
+                .join("")}
+
+              ${_.range(store.rating, 5)
+                .map(
+                  () =>
+                    "<img src='/star.png' style='width:15px; height:15px; margin-right:2px;'/>"
+                )
+                .join("")}
+              <span style="margin-left:5px;">(${store.review_count})</span>
+            </div>
+            <span style="font-size:13px; margin:5px 0">${store.phone}</span>
+            <span style="font-size:13px; margin:5px 0">${store.address}</span>
+          </div>
+        `;
         const iwRemovable = true;
 
         const infowindow = new window.kakao.maps.InfoWindow({
