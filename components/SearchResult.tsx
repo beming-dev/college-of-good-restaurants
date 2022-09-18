@@ -25,7 +25,14 @@ const SearchResult: NextPage<propsType> = ({
   const map = useSelector((state: rootState) => state.map);
   const close = useSelector((state: rootState) => state.close);
 
+  const [markers, setMarkers] = useState<any[]>([]);
+
   useEffect(() => {
+    for (let i = 0; i < markers.length; i++) {
+      markers[i].setMap(null);
+    }
+    let markerArr: any[] = [];
+
     if (map.map) {
       searchResult.map((store: serverStoreType) => {
         const marker = new window.kakao.maps.Marker({
@@ -36,6 +43,8 @@ const SearchResult: NextPage<propsType> = ({
           clickable: true,
         });
         marker.setMap(map.map);
+
+        markerArr.push(marker);
 
         const iwContent = `
           <div style="display:flex; flex-direction:column; justify-content:center; padding:5px; width:250px"> 
@@ -60,7 +69,9 @@ const SearchResult: NextPage<propsType> = ({
                 .join("")}
               <span style="margin-left:5px;">(${store.review_count})</span>
             </div>
-            <span style="font-size:13px; margin:5px 0">${store.phone}</span>
+            <span style="font-size:13px; margin:5px 0">${
+              store.phone || "00-0000-0000"
+            }</span>
             <span style="font-size:13px; margin:5px 0">${store.address}</span>
           </div>
         `;
@@ -75,8 +86,9 @@ const SearchResult: NextPage<propsType> = ({
           infowindow.open(map.map, marker);
         });
       });
+      setMarkers(markerArr);
     }
-  }, [searchResult]);
+  }, [searchResult, map]);
 
   const onExitClick = () => {
     dispatch(setResultClose(true));

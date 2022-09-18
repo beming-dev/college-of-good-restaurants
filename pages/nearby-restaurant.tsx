@@ -23,6 +23,7 @@ import { serverStoreType } from "../lib/types";
 const nearbyRestaurant: NextPage<any> = ({ id }) => {
   const dispatch = useDispatch();
   const user = useSelector((state: rootState) => state.user);
+  const map = useSelector((state: rootState) => state.map);
 
   const [collegeInfo, setCollegeInfo] = useState<collegeInfoType>({
     college_id: 1,
@@ -35,6 +36,7 @@ const nearbyRestaurant: NextPage<any> = ({ id }) => {
   const [searchResult, setSearchResult] = useState<serverStoreType[]>([]);
   const [page, setPage] = useState(1);
   const [keyword, setKeyword] = useState("");
+  const [markers, setMarkers] = useState<any[]>([]);
   const resultCount = 10;
 
   const schema = yup.object().shape({
@@ -56,6 +58,17 @@ const nearbyRestaurant: NextPage<any> = ({ id }) => {
       .then((collegeInfo: any) => {
         setCollegeInfo(collegeInfo);
         dispatch(setSelectedCollege(collegeInfo));
+      })
+      .catch(() => console.log(""));
+  }, []);
+
+  useEffect(() => {
+    const url = `${process.env.NEXT_PUBLIC_SERVER_IP}/place/get-recommended-place`;
+    fetchWrapper
+      .post(url, { college_id: id || 1 })
+      .then((result: any) => {
+        dispatch(setResultClose(false));
+        setSearchResult(result.places);
       })
       .catch(() => console.log(""));
   }, []);
