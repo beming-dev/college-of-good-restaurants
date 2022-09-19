@@ -31,7 +31,7 @@ const SearchResult: NextPage<propsType> = ({
     for (let i = 0; i < markers.length; i++) {
       markers[i].setMap(null);
     }
-    let markerArr: any[] = [];
+    const markerArr: any[] = [];
 
     if (map.map) {
       searchResult.map((store: serverStoreType) => {
