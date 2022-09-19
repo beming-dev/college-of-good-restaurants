@@ -173,8 +173,14 @@ const storeDetail: NextPage<propsType> = ({ id }) => {
         <div className="main">
           <h1 className="store-name">{storeInfo?.name}</h1>
           <div className="rate-review">
-            <span className="rate-count"> 평점 4.5 </span>
-            <span className="review-count"> 리뷰 39 </span>
+            <span className="rate-count">
+              {" "}
+              평점 {storeInfo?.rating.toPrecision(2)}{" "}
+            </span>
+            <span className="review-count">
+              {" "}
+              리뷰 {storeInfo?.review_count}{" "}
+            </span>
             <div className="heart-wrapper" onClick={onHeartClick}>
               {hearted
                 ? user.user && (

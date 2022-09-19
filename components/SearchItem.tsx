@@ -17,7 +17,7 @@ const SearchItem: NextPage<propsType> = ({ item, typ }) => {
       <div className="txt-area">
         <span className="title">{item.name}</span>
         <div className="review-area">
-          <span className="txt-rate">{item.rating} </span>
+          <span className="txt-rate">{item.rating.toPrecision(2)} </span>
           <div className="img-rate"></div>
           <span className="review-num"> ({item.review_count})</span>
         </div>
